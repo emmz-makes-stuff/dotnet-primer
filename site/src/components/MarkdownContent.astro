@@ -1,0 +1,47 @@
+---
+/**
+ * Renders the page body as usual, then an "On Microsoft Learn" block from the
+ * page's required `learn` frontmatter (design D4).
+ */
+import Default from "@astrojs/starlight/components/MarkdownContent.astro";
+
+// Starlight's built-in 404 route uses a synthetic entry that bypasses the
+// content schema, so `learn` is absent there despite being required for pages.
+const learn = Astro.locals.starlightRoute.entry.data.learn ?? [];
+---
+
+<Default>
+  <slot />
+</Default>
+
+{learn.length > 0 && (
+  <aside class="learn-links" aria-labelledby="learn-links-heading">
+    <h2 id="learn-links-heading">On Microsoft Learn</h2>
+    <ul>
+      {learn.map((link) => (
+        <li>
+          <a href={link.url}>{link.title}</a>
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}
+
+<style>
+  .learn-links {
+    margin-top: 3rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-inline-start: 4px solid var(--sl-color-accent);
+    border-radius: 0.5rem;
+    background: var(--sl-color-gray-7, var(--sl-color-black));
+  }
+  .learn-links h2 {
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-lg);
+  }
+  .learn-links ul {
+    margin: 0;
+    padding-inline-start: 1.25rem;
+  }
+</style>

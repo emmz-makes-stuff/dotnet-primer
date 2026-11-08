@@ -21,6 +21,10 @@ export default defineConfig({
         },
       ],
       customCss: ["./src/styles/theme.css"],
+      components: {
+        MarkdownContent: "./src/components/MarkdownContent.astro",
+        EditLink: "./src/components/EditLink.astro",
+      },
       lastUpdated: true,
     }),
   ],

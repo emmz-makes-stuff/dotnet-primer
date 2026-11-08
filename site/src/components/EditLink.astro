@@ -1,0 +1,52 @@
+---
+/**
+ * Stock "Edit page" link plus a "Report a problem" link that opens a GitHub
+ * issue prefilled with the page title and full URL (design D5). Built at
+ * build time; no client JS.
+ */
+import Default from "@astrojs/starlight/components/EditLink.astro";
+import { Icon } from "@astrojs/starlight/components";
+
+const ISSUES_URL =
+  "https://github.com/emmz-makes-stuff/dotnet-primer/issues/new";
+
+const { title } = Astro.locals.starlightRoute.entry.data;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+const issue = new URL(ISSUES_URL);
+issue.searchParams.set("title", `Problem on: ${title}`);
+issue.searchParams.set(
+  "body",
+  `Page: ${pageUrl}\n\nWhat's wrong or missing?\n`,
+);
+issue.searchParams.set("labels", "content");
+---
+
+<div class="page-links sl-flex">
+  <Default />
+  <a
+    href={issue.href}
+    class="report-problem sl-flex print:hidden"
+    data-report-problem
+  >
+    <Icon name="warning" size="1.2em" />
+    Report a problem
+  </a>
+</div>
+
+<style>
+  .page-links {
+    gap: 0.75rem 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .report-problem {
+    gap: 0.5rem;
+    align-items: center;
+    text-decoration: none;
+    color: var(--sl-color-gray-3);
+  }
+  .report-problem:hover {
+    color: var(--sl-color-white);
+  }
+</style>

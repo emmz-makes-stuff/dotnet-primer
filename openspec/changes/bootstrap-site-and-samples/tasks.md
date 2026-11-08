@@ -14,10 +14,10 @@
 
 ## 3. Content-page conventions
 
-- [ ] 3.1 Extend `docsSchema` in `site/src/content.config.ts` with required `learn: [{title, url}]` (min 1, URL must start `https://learn.microsoft.com/`; design D4); verify `npm --prefix site run build` fails naming the page when a scratch page omits `learn`, and when it uses a non-Learn URL (then remove the scratch page)
-- [ ] 3.2 Override `MarkdownContent` to render the page body followed by an "On Microsoft Learn" block from `entry.data.learn`; verify in the built HTML that a page's Learn links appear in that block
-- [ ] 3.3 Override `EditLink` to render the stock edit link plus "Report a problem" linking to `https://github.com/emmz-makes-stuff/dotnet-primer/issues/new` with prefilled `title` and `body` (page title and full `https://dotnet-primer.emmz.dev/` URL; design D5), built without client JS; verify the decoded `href` in built HTML for a nested page, and that it renders on the splash `index` page (fall back to a `Footer` override if not)
-- [ ] 3.4 Write `site/README.md` authoring guide: how to add a page, the required `learn` frontmatter, sidebar placement, code fences and languages, `prev`/`next` on standalone pages; verify by following it to add one of the group-4 pages
+- [x] 3.1 Extend `docsSchema` in `site/src/content.config.ts` with required `learn: [{title, url}]` (min 1, URL must start `https://learn.microsoft.com/`; design D4); verify `npm --prefix site run build` fails naming the page when a scratch page omits `learn`, and when it uses a non-Learn URL (then remove the scratch page)
+- [x] 3.2 Override `MarkdownContent` to render the page body followed by an "On Microsoft Learn" block from `entry.data.learn`; verify in the built HTML that a page's Learn links appear in that block
+- [x] 3.3 Override `EditLink` to render the stock edit link plus "Report a problem" linking to `https://github.com/emmz-makes-stuff/dotnet-primer/issues/new` with prefilled `title` and `body` (page title and full `https://dotnet-primer.emmz.dev/` URL; design D5), built without client JS; verify the decoded `href` in built HTML for a nested page, and that it renders on the splash `index` page (fall back to a `Footer` override if not)
+- [x] 3.4 Write `site/README.md` authoring guide: how to add a page, the required `learn` frontmatter, sidebar placement, code fences and languages, `prev`/`next` on standalone pages; verify by following it to add one of the group-4 pages
 
 ## 4. Pages and learning path
 
