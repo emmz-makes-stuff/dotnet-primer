@@ -40,11 +40,11 @@
 
 ## 7. Samples
 
-- [ ] 7.1 Add `samples/Directory.Build.props` and `samples/Directory.Packages.props` per design D9 (net10.0, nullable, implicit usings, warnings-as-errors, `AnalysisLevel=latest-recommended`, `EnforceCodeStyleInBuild`; central versions for `xunit.v3` and `Microsoft.AspNetCore.Mvc.Testing` 10.0.x resolved at apply time); verify `dotnet build` of an empty solution succeeds
-- [ ] 7.2 Create exercise `01-configuration`: `Solution` minimal API binding `GreetingOptions` from `Greeting` and serving `GET /greeting`; `Starter` identical shape with `TODO`s returning 501; both `public partial class Program`; verify both compile with zero warnings
-- [ ] 7.3 Add shared tests in `exercises/01-configuration/tests/` (configured message returned; in-memory/env override wins) with descriptive failure messages, compiled into `Starter.Tests` and `Solution.Tests` via `<Compile Include="../tests/**/*.cs" />`; verify `dotnet test --project …/Solution.Tests` passes and `dotnet test --project …/Starter.Tests` fails with the descriptive messages
-- [ ] 7.4 Create `samples/Primer.slnx` (all four projects) and `samples/Primer.Solutions.slnx` (Solution + Solution.Tests); verify `dotnet build samples/Primer.slnx`, `dotnet test --solution samples/Primer.Solutions.slnx` and `dotnet format samples/Primer.slnx --verify-no-changes` each exit 0
-- [ ] 7.5 Write `samples/README.md`: prerequisites (SDK 10.0.4xx, Docker for later exercises), layout, how to work an exercise red→green against the starter, practice-only note; verify its commands run as written
+- [x] 7.1 Add `samples/Directory.Build.props` and `samples/Directory.Packages.props` per design D9 (net10.0, nullable, implicit usings, warnings-as-errors, `AnalysisLevel=latest-recommended`, `EnforceCodeStyleInBuild`; central versions for `xunit.v3` and `Microsoft.AspNetCore.Mvc.Testing` 10.0.x resolved at apply time); verify `dotnet build` of an empty solution succeeds
+- [x] 7.2 Create exercise `01-configuration`: `Solution` minimal API binding `GreetingOptions` from `Greeting` and serving `GET /greeting`; `Starter` identical shape with `TODO`s returning 501; both `public partial class Program`; verify both compile with zero warnings
+- [x] 7.3 Add shared tests in `exercises/01-configuration/tests/` (configured message returned; in-memory/env override wins) with descriptive failure messages, compiled into `Starter.Tests` and `Solution.Tests` via `<Compile Include="../tests/**/*.cs" />`; verify `dotnet test --project …/Solution.Tests` passes and `dotnet test --project …/Starter.Tests` fails with the descriptive messages
+- [x] 7.4 Create `samples/Primer.slnx` (all four projects) and `samples/Primer.Solutions.slnx` (Solution + Solution.Tests); verify `dotnet build samples/Primer.slnx`, `dotnet test --solution samples/Primer.Solutions.slnx` and `dotnet format samples/Primer.slnx --verify-no-changes` each exit 0
+- [x] 7.5 Write `samples/README.md`: prerequisites (SDK 10.0.4xx, Docker for later exercises), layout, how to work an exercise red→green against the starter, practice-only note; verify its commands run as written
 
 ## 8. GitHub Actions
 
