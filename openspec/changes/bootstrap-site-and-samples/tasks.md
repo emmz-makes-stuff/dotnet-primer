@@ -29,10 +29,10 @@
 
 ## 5. Site test gate
 
-- [ ] 5.1 Add `vitest`, `node-html-parser`, `vitest.config.ts`, and `npm test` = `vitest run`; `tests/dist.test.ts` fails with "run `npm --prefix site run build` first" when `site/dist/` is absent; verify by running `npm --prefix site test` on a clean tree
-- [ ] 5.2 Implement the content-page assertions (Learn link in block; "Report a problem" href and decoded body URL) per design D7; verify they pass on the built site and fail when a page's Report link is removed from the override (then revert)
-- [ ] 5.3 Implement the internal-link resolution check reporting `source → target`; verify it passes, then fails on a scratch page linking `/no-such-page/` (then remove it)
-- [ ] 5.4 Implement the structure checks (index links every D3 slug; `dist/pagefind/pagefind.js` exists; DI page has `data-pagefind-body`) and the `dist/CNAME` check; verify `npm --prefix site test` exits 0
+- [x] 5.1 Add `vitest`, `node-html-parser`, `vitest.config.ts`, and `npm test` = `vitest run`; `tests/dist.test.ts` fails with "run `npm --prefix site run build` first" when `site/dist/` is absent; verify by running `npm --prefix site test` on a clean tree
+- [x] 5.2 Implement the content-page assertions (Learn link in block; "Report a problem" href and decoded body URL) per design D7; verify they pass on the built site and fail when a page's Report link is removed from the override (then revert)
+- [x] 5.3 Implement the internal-link resolution check reporting `source → target`; verify it passes, then fails on a scratch page linking `/no-such-page/` (then remove it)
+- [x] 5.4 Implement the structure checks (index links every D3 slug; `dist/pagefind/pagefind.js` exists; DI page has `data-pagefind-body`) and the `dist/CNAME` check; verify `npm --prefix site test` exits 0
 
 ## 6. Theme starting point
 
@@ -58,6 +58,7 @@
 
 ## Workflow follow-up
 
+- Emmz makes `emmz-makes-stuff/dotnet-primer` **public** (it is currently private): needed for free GitHub Pages, the "Report a problem" issue links and the exercise links (found in §4).
 - Emmz pushes `main` to `emmz-makes-stuff/dotnet-primer` (outward-facing — confirm before pushing).
 - Emmz sets GitHub Pages source to *GitHub Actions* and custom domain `dotnet-primer.emmz.dev`; adds Cloudflare `CNAME dotnet-primer → emmz-makes-stuff.github.io` DNS-only; ticks *Enforce HTTPS* once the certificate is issued.
 - Confirm the first `site.yml` run deploys and `https://dotnet-primer.emmz.dev/` serves the introduction over HTTPS.
