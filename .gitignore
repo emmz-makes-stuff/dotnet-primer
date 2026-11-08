@@ -1,0 +1,16 @@
+# Node / Astro
+node_modules/
+site/dist/
+site/.astro/
+
+# .NET
+bin/
+obj/
+*.binlog
+TestResults/
+
+# OS / editors
+.DS_Store
+.idea/
+.vs/
+*.user

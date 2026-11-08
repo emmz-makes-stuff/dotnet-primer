@@ -2,9 +2,9 @@
 
 ## 1. Repo foundation
 
-- [ ] 1.1 Add root `.gitignore` (`node_modules/`, `site/dist/`, `site/.astro/`, `bin/`, `obj/`, `.DS_Store`, `*.binlog`) and `.editorconfig` (C# conventions used by `dotnet format`, 2-space for web files); verify `git status` shows neither `node_modules` nor build output after later groups build
-- [ ] 1.2 Add root `global.json` per design D9 (SDK 10.0.400, `rollForward: latestFeature`, test runner Microsoft.Testing.Platform); verify `dotnet --version` from the repo root prints a `10.0.4xx` version, not the 11 RC
-- [ ] 1.3 Add root `README.md`: what the primer is, the `site/` and `samples/` layout, the eight gate commands verbatim, and a link to `docs/`; verify every command in it runs once groups 2 and 7 land
+- [x] 1.1 Add root `.gitignore` (`node_modules/`, `site/dist/`, `site/.astro/`, `bin/`, `obj/`, `.DS_Store`, `*.binlog`) and `.editorconfig` (C# conventions used by `dotnet format`, 2-space for web files); verify `git status` shows neither `node_modules` nor build output after later groups build
+- [x] 1.2 Add root `global.json` per design D9 (SDK 10.0.400, `rollForward: latestFeature`, test runner Microsoft.Testing.Platform); verify `dotnet --version` from the repo root prints a `10.0.4xx` version, not the 11 RC
+- [x] 1.3 Add root `README.md`: what the primer is, the `site/` and `samples/` layout, the eight gate commands verbatim, and a link to `docs/`; verify every command in it runs once groups 2 and 7 land
 
 ## 2. Site scaffold
 
