@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(make deps)",
+      "Bash(make gates)",
+      "Bash(make validate)",
+      "Bash(make changes)",
+      "Bash(make build)",
+      "Bash(make test)",
+      "Bash(make format)",
+      "Bash(make lint)",
+      "Bash(make site-build)",
+      "Bash(make site-test)",
+      "Bash(make site-format)",
+      "Bash(make site-lint)",
+      "Bash(make samples-build)",
+      "Bash(make samples-test)",
+      "Bash(make samples-format)"
+    ]
+  }
+}
