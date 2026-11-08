@@ -48,8 +48,8 @@
 
 ## 8. GitHub Actions
 
-- [ ] 8.1 Add `.github/workflows/site.yml` per design D10 (gates job running the four site gate commands verbatim then `upload-pages-artifact`; `deploy` job on `main` non-PR only via `deploy-pages`; permissions and concurrency as specified; action major versions resolved at apply time); verify with `actionlint` if available, else by YAML parse and review against D10
-- [ ] 8.2 Add `.github/workflows/samples.yml` (path-filtered; `setup-dotnet` from `global.json`; the three samples gates); verify the same way as 8.1
+- [x] 8.1 Add `.github/workflows/site.yml` per design D10 (gates job running the four site gate commands verbatim then `upload-pages-artifact`; `deploy` job on `main` non-PR only via `deploy-pages`; permissions and concurrency as specified; action major versions resolved at apply time); verify with `actionlint` if available, else by YAML parse and review against D10
+- [x] 8.2 Add `.github/workflows/samples.yml` (path-filtered; `setup-dotnet` from `global.json`; the three samples gates); verify the same way as 8.1
 
 ## 9. Integration check
 

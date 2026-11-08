@@ -1,0 +1,40 @@
+# Samples gates when sample code, the SDK pin or code style changes.
+# Independent of the site deploy: a samples failure never blocks content going live.
+name: samples
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "samples/**"
+      - "global.json"
+      - ".editorconfig"
+      - ".github/workflows/samples.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "samples/**"
+      - "global.json"
+      - ".editorconfig"
+      - ".github/workflows/samples.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: build
+        run: dotnet build samples/Primer.slnx
+      - name: format
+        run: dotnet format samples/Primer.slnx --verify-no-changes
+      - name: test
+        run: dotnet test --solution samples/Primer.Solutions.slnx
