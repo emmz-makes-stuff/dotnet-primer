@@ -8,9 +8,9 @@
 
 ## 2. Site scaffold
 
-- [ ] 2.1 Create `site/` as an Astro 7 + Starlight project (`package.json` with `engines.node >=22.23`, `.nvmrc` = `24`, `tsconfig.json`, `astro.config.mjs` with `site: 'https://dotnet-primer.emmz.dev'`, `editLink.baseUrl`, `customCss`, `lastUpdated`; design D2), commit `package-lock.json`; verify `npm ci --prefix site` succeeds
-- [ ] 2.2 Add `site/public/CNAME` containing exactly `dotnet-primer.emmz.dev`; verify it is copied to `site/dist/CNAME` by `npm --prefix site run build`
-- [ ] 2.3 Add npm scripts `build`, `preview`, `lint` (`astro check`), `format`, `format:check` (`prettier --check .`) with `@astrojs/check`, `typescript`, `prettier`, `prettier-plugin-astro`, `.prettierrc.json` (`proseWrap: preserve`) and `.prettierignore` (design D8); verify `npm --prefix site run build`, `npm --prefix site run lint` and `npm --prefix site run format:check` each exit 0 on the scaffold, and `format:check` exits non-zero on a deliberately mis-formatted file (then revert)
+- [x] 2.1 Create `site/` as an Astro 7 + Starlight project (`package.json` with `engines.node >=22.23`, `.nvmrc` = `24`, `tsconfig.json`, `astro.config.mjs` with `site: 'https://dotnet-primer.emmz.dev'`, `editLink.baseUrl`, `customCss`, `lastUpdated`; design D2), commit `package-lock.json`; verify `npm ci --prefix site` succeeds
+- [x] 2.2 Add `site/public/CNAME` containing exactly `dotnet-primer.emmz.dev`; verify it is copied to `site/dist/CNAME` by `npm --prefix site run build`
+- [x] 2.3 Add npm scripts `build`, `preview`, `lint` (`astro check`), `format`, `format:check` (`prettier --check .`) with `@astrojs/check`, `typescript`, `prettier`, `prettier-plugin-astro`, `.prettierrc.json` (`proseWrap: preserve`) and `.prettierignore` (design D8); verify `npm --prefix site run build`, `npm --prefix site run lint` and `npm --prefix site run format:check` each exit 0 on the scaffold, and `format:check` exits non-zero on a deliberately mis-formatted file (then revert)
 
 ## 3. Content-page conventions
 
