@@ -21,11 +21,11 @@
 
 ## 4. Pages and learning path
 
-- [ ] 4.1 Configure the explicit `sidebar` in `astro.config.mjs` with the groups and order from design D3; verify `npm --prefix site run build` succeeds and the built sidebar lists ASP.NET Core → Configuration → Dependency Injection → Middleware before the remaining path pages
-- [ ] 4.2 Write the introduction `index.mdx` (splash template): who the primer is for, how it's organised (learning path, standalone sections, cheatsheets, exercises), a card grid linking every area and standalone section, `learn` frontmatter; verify every D3 slug is linked from `dist/index.html`
-- [ ] 4.3 Add a stub page for each subject area in D3 (title, description, a short "what this covers" paragraph, ≥1 `learn` link, a "Coming soon" note), with standalone `csharp/` and `coming-from-3-5/` pages setting `prev: false`/`next: false`; verify each builds and appears under its sidebar group
-- [ ] 4.4 Add the `cheatsheets/dotnet-cli` stub (a handful of real `dotnet new`/`build`/`run`/`test`/`add package` commands in `sh` code blocks, `learn` link to the dotnet CLI reference), linked from `platform/dotnet-10-and-cli`; verify both pages build and the link resolves
-- [ ] 4.5 On `aspnet-core/configuration`, describe exercise 01 (goal, steps, how to run tests against the starter) linking to `https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/01-configuration`, with a `csharp` sample; verify the link and the code block render in built HTML
+- [x] 4.1 Configure the explicit `sidebar` in `astro.config.mjs` with the groups and order from design D3; verify `npm --prefix site run build` succeeds and the built sidebar lists ASP.NET Core → Configuration → Dependency Injection → Middleware before the remaining path pages
+- [x] 4.2 Write the introduction `index.mdx` (splash template): who the primer is for, how it's organised (learning path, standalone sections, cheatsheets, exercises), a card grid linking every area and standalone section, `learn` frontmatter; verify every D3 slug is linked from `dist/index.html`
+- [x] 4.3 Add a stub page for each subject area in D3 (title, description, a short "what this covers" paragraph, ≥1 `learn` link, a "Coming soon" note), with standalone `csharp/` and `coming-from-3-5/` pages setting `prev: false`/`next: false`; verify each builds and appears under its sidebar group
+- [x] 4.4 Add the `cheatsheets/dotnet-cli` stub (a handful of real `dotnet new`/`build`/`run`/`test`/`add package` commands in `sh` code blocks, `learn` link to the dotnet CLI reference), linked from `platform/dotnet-10-and-cli`; verify both pages build and the link resolves
+- [x] 4.5 On `aspnet-core/configuration`, describe exercise 01 (goal, steps, how to run tests against the starter) linking to `https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/01-configuration`, with a `csharp` sample; verify the link and the code block render in built HTML
 
 ## 5. Site test gate
 

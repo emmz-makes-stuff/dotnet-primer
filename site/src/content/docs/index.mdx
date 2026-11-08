@@ -1,10 +1,140 @@
 ---
 title: dotnet-primer
-description: From .NET 3.5 to .NET 10.
+description: From .NET 3.5 to .NET 10 — ASP.NET Core, EF Core, gRPC and containers for engineers making the jump.
 template: splash
+hero:
+  tagline: Fifteen years of .NET 3.5? Here's everything that changed, and how to be productive with .NET 10, ASP.NET Core, EF Core, gRPC and containers.
+  actions:
+    - text: Start the learning path
+      link: /aspnet-core/
+      icon: right-arrow
+    - text: Coming from .NET 3.5
+      link: /coming-from-3-5/
+      variant: minimal
 learn:
   - title: .NET documentation
     url: https://learn.microsoft.com/dotnet/
+  - title: ASP.NET Core documentation
+    url: https://learn.microsoft.com/aspnet/core/
 ---
 
-Placeholder introduction. Replaced in section 4.
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+## Who this is for
+
+You know C# and .NET Framework well. You've shipped and maintained a large .NET 3.5 codebase for years. Modern .NET keeps the language and much of the base library, but the platform, the tooling and the idioms around them have changed a lot. This primer gets you productive on them quickly.
+
+## How it's organised
+
+- **The learning path** uses **ASP.NET Core** as its main thread. It introduces everything else along the way, starting with configuration, dependency injection and middleware. Follow it in order, using the **Next** links at the bottom of each page.
+- **C# language** catches you up on everything since C# 3.0, as a separate section.
+- **Coming from .NET 3.5** maps the habits you already have to their modern equivalents.
+- **Cheatsheets** are one-page references to keep open while you work.
+- **Exercises** in the [GitHub repo](https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples) let you practise. You clone them, run them locally, and use their tests to check your work.
+
+Every page links to the official docs on Microsoft Learn. If you spot a mistake or something missing, use **Report a problem** at the bottom of the page.
+
+## Getting started
+
+<CardGrid>
+  <LinkCard
+    title=".NET 10 and the dotnet CLI"
+    href="/platform/dotnet-10-and-cli/"
+    description="The platform, the SDK and the command line."
+  />
+  <LinkCard
+    title="dotnet CLI cheatsheet"
+    href="/cheatsheets/dotnet-cli/"
+    description="Everyday commands on one page."
+  />
+</CardGrid>
+
+## The learning path
+
+<CardGrid>
+  <LinkCard
+    title="ASP.NET Core"
+    href="/aspnet-core/"
+    description="Hosting, the request pipeline and minimal APIs."
+  />
+  <LinkCard
+    title="Configuration"
+    href="/aspnet-core/configuration/"
+    description="IConfiguration and the options pattern."
+  />
+  <LinkCard
+    title="Dependency Injection"
+    href="/aspnet-core/dependency-injection/"
+    description="The built-in container and service lifetimes."
+  />
+  <LinkCard
+    title="Middleware"
+    href="/aspnet-core/middleware/"
+    description="The request pipeline, and writing your own middleware."
+  />
+  <LinkCard
+    title="Logging"
+    href="/observability/logging/"
+    description="Structured logging with ILogger."
+  />
+  <LinkCard
+    title="Tracing"
+    href="/observability/tracing/"
+    description="Distributed tracing with OpenTelemetry."
+  />
+  <LinkCard
+    title="Metrics"
+    href="/observability/metrics/"
+    description="Counters and histograms with System.Diagnostics.Metrics."
+  />
+  <LinkCard
+    title="EF Core"
+    href="/data/ef-core/"
+    description="DbContext, migrations and querying."
+  />
+  <LinkCard
+    title="gRPC"
+    href="/services/grpc/"
+    description="Contract-first services with Protocol Buffers."
+  />
+  <LinkCard
+    title="Testing"
+    href="/testing/"
+    description="xUnit v3, WebApplicationFactory and Testcontainers."
+  />
+  <LinkCard
+    title="Security & auth"
+    href="/security/"
+    description="Authentication, authorization and secrets."
+  />
+  <LinkCard
+    title="Async & performance"
+    href="/performance/async-and-performance/"
+    description="async/await, Span<T> and benchmarking."
+  />
+  <LinkCard
+    title="Containers"
+    href="/deploy/containers/"
+    description="Container images, with or without a Dockerfile."
+  />
+  <LinkCard
+    title="Orchestration & AWS"
+    href="/deploy/orchestration-and-aws/"
+    description=".NET Aspire, Kubernetes, ECS, EKS and Lambda."
+  />
+</CardGrid>
+
+## Standalone sections
+
+<CardGrid>
+  <LinkCard
+    title="C# language"
+    href="/csharp/"
+    description="From C# 3.0 to C# 14."
+  />
+  <LinkCard
+    title="Coming from .NET 3.5"
+    href="/coming-from-3-5/"
+    description="Old habits, and their new equivalents."
+  />
+</CardGrid>

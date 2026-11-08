@@ -26,6 +26,37 @@ export default defineConfig({
         EditLink: "./src/components/EditLink.astro",
       },
       lastUpdated: true,
+      // The order of the "Learning path" group IS the learning path (design D3):
+      // ASP.NET Core is the spine, leading with Configuration → DI → Middleware.
+      // Order after Middleware is provisional; reorder here, URLs don't change.
+      sidebar: [
+        {
+          label: "Getting started",
+          items: [{ slug: "platform/dotnet-10-and-cli" }],
+        },
+        {
+          label: "Learning path",
+          items: [
+            { slug: "aspnet-core" },
+            { slug: "aspnet-core/configuration" },
+            { slug: "aspnet-core/dependency-injection" },
+            { slug: "aspnet-core/middleware" },
+            { slug: "observability/logging" },
+            { slug: "observability/tracing" },
+            { slug: "observability/metrics" },
+            { slug: "data/ef-core" },
+            { slug: "services/grpc" },
+            { slug: "testing" },
+            { slug: "security" },
+            { slug: "performance/async-and-performance" },
+            { slug: "deploy/containers" },
+            { slug: "deploy/orchestration-and-aws" },
+          ],
+        },
+        { label: "C# language", items: [{ slug: "csharp" }] },
+        { label: "Coming from .NET 3.5", items: [{ slug: "coming-from-3-5" }] },
+        { label: "Cheatsheets", items: [{ slug: "cheatsheets/dotnet-cli" }] },
+      ],
     }),
   ],
 });
