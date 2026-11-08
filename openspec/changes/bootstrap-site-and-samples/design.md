@@ -55,6 +55,12 @@ samples/                     # .NET solution (stack `samples`)
   exercises/01-configuration/{Starter,Solution,Starter.Tests,Solution.Tests,tests}/
 ```
 
+Inside each exercise folder, project files carry the exercise topic:
+`Configuration.Starter.csproj`, `Configuration.Solution.csproj`, `Configuration.Starter.Tests.csproj`
+and `Configuration.Solution.Tests.csproj`. The folder names stay generic. Every future exercise joins
+the same `Primer.slnx`, and a bare `Starter.csproj` in every exercise would clash on project and
+assembly names. *(As built in §7.)*
+
 The root `global.json` was chosen over `samples/global.json` because `docs/dependencies.md` runs
 `dotnet --version` from the root. It only affects `dotnet`, never the Node tooling.
 
@@ -62,8 +68,13 @@ The root `global.json` was chosen over `samples/global.json` because `docs/depen
 
 - `site: 'https://dotnet-primer.emmz.dev'` with no `base`, so the root is `/`.
 - Starlight `editLink.baseUrl: 'https://github.com/emmz-makes-stuff/dotnet-primer/edit/main/site/'`.
-- `customCss: ['./src/styles/theme.css']`.
+- `customCss`: the three `@fontsource-variable/*` packages first (D6), then `./src/styles/theme.css`.
 - `lastUpdated: true`.
+- **Telemetry is off.** The `dev`, `build`, `preview` and `lint` scripts run with
+  `ASTRO_TELEMETRY_DISABLED=1`. Astro's telemetry writes to `~/Library/Preferences/astro`, which the
+  sandbox denies, so the build crashed. A docs build gate shouldn't phone home anyway. Setting it in
+  the npm scripts covers local runs, the Makefile and CI alike. The cost is that the `VAR=x cmd` syntax
+  isn't Windows-cmd friendly, which is acceptable here. *(As built in §2.)*
 - No UI-framework integrations. Any client behaviour is plain TypeScript in a `<script>` tag.
 - Pagefind search and Expressive Code copy buttons come built in, so no extra config is needed beyond
   the default languages. Expressive Code already highlights `csharp`, `sh`, `json`, `xml`,
@@ -97,8 +108,18 @@ the order, so a reorder would change URLs.
 Extend `docsSchema` in `src/content.config.ts` with a required field:
 
 ```ts
-learn: z.array(z.object({ title: z.string(), url: z.string().url().startsWith('https://learn.microsoft.com/') })).min(1)
+learn: z.array(z.object({
+  title: z.string().min(1),
+  url: z.url({ protocol: /^https$/, hostname: /^learn\.microsoft\.com$/ }),
+})).min(1)
 ```
+
+The URL check matches the protocol and the **hostname**, not a string prefix, for two reasons.
+`z.string().url()` is deprecated in Zod 4, and `astro check` flags it. A hostname match also rejects
+lookalike hosts such as `learn.microsoft.com.evil.io`. *(As built in §3.)*
+
+Starlight's built-in 404 route uses a synthetic entry that bypasses this schema, so the
+`MarkdownContent` override treats `learn` as possibly absent there (`?? []`).
 
 Each page declares its Learn links in frontmatter. A replaced `MarkdownContent` component renders the
 page body, followed by an **"On Microsoft Learn"** block listing them. A missing or empty `learn` field,
@@ -120,8 +141,9 @@ https://github.com/emmz-makes-stuff/dotnet-primer/issues/new?title=<enc("Problem
 
 The link is computed at build time from `Astro.locals.starlightRoute.entry.data.title` and `Astro.url`,
 with no client JS. If the `content` label doesn't exist in the repo, GitHub ignores it silently, so it
-is harmless. **Verify during apply** that the overridden `EditLink` also renders on the splash
-`index` page. If it doesn't, override `Footer` instead. The site test (D7) catches either outcome.
+is harmless. Starlight's `Footer` renders `EditLink` on every page, including the splash `index`
+and 404, so the planned `Footer` fallback was **not needed**. The link carries a `data-report-problem`
+attribute, which the site test (D7) uses to find it. *(Verified in §3.)*
 
 Alternative rejected: a GitHub issue form (`.github/ISSUE_TEMPLATE/*.yml`) with a `template=` query
 parameter. It's a nice later addition, but it's not needed for the behaviour, and plain `title`/`body`
@@ -159,10 +181,10 @@ It parses every built HTML page with **`node-html-parser`** (a dev dependency) a
 
 | Gate | Command | Script |
 |---|---|---|
-| build | `npm --prefix site run build` | `astro build` |
+| build | `npm --prefix site run build` | `ASTRO_TELEMETRY_DISABLED=1 astro build` |
 | test | `npm --prefix site test` | `vitest run` |
 | format | `npm --prefix site run format:check` | `prettier --check .` (plugins: `prettier-plugin-astro`; `.prettierignore`: `dist`, `.astro`, `node_modules`, `package-lock.json`) |
-| lint | `npm --prefix site run lint` | `astro check` (needs `@astrojs/check` + `typescript`) |
+| lint | `npm --prefix site run lint` | `ASTRO_TELEMETRY_DISABLED=1 astro check` (needs `@astrojs/check` + `typescript`) |
 
 Also `format` (`prettier --write .`) for authors. Markdown uses `proseWrap: "preserve"`, so prose diffs
 stay readable. Pin `engines.node: ">=22.23"` in `package.json`, and add `site/.nvmrc` with `24`.
@@ -180,7 +202,8 @@ stay readable. Pin `engines.node: ">=22.23"` in `package.json`, and add `site/.n
   `Microsoft.AspNetCore.Mvc.Testing` 10.0.x. Versions are resolved during apply. The runner comes from
   `xunit.v3` on MTP, and `OutputType=Exe` is set for the test projects.
 - **Shared tests, compiled twice.** Test source lives in `exercises/01-configuration/tests/*.cs`.
-  `Starter.Tests.csproj` and `Solution.Tests.csproj` each `<Compile Include="../tests/**/*.cs" />`, and
+  `Configuration.Starter.Tests.csproj` and `Configuration.Solution.Tests.csproj` (D1 naming) each
+  `<Compile Include="../tests/**/*.cs" />`, and
   each references only its own app (`Starter` or `Solution`). Both apps expose `public partial class
   Program` for `WebApplicationFactory<Program>`. This gives engineers a red→green loop on the starter,
   with no duplicate test code.
@@ -213,10 +236,15 @@ No exercise uses Testcontainers yet. Docker stays in `docs/dependencies.md` for 
     5. `actions/upload-pages-artifact` with `path: site/dist`.
   - Job `deploy` (`needs: gates`, `if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'`):
     `actions/deploy-pages`, using environment `github-pages`.
-  - Permissions: `contents: read`, `pages: write`, `id-token: write`.
-  - `concurrency: pages`, with `cancel-in-progress: false`.
-- **`samples.yml`**: triggers on `push`/`pull_request` touching `samples/**`, `global.json` or the
-  workflow file.
+  - Permissions: `contents: read` at workflow level. `pages: write` and `id-token: write` are scoped to
+    the `deploy` job only.
+  - `concurrency.group: pages-${{ github.ref }}`, with `cancel-in-progress: false`. Deploys from
+    `main` serialise, and PR gate runs don't queue behind them, as they would with a single `pages`
+    group. *(As built in §8.)*
+  - The Pages artifact is uploaded only on non-PR runs from `main`, the same condition as `deploy`.
+- **`samples.yml`**: triggers on `push`/`pull_request` touching `samples/**`, `global.json`,
+  `.editorconfig` or the workflow file. `.editorconfig` is included because it drives `dotnet format`
+  and the code-style build.
   1. `actions/setup-dotnet` with `global-json-file: global.json`;
   2. the three samples gates.
 
@@ -227,8 +255,8 @@ No exercise uses Testcontainers yet. Docker stays in `docs/dependencies.md` for 
 
 - **[Starlight is 0.x and may ship breaking changes]** → Mitigation: the lockfile pins versions;
   upgrades are explicit changes.
-- **[The `EditLink` override may not render on the splash home page]** → Mitigation: the D7 test
-  catches it; fall back to a `Footer` override (D5).
+- **[The `EditLink` override may not render on the splash home page]** → Resolved: it renders there
+  (D5). The D7 test guards against a regression.
 - **[A required `learn` field adds friction for an author of a page with no relevant Learn page]** →
   Mitigation: every in-scope area has Learn coverage. Changing this needs a spec change, which is a
   deliberate act.

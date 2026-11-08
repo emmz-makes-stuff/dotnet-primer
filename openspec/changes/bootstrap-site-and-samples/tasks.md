@@ -56,6 +56,10 @@
 - [x] 9.1 Run all eight gate commands from a clean tree (`site/dist` removed, then build first) and record each exit code in a devlog note; verify all exit 0
 - [x] 9.2 In `npm --prefix site run preview`, search "Dependency Injection" and confirm the DI page is a result; copy a code block from the cheatsheet and confirm only the code is copied; record both in the devlog
 
+## 10. Review fixes: sync design.md with as-built
+
+- [x] 10.1 Update `design.md` D1/D9 (project file names `Configuration.{Starter,Solution}[.Tests].csproj`), D2/D8 (`ASTRO_TELEMETRY_DISABLED=1` in astro scripts), D4 (`z.url({ protocol, hostname })` instead of `startsWith`), D5 (EditLink override renders on splash; Footer fallback not needed) and D10 (`concurrency.group: pages-${{ github.ref }}`), each with its reason; verify `make validate` exits 0 and every listed decision matches the code
+
 ## Workflow follow-up
 
 - Emmz makes `emmz-makes-stuff/dotnet-primer` **public** (it is currently private): needed for free GitHub Pages, the "Report a problem" issue links and the exercise links (found in §4).
