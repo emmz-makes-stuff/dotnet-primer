@@ -53,8 +53,8 @@
 
 ## 9. Integration check
 
-- [ ] 9.1 Run all eight gate commands from a clean tree (`site/dist` removed, then build first) and record each exit code in a devlog note; verify all exit 0
-- [ ] 9.2 In `npm --prefix site run preview`, search "Dependency Injection" and confirm the DI page is a result; copy a code block from the cheatsheet and confirm only the code is copied; record both in the devlog
+- [x] 9.1 Run all eight gate commands from a clean tree (`site/dist` removed, then build first) and record each exit code in a devlog note; verify all exit 0
+- [x] 9.2 In `npm --prefix site run preview`, search "Dependency Injection" and confirm the DI page is a result; copy a code block from the cheatsheet and confirm only the code is copied; record both in the devlog
 
 ## Workflow follow-up
 
