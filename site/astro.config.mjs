@@ -20,7 +20,12 @@ export default defineConfig({
           href: "https://github.com/emmz-makes-stuff/dotnet-primer",
         },
       ],
-      customCss: ["./src/styles/theme.css"],
+      customCss: [
+        "@fontsource-variable/atkinson-hyperlegible-next",
+        "@fontsource-variable/fraunces",
+        "@fontsource-variable/jetbrains-mono",
+        "./src/styles/theme.css",
+      ],
       components: {
         MarkdownContent: "./src/components/MarkdownContent.astro",
         EditLink: "./src/components/EditLink.astro",

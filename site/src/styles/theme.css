@@ -1,1 +1,66 @@
-/* Theme tokens — filled in by tasks 6.1 (design D6). */
+/*
+ * dotnet-primer theme: starting point for the site's visual design (design D6).
+ *
+ * Type:   Atkinson Hyperlegible Next (body, built for legibility),
+ *         Fraunces (headings, a characterful serif),
+ *         JetBrains Mono (code).
+ * Colour: deep violet accent; dark mode on ink-blue, light mode on warm paper.
+ *
+ * Fonts are self-hosted via @fontsource-variable packages listed in
+ * astro.config.mjs `customCss`, with no third-party font requests.
+ * Starlight's dark theme is `:root`; light is `:root[data-theme="light"]`.
+ */
+
+:root {
+  --sl-font: "Atkinson Hyperlegible Next Variable", system-ui, sans-serif;
+  --sl-font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --primer-font-display: "Fraunces Variable", Georgia, serif;
+
+  --sl-content-width: 46rem;
+  --sl-line-height: 1.7;
+
+  /* Dark (default) */
+  --sl-color-accent-low: #2a1a5e;
+  --sl-color-accent: #8b6cf6;
+  --sl-color-accent-high: #ddd3ff;
+
+  --sl-color-white: #f4f2fb;
+  --sl-color-gray-1: #e2def0;
+  --sl-color-gray-2: #c3bdd9;
+  --sl-color-gray-3: #9790b3;
+  --sl-color-gray-4: #5f5880;
+  --sl-color-gray-5: #3d3760;
+  --sl-color-gray-6: #262141;
+  --sl-color-black: #15122a;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #e7e0ff;
+  --sl-color-accent: #5b34d6;
+  --sl-color-accent-high: #2b1474;
+
+  --sl-color-white: #1d1830;
+  --sl-color-gray-1: #2f2945;
+  --sl-color-gray-2: #48405f;
+  --sl-color-gray-3: #6b6383;
+  --sl-color-gray-4: #9a93ad;
+  --sl-color-gray-5: #d6d0dd;
+  --sl-color-gray-6: #efeae4;
+  --sl-color-gray-7: #f7f3ee;
+  --sl-color-black: #fcfaf6;
+}
+
+/* Display face for page titles, hero and content headings. */
+h1#_top,
+.hero h1,
+.sl-markdown-content :is(h1, h2, h3) {
+  font-family: var(--primer-font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.hero h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}

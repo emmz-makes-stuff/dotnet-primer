@@ -36,7 +36,7 @@
 
 ## 6. Theme starting point
 
-- [ ] 6.1 Write `site/src/styles/theme.css` overriding Starlight accent/gray/font/width tokens for light and dark, with self-hosted `@fontsource-variable/*` fonts (design D6); record the chosen typefaces and palette in a devlog note; verify build, lint and format gates still pass and both colour schemes render legibly in `npm --prefix site run preview`
+- [x] 6.1 Write `site/src/styles/theme.css` overriding Starlight accent/gray/font/width tokens for light and dark, with self-hosted `@fontsource-variable/*` fonts (design D6); record the chosen typefaces and palette in a devlog note; verify build, lint and format gates still pass and both colour schemes render legibly in `npm --prefix site run preview`
 
 ## 7. Samples
 
