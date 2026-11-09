@@ -7,7 +7,7 @@ These are **for practice only**. The tests are there so you can check your own p
 ## Prerequisites
 
 - **.NET SDK 10.0.4xx.** The repo's `global.json` pins it, so the samples use .NET 10 even if your default SDK is newer. Check with `dotnet --version` from the repo root. If it fails, install a .NET 10 SDK.
-- **Docker** (OrbStack or Docker Desktop). Later exercises use it, through Testcontainers and container images. Exercise 01 doesn't need it.
+- **Docker** (OrbStack or Docker Desktop). Later exercises use it, through Testcontainers and container images. Exercises 01–03 don't need it.
 
 ## Layout
 
@@ -22,14 +22,22 @@ samples/
       tests/              # the tests, shared by both test projects below
       Starter.Tests/      # runs the tests against Starter
       Solution.Tests/     # runs the same tests against Solution
+    02-dependency-injection/   # same layout
+    03-middleware/             # same layout
 ```
+
+| Exercise | Practises | Described on |
+| --- | --- | --- |
+| `01-configuration` | binding configuration to validated options | [Configuration](https://dotnet-primer.emmz.dev/aspnet-core/configuration/) |
+| `02-dependency-injection` | choosing service lifetimes | [Dependency Injection](https://dotnet-primer.emmz.dev/aspnet-core/dependency-injection/) |
+| `03-middleware` | a correlation-id middleware, and pipeline order | [Middleware](https://dotnet-primer.emmz.dev/aspnet-core/middleware/) |
 
 ## Working an exercise
 
 Commands below run from the repo root.
 
-1. Read the exercise on the site. Exercise 01 is on the [Configuration](https://dotnet-primer.emmz.dev/aspnet-core/configuration/) page.
-2. Run the tests against the starter. They fail at first, and the messages say what's missing:
+1. Read the exercise on its site page (see the table above).
+2. Run the tests against the starter. They fail at first, and the messages say what's missing. For exercise 01:
 
    ```sh
    dotnet test --project samples/exercises/01-configuration/Starter.Tests

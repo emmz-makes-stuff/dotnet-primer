@@ -165,6 +165,13 @@
 
   Record her answer in a devlog note.
 
+## 8. Review fixes: samples README
+
+- [x] 8.1 Update `samples/README.md` for exercises 02 and 03:
+  - the Layout tree shows all three exercise folders;
+  - "Working an exercise" says which site page describes each exercise;
+  - the Docker note says exercises 01–03 don't need Docker.
+
 ## Workflow follow-up
 
 - Whole-change review, the change-done note, and the offer of `code-review`, per CLAUDE.md
