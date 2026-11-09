@@ -65,7 +65,7 @@
 
 ## 5. Review fixes: dotnetup install on the cheatsheet
 
-- [ ] 5.1 Add a "Get dotnetup" block to the top of the cheatsheet's "Install and select SDKs" section.
+- [x] 5.1 Add a "Get dotnetup" block to the top of the cheatsheet's "Install and select SDKs" section.
   - Use Learn's download commands: an `sh` block for macOS and Linux, and a `powershell` block for
     Windows.
   - Follow them with `dotnetup init` and `dotnetup --version`, run in a new terminal.
@@ -73,7 +73,7 @@
     - both script URLs resolve;
     - the commands match Learn's "Get started with dotnetup" page;
     - `make gates` shows `GATES_EXIT:0`.
-- [ ] 5.2 Human check (stop and ask). Emmz previews `/cheatsheets/dotnet-cli/` and confirms the
+- [x] 5.2 Human check (stop and ask). Emmz previews `/cheatsheets/dotnet-cli/` and confirms the
   install blocks, in light and dark, with working copy buttons.
 
 ## Workflow follow-up

@@ -26,6 +26,25 @@ Back to [.NET 10 and the `dotnet` CLI](/platform/dotnet-10-and-cli/).
 [dotnetup reference](https://learn.microsoft.com/dotnet/core/tools/dotnetup/reference/dotnetup) if one
 fails.
 
+Get `dotnetup` on macOS and Linux:
+
+```sh
+curl -fsSL https://aka.ms/dotnetup/get-dotnetup.sh | bash
+```
+
+On Windows, in PowerShell:
+
+```powershell
+irm https://aka.ms/dotnetup/get-dotnetup.ps1 | iex
+```
+
+Then, in a new terminal:
+
+```sh
+dotnetup init        # interactive setup: SDK channel and access mode
+dotnetup --version
+```
+
 ```sh
 dotnetup install lts                       # latest LTS SDK
 dotnetup sdk install 10.0.4xx              # a feature band; also 10.0, 10, latest, or exact 10.0.403
