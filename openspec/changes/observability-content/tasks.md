@@ -2,7 +2,7 @@
 
 ## 1. Shared setup probe and package versions
 
-- [ ] 1.1 Probe the local setup (design D2, D3, D7). In a scratch `dotnet new web` app on 10.0.4xx:
+- [x] 1.1 Probe the local setup (design D2, D3, D7). In a scratch `dotnet new web` app on 10.0.4xx:
   - Add the four OpenTelemetry packages at the D3 versions, with
     `AddOpenTelemetry().WithTracing().WithMetrics()`, `Logging.AddOpenTelemetry()` and
     `UseOtlpExporter()`.
@@ -16,7 +16,7 @@
   - Stop and remove the container.
   - Write a devlog note with the exact commands, the variable names and the instrument names
     observed.
-- [ ] 1.2 Add the D3 `PackageVersion` entries to `samples/Directory.Packages.props`. Verify that
+- [x] 1.2 Add the D3 `PackageVersion` entries to `samples/Directory.Packages.props`. Verify that
   `make samples-build` and `make samples-format` pass (unsandboxed, for NuGet).
 
 ## 2. Exercise 04: logging
