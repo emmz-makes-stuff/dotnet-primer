@@ -36,6 +36,26 @@ const EXPECTED_SLUGS = [
   "cheatsheets/dotnet-cli",
 ];
 
+/**
+ * Pages delivered with full content (spec: topic-page-content). They must not
+ * show the "Coming soon" placeholder aside. Add a page here when it's finished.
+ */
+const FULL_CONTENT_SLUGS: string[] = [];
+
+/**
+ * Topic page → its cheatsheet (spec: site-structure, Cheatsheets per area).
+ * Each must link to the other from its main content.
+ */
+const CHEATSHEETS: Record<string, string> = {
+  "platform/dotnet-10-and-cli": "cheatsheets/dotnet-cli",
+};
+
+const REPO_TREE =
+  "https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/";
+const EXERCISES = fileURLToPath(
+  new URL("../../samples/exercises/", import.meta.url),
+);
+
 if (!existsSync(join(DIST, "index.html"))) {
   throw new Error(
     "site/dist/ is missing or empty: run `npm --prefix site run build` first",
@@ -176,6 +196,111 @@ describe("site structure", () => {
       (p) => p.path === "/aspnet-core/dependency-injection/",
     )!;
     expect(di.root.querySelector("[data-pagefind-body]")).not.toBeNull();
+  });
+});
+
+/** The page's own content: excludes the sidebar, header, TOC and footer. */
+function content(p: Page): HTMLElement | null {
+  return p.root.querySelector(".sl-markdown-content");
+}
+
+function pageAt(slug: string): Page | undefined {
+  return pages.find((p) => p.path === `/${slug}/`);
+}
+
+/** Site-internal link targets (pathnames) in a page's main content. */
+function contentLinks(p: Page): Set<string> {
+  return new Set(
+    (content(p)?.querySelectorAll("a[href]") ?? [])
+      .map((a) => new URL(a.getAttribute("href")!, p.url))
+      .filter((u) => u.origin === SITE)
+      .map((u) => u.pathname),
+  );
+}
+
+function hiddenFromAssistiveTech(el: HTMLElement): boolean {
+  for (let n: HTMLElement | null = el; n; n = n.parentNode as HTMLElement) {
+    if (n.getAttribute?.("aria-hidden") === "true") return true;
+  }
+  return false;
+}
+
+/** aria-label, else the text of the elements aria-labelledby points to. */
+function accessibleName(p: Page, svg: HTMLElement): string {
+  const label = svg.getAttribute("aria-label")?.trim();
+  if (label) return label;
+  return (svg.getAttribute("aria-labelledby") ?? "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((id) => p.root.querySelector(`[id="${id}"]`)?.textContent ?? "")
+    .join(" ")
+    .trim();
+}
+
+describe("full-content pages", () => {
+  it("are built and show no Coming soon placeholder", () => {
+    const failures: string[] = [];
+    for (const slug of FULL_CONTENT_SLUGS) {
+      const p = pageAt(slug);
+      if (!p) failures.push(`/${slug}/: not built`);
+      else if (content(p)?.querySelector('aside[aria-label="Coming soon"]'))
+        failures.push(`/${slug}/: still shows the Coming soon placeholder`);
+    }
+    expect(failures, failures.join("\n")).toEqual([]);
+  });
+
+  it("topic pages and their cheatsheets link to each other", () => {
+    const failures: string[] = [];
+    for (const [topic, sheet] of Object.entries(CHEATSHEETS)) {
+      const t = pageAt(topic);
+      const s = pageAt(sheet);
+      if (!t || !s) {
+        failures.push(`${topic} ↔ ${sheet}: page not built`);
+        continue;
+      }
+      if (!contentLinks(t).has(`/${sheet}/`))
+        failures.push(`/${topic}/ does not link to /${sheet}/`);
+      if (!contentLinks(s).has(`/${topic}/`))
+        failures.push(`/${sheet}/ does not link back to /${topic}/`);
+    }
+    expect(failures, failures.join("\n")).toEqual([]);
+  });
+});
+
+describe("exercises", () => {
+  it("every exercise folder is linked from a site page", () => {
+    const folders = readdirSync(EXERCISES).filter((name) =>
+      statSync(join(EXERCISES, name)).isDirectory(),
+    );
+    expect(folders.length).toBeGreaterThan(0);
+    const hrefs = new Set(
+      pages.flatMap((p) =>
+        p.root
+          .querySelectorAll("a[href]")
+          .map((a) => a.getAttribute("href")!.replace(/\/$/, "")),
+      ),
+    );
+    const unlinked = folders.filter((f) => !hrefs.has(`${REPO_TREE}${f}`));
+    expect(
+      unlinked,
+      `exercise folders no page links to: ${unlinked.join(", ")}`,
+    ).toEqual([]);
+  });
+});
+
+describe("diagrams", () => {
+  it("every content SVG is an image with an accessible name, or hidden", () => {
+    const failures: string[] = [];
+    for (const p of contentPages) {
+      for (const svg of content(p)?.querySelectorAll("svg") ?? []) {
+        if (hiddenFromAssistiveTech(svg)) continue;
+        if (svg.getAttribute("role") !== "img")
+          failures.push(`${p.path}: <svg> without role="img"`);
+        else if (!accessibleName(p, svg))
+          failures.push(`${p.path}: diagram without an accessible name`);
+      }
+    }
+    expect(failures, failures.join("\n")).toEqual([]);
   });
 });
 

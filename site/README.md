@@ -74,12 +74,63 @@ var builder = WebApplication.CreateBuilder(args);
 `title="…"` adds a file-name tab. Expressive Code also supports line markers (`{2-3}`), and inserted
 (`ins={4}`) or deleted (`del={5}`) lines, which are handy for showing an old way and a new way.
 
+## Topic pages
+
+A finished learning-path page follows this skeleton:
+
+1. **What you'll be able to do**: an opening paragraph. If the topic has a cheatsheet, put a
+   one-line link to it straight after, as a `:::tip`.
+2. **Concepts**: one `##` section per subtopic, each with a short code example. Push variations to
+   the cheatsheet.
+3. **`## Pitfalls`**: the common mistakes, each with its symptom and its fix.
+4. **`## Exercise NN: …`**, if the topic has one (see below).
+
+Teach modern .NET on its own terms. A one-line "you may know this as …" is fine, but old-to-new
+mappings belong on the _Coming from .NET 3.5_ page.
+
+**C# samples must be right for .NET 10.** Compile any sample shown as a complete file in a scratch
+`dotnet new web` project, with warnings as errors, before publishing. Give fragments a `title="…"`
+naming the file they belong in.
+
+**Stub pages** carry a `:::note[Coming soon]` aside. The site tests detect the placeholder by that
+exact title. When a page is finished:
+
+- remove the aside;
+- add its slug to `FULL_CONTENT_SLUGS` in `tests/dist.test.ts`, so the placeholder can't come back.
+
+## Cheatsheets
+
+A cheatsheet lives in `src/content/docs/cheatsheets/`. It has `prev: false` and `next: false`, its
+own `learn` links, a "Back to …" link to its topic page first, then `##` groups of copyable code
+blocks with as little prose as possible. To add one:
+
+1. List it in the sidebar's _Cheatsheets_ group and in the intro page's _Cheatsheets_ cards.
+2. Add it to `EXPECTED_SLUGS` in `tests/dist.test.ts`.
+3. Add the topic → cheatsheet pair to `CHEATSHEETS` in `tests/dist.test.ts`. The tests then require
+   a link each way.
+
+## Diagrams
+
+Diagrams are hand-written inline SVG in Astro components under `src/components/diagrams/`. The
+pattern is set by `RequestPipeline.astro`:
+
+- **Colours:** use Starlight tokens (`var(--sl-color-gray-6)`, `var(--sl-color-accent)`, …), never
+  hex values. The diagram then follows the light/dark toggle.
+- **Accessibility:** give the `<svg>` `role="img"` and `aria-labelledby` pointing to a `<title>` and
+  a `<desc>`. The `<desc>` says in words what the diagram shows. The site tests fail any visible
+  content `<svg>` without an accessible name.
+- **Text:** use real `<text>`, not outlined paths. Keep labels at 14px or more, with a `viewBox` and
+  `width: 100%`, so the diagram stays readable at phone width.
+- **Use:** the page must be `.mdx`, so it can import the component:
+  `import RequestPipeline from "../../../components/diagrams/RequestPipeline.astro";`.
+
 ## Exercises
 
 An exercise lives in `samples/exercises/NN-topic/` (see `samples/README.md`). Describe it on the
 page for the subject area it practises: the goal, the steps, and how to run its tests. Link to the
 exercise folder on GitHub:
 `https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/NN-topic`.
+The site tests fail if any folder under `samples/exercises/` has no page linking to it like this.
 
 ## Theme
 

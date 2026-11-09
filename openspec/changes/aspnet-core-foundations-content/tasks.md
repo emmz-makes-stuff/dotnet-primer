@@ -2,25 +2,25 @@
 
 ## 1. Diagram component and gate additions
 
-- [ ] 1.1 Add `site/src/components/diagrams/RequestPipeline.astro` (design D2). It is an inline SVG
+- [x] 1.1 Add `site/src/components/diagrams/RequestPipeline.astro` (design D2). It is an inline SVG
   coloured with `--sl-color-*` tokens, has `role="img"`, `<title>` and `<desc>` describing the
   recommended order and the request/response flow, a `viewBox` and `width: 100%`, and labels of
   ≥14px. Verify that `make site-build` and `make site-lint` pass with the component not yet used
   on any page.
-- [ ] 1.2 Add the diagram accessibility test to `site/tests/dist.test.ts` (design D8.3). It checks that
+- [x] 1.2 Add the diagram accessibility test to `site/tests/dist.test.ts` (design D8.3). It checks that
   every `svg[role="img"]` in `.sl-markdown-content` has a non-empty accessible name, and that no
   content `<svg>` lacks `role="img"` unless it is `aria-hidden`. Verify it by temporarily rendering a
   nameless SVG in a page: the test fails and names the page. Then revert and confirm that
   `make site-test` is green.
-- [ ] 1.3 Add the "every exercise folder is linked" test (design D8.2). It reads
+- [x] 1.3 Add the "every exercise folder is linked" test (design D8.2). It reads
   `samples/exercises/*` and requires an exact GitHub `tree/main/samples/exercises/<name>` link on
   some built page. Verify that it passes for `01-configuration`, and that it fails and names the
   folder when a dummy folder is added. Remove the dummy afterwards.
-- [ ] 1.4 Add `FULL_CONTENT_SLUGS` (empty for now) with the no-placeholder test, and the topic ↔
+- [x] 1.4 Add `FULL_CONTENT_SLUGS` (empty for now) with the no-placeholder test, and the topic ↔
   cheatsheet link map seeded with `platform/dotnet-10-and-cli` ↔ `cheatsheets/dotnet-cli` (design
   D8.1, D8.4). Verify the placeholder test by temporarily listing a stub slug: it fails and names
   the page. Revert. Then `make site-test` must be green.
-- [ ] 1.5 Update `site/README.md` (authoring guide) to cover:
+- [x] 1.5 Update `site/README.md` (authoring guide) to cover:
   - the page skeleton (D3);
   - the cheatsheet shape (D4);
   - the diagram component pattern (D2);

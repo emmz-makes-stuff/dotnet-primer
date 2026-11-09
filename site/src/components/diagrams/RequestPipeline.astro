@@ -1,0 +1,147 @@
+---
+/**
+ * The ASP.NET Core request pipeline in Microsoft's recommended middleware
+ * order (design D2). An inline SVG, so it follows the site theme: every
+ * colour is a Starlight token, which flips with the light/dark toggle.
+ * <title> and <desc> give it an accessible name and description.
+ */
+interface Props {
+  /** Prefix for element ids; change it if a page shows the diagram twice. */
+  id?: string;
+}
+
+const { id = "request-pipeline" } = Astro.props;
+
+const stages = [
+  "Exception handler",
+  "HTTPS redirection",
+  "Static files",
+  "Routing",
+  "CORS",
+  "Authentication",
+  "Authorization",
+  "Your middleware",
+  "Endpoint",
+];
+
+const top = 44;
+const boxHeight = 40;
+const step = 54;
+const bottom = top + (stages.length - 1) * step + boxHeight;
+const height = bottom + 24;
+---
+
+<figure class="pipeline">
+  <svg
+    viewBox={`0 0 320 ${height}`}
+    role="img"
+    aria-labelledby={`${id}-title ${id}-desc`}
+  >
+    <title id={`${id}-title`}>The ASP.NET Core request pipeline</title>
+    <desc id={`${id}-desc`}>
+      A request passes down through the middleware in the order they are
+      registered: {stages.join(", then ")}. The response passes back up through
+      the same middleware in reverse order, so the exception handler sees it
+      last.
+    </desc>
+    <defs>
+      <marker
+        id={`${id}-arrow`}
+        viewBox="0 0 10 10"
+        refX="5"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path class="arrowhead" d="M0,0 L10,5 L0,10 z"></path>
+      </marker>
+    </defs>
+
+    <text class="flow-label" x="8" y="26">
+      Request
+    </text>
+    <text class="flow-label" x="312" y="26" text-anchor="end">
+      Response
+    </text>
+    <line
+      class="flow"
+      x1="24"
+      y1={top - 4}
+      x2="24"
+      y2={bottom}
+      marker-end={`url(#${id}-arrow)`}
+    ></line>
+    <line
+      class="flow"
+      x1="296"
+      y1={bottom}
+      x2="296"
+      y2={top - 4}
+      marker-end={`url(#${id}-arrow)`}
+    ></line>
+
+    {stages.map((label, i) => {
+      const y = top + i * step;
+      const isEndpoint = i === stages.length - 1;
+      return (
+        <g class={isEndpoint ? "stage endpoint" : "stage"}>
+          <rect x="48" y={y} width="224" height={boxHeight} rx="8" />
+          <text x="160" y={y + boxHeight / 2} text-anchor="middle">
+            {label}
+          </text>
+        </g>
+      );
+    })}
+  </svg>
+</figure>
+
+<style>
+  .pipeline {
+    margin-inline: auto;
+    max-width: 26rem;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: var(--sl-font);
+  }
+
+  .stage rect {
+    fill: var(--sl-color-gray-6);
+    stroke: var(--sl-color-gray-4);
+    stroke-width: 1.5;
+  }
+
+  .stage text {
+    fill: var(--sl-color-white);
+    font-size: 15px;
+    dominant-baseline: central;
+  }
+
+  .stage.endpoint rect {
+    fill: var(--sl-color-accent-low);
+    stroke: var(--sl-color-accent);
+  }
+
+  .stage.endpoint text {
+    font-weight: 700;
+  }
+
+  .flow {
+    stroke: var(--sl-color-accent);
+    stroke-width: 2;
+  }
+
+  .arrowhead {
+    fill: var(--sl-color-accent);
+  }
+
+  .flow-label {
+    fill: var(--sl-color-gray-2);
+    font-size: 14px;
+    font-weight: 700;
+  }
+</style>
