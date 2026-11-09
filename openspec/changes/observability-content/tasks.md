@@ -122,13 +122,13 @@
 
 ## 8. Samples README and human check
 
-- [ ] 8.1 Update `samples/README.md`:
+- [x] 8.1 Update `samples/README.md`:
   - the Layout tree and exercise table show 04–06, with their site pages;
   - the Docker note says 04–06 don't need Docker for their tests, and that the pages use Docker for
     the optional dashboard.
 
   Verify by reading it against `samples/exercises/`, and with `make gates`.
-- [ ] 8.2 Human check (stop and ask). Emmz previews the site with
+- [x] 8.2 Human check (stop and ask). Emmz previews the site with
   `npm --prefix site run build && npm --prefix site run preview`, and checks:
   - the three pages and three cheatsheets, in light and dark;
   - the copy buttons;

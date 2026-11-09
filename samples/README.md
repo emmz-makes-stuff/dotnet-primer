@@ -14,7 +14,7 @@ These are **for practice only**. The tests are there so you can check your own p
   ```
 
   A bare `dotnetup sdk install` also works: it reads `global.json`. But it tracks the wider `10.0` channel, so a later `dotnetup update` could move you to a 10.0.5xx SDK. Naming `10.0.4xx` keeps you on the band the samples pin. New to `dotnetup`? [Getting started](https://dotnet-primer.emmz.dev/platform/dotnet-10-and-cli/) covers installing it, and what to do if you already have .NET from another installer.
-- **Docker** (OrbStack or Docker Desktop). Later exercises use it, through Testcontainers and container images. Exercises 01–03 don't need it.
+- **Docker** (OrbStack or Docker Desktop). Later exercises use it, through Testcontainers and container images. Exercises 01–06 don't need it for their tests: 04–06 capture logs, spans and metrics in memory. The Logging, Tracing and Metrics pages use Docker for one optional extra, the local dashboard that shows your app's telemetry.
 
 ## Layout
 
@@ -31,6 +31,9 @@ samples/
       Solution.Tests/     # runs the same tests against Solution
     02-dependency-injection/   # same layout
     03-middleware/             # same layout
+    04-logging/                # same layout
+    05-tracing/                # same layout
+    06-metrics/                # same layout
 ```
 
 | Exercise | Practises | Described on |
@@ -38,6 +41,9 @@ samples/
 | `01-configuration` | binding configuration to validated options | [Configuration](https://dotnet-primer.emmz.dev/aspnet-core/configuration/) |
 | `02-dependency-injection` | choosing service lifetimes | [Dependency Injection](https://dotnet-primer.emmz.dev/aspnet-core/dependency-injection/) |
 | `03-middleware` | a correlation-id middleware, and pipeline order | [Middleware](https://dotnet-primer.emmz.dev/aspnet-core/middleware/) |
+| `04-logging` | structured, source-generated logging at the right levels, with no personal data | [Logging](https://dotnet-primer.emmz.dev/observability/logging/) |
+| `05-tracing` | custom spans with attributes, and recording a failure on a span | [Tracing](https://dotnet-primer.emmz.dev/observability/tracing/) |
+| `06-metrics` | a counter and a histogram with units and low-cardinality tags | [Metrics](https://dotnet-primer.emmz.dev/observability/metrics/) |
 
 ## Working an exercise
 
