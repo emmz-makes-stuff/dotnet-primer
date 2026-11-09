@@ -35,4 +35,11 @@
   <Folder Name="/exercises/05-tracing/Solution/">
     <Project Path="exercises/05-tracing/Solution/Tracing.Solution.csproj" />
   </Folder>
+  <Folder Name="/exercises/06-metrics/" />
+  <Folder Name="/exercises/06-metrics/Solution.Tests/">
+    <Project Path="exercises/06-metrics/Solution.Tests/Metrics.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/06-metrics/Solution/">
+    <Project Path="exercises/06-metrics/Solution/Metrics.Solution.csproj" />
+  </Folder>
 </Solution>

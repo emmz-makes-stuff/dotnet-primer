@@ -65,4 +65,17 @@
   <Folder Name="/exercises/05-tracing/Starter/">
     <Project Path="exercises/05-tracing/Starter/Tracing.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/06-metrics/" />
+  <Folder Name="/exercises/06-metrics/Solution.Tests/">
+    <Project Path="exercises/06-metrics/Solution.Tests/Metrics.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/06-metrics/Solution/">
+    <Project Path="exercises/06-metrics/Solution/Metrics.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/06-metrics/Starter.Tests/">
+    <Project Path="exercises/06-metrics/Starter.Tests/Metrics.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/06-metrics/Starter/">
+    <Project Path="exercises/06-metrics/Starter/Metrics.Starter.csproj" />
+  </Folder>
 </Solution>

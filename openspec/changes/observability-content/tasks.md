@@ -91,14 +91,14 @@
 
 ## 6. Exercise 06: metrics
 
-- [ ] 6.1 Scaffold `samples/exercises/06-metrics/` like 2.1, with `Metrics.{Starter,Solution}[.Tests]`
+- [x] 6.1 Scaffold `samples/exercises/06-metrics/` like 2.1, with `Metrics.{Starter,Solution}[.Tests]`
   in both `.slnx` files. Verify with `make samples-build`.
-- [ ] 6.2 Implement the Solution (D5): `IMeterFactory`, with `orders.placed` (`{order}`; tags
+- [x] 6.2 Implement the Solution (D5): `IMeterFactory`, with `orders.placed` (`{order}`; tags
   `payment.method`, `order.outcome`) and `orders.value` (`{GBP}`; tag `payment.method`).
   - Write the shared tests with `MetricCollector<T>`. They cover all three spec scenarios, including
     a check that only allowed tag keys appear.
   - Verify that `make samples-test` passes.
-- [ ] 6.3 Write the Starter, with the endpoint working and the meter and instruments as `TODO`s. As a
+- [x] 6.3 Write the Starter, with the endpoint working and the meter and instruments as `TODO`s. As a
   trap the tests catch, include a commented hint that tempts an `order.id` tag. Verify that the
   Starter fails with guiding messages, and that a completed scratch copy goes green.
 
