@@ -69,6 +69,7 @@ export default defineConfig({
             { slug: "cheatsheets/middleware" },
             { slug: "cheatsheets/logging" },
             { slug: "cheatsheets/tracing" },
+            { slug: "cheatsheets/metrics" },
           ],
         },
       ],

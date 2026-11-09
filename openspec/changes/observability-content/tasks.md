@@ -104,20 +104,20 @@
 
 ## 7. Metrics page and cheatsheet
 
-- [ ] 7.1 Create `site/src/content/docs/cheatsheets/metrics.md` (D6), and wire it in as 3.1. Verify
+- [x] 7.1 Create `site/src/content/docs/cheatsheets/metrics.md` (D6), and wire it in as 3.1. Verify
   with `make site-build`.
-- [ ] 7.2 Rewrite `site/src/content/docs/observability/metrics.md` per D1 and D4. Cover "Metrics page
+- [x] 7.2 Rewrite `site/src/content/docs/observability/metrics.md` per D1 and D4. Cover "Metrics page
   gives metrics guidance", "Metrics page covers the metrics API" and the "In production" section with
   the AWS note.
   - Use the built-in meter and instrument names observed in 1.1.
   - Add the Pitfalls (cardinality, the wrong instrument, missing units) and the cheatsheet tip.
   - Add the Exercise 06 section.
-- [ ] 7.3 Compile and check the snippets as in 3.3.
+- [x] 7.3 Compile and check the snippets as in 3.3.
   - Run the page's `dnx dotnet-counters monitor` command against a scratch app, and see the custom
     and built-in metrics.
   - Check the custom metrics in the dashboard.
   - Record the results.
-- [ ] 7.4 Add `observability/metrics` and `cheatsheets/metrics` to `FULL_CONTENT_SLUGS`, and the pair to
+- [x] 7.4 Add `observability/metrics` and `cheatsheets/metrics` to `FULL_CONTENT_SLUGS`, and the pair to
   `CHEATSHEETS`. Run the link check. Verify that `make gates` shows `GATES_EXIT:0`.
 
 ## 8. Samples README and human check

@@ -39,6 +39,7 @@ const EXPECTED_SLUGS = [
   "cheatsheets/middleware",
   "cheatsheets/logging",
   "cheatsheets/tracing",
+  "cheatsheets/metrics",
 ];
 
 /**
@@ -59,6 +60,8 @@ const FULL_CONTENT_SLUGS: string[] = [
   "cheatsheets/logging",
   "observability/tracing",
   "cheatsheets/tracing",
+  "observability/metrics",
+  "cheatsheets/metrics",
 ];
 
 /**
@@ -72,6 +75,7 @@ const CHEATSHEETS: Record<string, string> = {
   "aspnet-core/middleware": "cheatsheets/middleware",
   "observability/logging": "cheatsheets/logging",
   "observability/tracing": "cheatsheets/tracing",
+  "observability/metrics": "cheatsheets/metrics",
 };
 
 const REPO_TREE =
