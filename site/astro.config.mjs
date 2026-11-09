@@ -67,6 +67,7 @@ export default defineConfig({
             { slug: "cheatsheets/configuration" },
             { slug: "cheatsheets/dependency-injection" },
             { slug: "cheatsheets/middleware" },
+            { slug: "cheatsheets/logging" },
           ],
         },
       ],

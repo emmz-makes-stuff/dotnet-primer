@@ -42,19 +42,19 @@
 
 ## 3. Logging page and cheatsheet
 
-- [ ] 3.1 Create `site/src/content/docs/cheatsheets/logging.md` (design D6), with a back link and
+- [x] 3.1 Create `site/src/content/docs/cheatsheets/logging.md` (design D6), with a back link and
   Learn links. Add it to the sidebar's Cheatsheets group, the introduction's cheatsheet cards and
   `EXPECTED_SLUGS`. Verify that `make site-build` passes.
-- [ ] 3.2 Rewrite `site/src/content/docs/observability/logging.md` per D1 and D4. Cover every item in
+- [x] 3.2 Rewrite `site/src/content/docs/observability/logging.md` per D1 and D4. Cover every item in
   "Observability pages share one local setup", "Logging page gives logging guidance" and "Logging page
   covers the logging API", plus the D8 "In production" section with the AWS note.
   - Add the Pitfalls and the cheatsheet tip.
   - Add an "Exercise 04" section in the exercise-01 format, with the exact GitHub tree link.
-- [ ] 3.3 Compile every snippet in a scratch web project (warnings as errors). Confirm that the
+- [x] 3.3 Compile every snippet in a scratch web project (warnings as errors). Confirm that the
   "from the exercise" snippets match the real files. Run the setup snippet against the dashboard, as
   in 1.1. Check the AWS note against the current ADOT docs (D8). Record all of it in the
   section-done note.
-- [ ] 3.4 Add `observability/logging` and `cheatsheets/logging` to `FULL_CONTENT_SLUGS`, and the pair to
+- [x] 3.4 Add `observability/logging` and `cheatsheets/logging` to `FULL_CONTENT_SLUGS`, and the pair to
   `CHEATSHEETS`. Check every Learn and AWS link with the link script. Verify that `make gates` shows
   `GATES_EXIT:0`.
 
