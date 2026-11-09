@@ -21,20 +21,20 @@
 
 ## 2. Exercise 04: logging
 
-- [ ] 2.1 Scaffold `samples/exercises/04-logging/` like 01–03 (design D5):
+- [x] 2.1 Scaffold `samples/exercises/04-logging/` like 01–03 (design D5):
   - `Logging.Starter` and `Logging.Solution` web projects;
   - the shared `tests/`;
   - `Starter.Tests` and `Solution.Tests`.
 
   Add them to `Primer.slnx`. Add only the Solution and its tests to `Primer.Solutions.slnx`. Verify
   with `make samples-build`.
-- [ ] 2.2 Implement the Solution: `POST /orders` with the D5 payment fake, and `[LoggerMessage]`
+- [x] 2.2 Implement the Solution: `POST /orders` with the D5 payment fake, and `[LoggerMessage]`
   methods for "order placed" (Information, `OrderId`, `ItemCount`) and "payment declined" (Warning,
   `OrderId`, `Reason`), with no email anywhere.
   - Write the shared tests with `AddFakeLogging()`/`FakeLogCollector`. Cover all three spec
     scenarios, with assertion messages that name the missing behaviour.
   - Verify that `make samples-test` passes.
-- [ ] 2.3 Write the Starter. The endpoint works, but it logs badly (an interpolated Error message that
+- [x] 2.3 Write the Starter. The endpoint works, but it logs badly (an interpolated Error message that
   includes the email), and it has `TODO`s.
   - Verify that `dotnet test --project samples/exercises/04-logging/Starter.Tests` fails with the
     guiding messages.

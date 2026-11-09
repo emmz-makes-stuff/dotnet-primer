@@ -39,4 +39,17 @@
   <Folder Name="/exercises/03-middleware/Starter/">
     <Project Path="exercises/03-middleware/Starter/Middleware.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/04-logging/" />
+  <Folder Name="/exercises/04-logging/Solution.Tests/">
+    <Project Path="exercises/04-logging/Solution.Tests/Logging.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/04-logging/Solution/">
+    <Project Path="exercises/04-logging/Solution/Logging.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/04-logging/Starter.Tests/">
+    <Project Path="exercises/04-logging/Starter.Tests/Logging.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/04-logging/Starter/">
+    <Project Path="exercises/04-logging/Starter/Logging.Starter.csproj" />
+  </Folder>
 </Solution>
