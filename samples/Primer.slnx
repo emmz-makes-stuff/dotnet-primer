@@ -26,4 +26,17 @@
   <Folder Name="/exercises/02-dependency-injection/Starter/">
     <Project Path="exercises/02-dependency-injection/Starter/DependencyInjection.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/03-middleware/" />
+  <Folder Name="/exercises/03-middleware/Solution.Tests/">
+    <Project Path="exercises/03-middleware/Solution.Tests/Middleware.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/03-middleware/Solution/">
+    <Project Path="exercises/03-middleware/Solution/Middleware.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/03-middleware/Starter.Tests/">
+    <Project Path="exercises/03-middleware/Starter.Tests/Middleware.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/03-middleware/Starter/">
+    <Project Path="exercises/03-middleware/Starter/Middleware.Starter.csproj" />
+  </Folder>
 </Solution>

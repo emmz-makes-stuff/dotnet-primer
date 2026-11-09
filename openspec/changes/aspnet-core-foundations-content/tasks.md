@@ -108,10 +108,10 @@
 
 ## 6. Exercise 03: middleware
 
-- [ ] 6.1 Scaffold `samples/exercises/03-middleware/` like 4.1 (design D7), with projects
+- [x] 6.1 Scaffold `samples/exercises/03-middleware/` like 4.1 (design D7), with projects
   `Middleware.{Starter,Solution}[.Tests]`, and add them to both `.slnx` files the same way. Verify
   with `make samples-build`.
-- [ ] 6.2 Implement the Solution:
+- [x] 6.2 Implement the Solution:
   - `AddProblemDetails`;
   - an unconditional `UseExceptionHandler()`;
   - the provided `MaintenanceModeMiddleware` (503 when `Maintenance:Enabled`);
@@ -122,17 +122,17 @@
   Write the shared tests: header generated, header echoed, header on the 503 (in-memory config
   override), and header on the 500 `application/problem+json`. Verify that `make samples-test`
   passes.
-- [ ] 6.3 Prove the D7 risk either way. In a scratch copy of the Solution, set the header directly
+- [x] 6.3 Prove the D7 risk either way. In a scratch copy of the Solution, set the header directly
   instead of through `OnStarting`, run the 500 test, and record in a devlog note whether it fails
   (`Response.Clear()` wipes headers). Adjust the planned Pitfalls wording to match.
-- [ ] 6.4 Write the Starter:
+- [x] 6.4 Write the Starter:
   - `CorrelationIdMiddleware` with `TODO`s;
   - the pipeline with maintenance mode registered first;
   - a `TODO` to register the correlation middleware in the right place.
 
   Verify that the Starter tests fail with guiding messages, that they go green on a completed scratch
   copy, and discard the copy.
-- [ ] 6.5 Add the "Exercise 03" description to the Middleware page, in the exercise-01 format. Verify
+- [x] 6.5 Add the "Exercise 03" description to the Middleware page, in the exercise-01 format. Verify
   the exercise-linked test with `make gates`.
 
 ## 7. Middleware page, diagram and cheatsheet

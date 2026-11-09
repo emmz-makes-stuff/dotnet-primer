@@ -14,4 +14,11 @@
   <Folder Name="/exercises/02-dependency-injection/Solution/">
     <Project Path="exercises/02-dependency-injection/Solution/DependencyInjection.Solution.csproj" />
   </Folder>
+  <Folder Name="/exercises/03-middleware/" />
+  <Folder Name="/exercises/03-middleware/Solution.Tests/">
+    <Project Path="exercises/03-middleware/Solution.Tests/Middleware.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/03-middleware/Solution/">
+    <Project Path="exercises/03-middleware/Solution/Middleware.Solution.csproj" />
+  </Folder>
 </Solution>
