@@ -69,15 +69,20 @@ Endpoints (`MapGet` and friends) aren't middleware themselves. They're chosen by
 
 ## The recommended order
 
-Microsoft's recommended order for the built-in middleware, which is also what the diagram above shows:
+Microsoft's recommended order for the built-in middleware. It's the order the diagram above shows, plus HSTS, which runs just after the exception handler outside `Development` and isn't drawn:
 
 ```csharp title="Program.cs"
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.WithOrigins("https://app.example.com")));
-builder.Services.AddAuthentication();
+// Authorization needs a scheme to challenge with, or it throws. Cookies are built in;
+// an API usually uses JWT bearer tokens (package Microsoft.AspNetCore.Authentication.JwtBearer).
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

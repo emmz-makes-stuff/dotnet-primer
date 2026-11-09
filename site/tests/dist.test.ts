@@ -102,7 +102,9 @@ const pages: Page[] = htmlFiles.map((file) => {
   return {
     path,
     url: new URL(path, SITE).href,
-    root: parse(readFileSync(file, "utf8")),
+    // Without parseNoneClosedTags, node-html-parser mangles the splash
+    // homepage: <body>, <main> and .sl-markdown-content vanish from the tree.
+    root: parse(readFileSync(file, "utf8"), { parseNoneClosedTags: true }),
   };
 });
 
@@ -257,7 +259,9 @@ describe("full-content pages", () => {
     for (const slug of FULL_CONTENT_SLUGS) {
       const p = pageAt(slug);
       if (!p) failures.push(`/${slug}/: not built`);
-      else if (content(p)?.querySelector('aside[aria-label="Coming soon"]'))
+      else if (!content(p))
+        failures.push(`/${slug}/: no .sl-markdown-content to check`);
+      else if (content(p)!.querySelector('aside[aria-label="Coming soon"]'))
         failures.push(`/${slug}/: still shows the Coming soon placeholder`);
     }
     expect(failures, failures.join("\n")).toEqual([]);
@@ -309,7 +313,12 @@ describe("diagrams", () => {
   it("every content SVG is an image with an accessible name, or hidden", () => {
     const failures: string[] = [];
     for (const p of contentPages) {
-      for (const svg of content(p)?.querySelectorAll("svg") ?? []) {
+      const main = content(p);
+      if (!main) {
+        failures.push(`${p.path}: no .sl-markdown-content to check`);
+        continue;
+      }
+      for (const svg of main.querySelectorAll("svg")) {
         if (hiddenFromAssistiveTech(svg)) continue;
         if (svg.getAttribute("role") !== "img")
           failures.push(`${p.path}: <svg> without role="img"`);

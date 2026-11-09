@@ -35,7 +35,7 @@ becomes the keys `Greeting:Message`, `Smtp:Host`, `Smtp:Port` and `ConnectionStr
 The dictionary is assembled from several **providers**, in order. Each later provider overrides keys set by earlier ones. `WebApplication.CreateBuilder` sets up these, **highest priority first**:
 
 1. Command-line arguments.
-2. Environment variables (except the `ASPNETCORE_`- and `DOTNET_`-prefixed ones, which configure the host).
+2. Environment variables: all of them, with no prefix. (The `ASPNETCORE_`- and `DOTNET_`-prefixed ones are also read into host configuration, with the prefix removed.)
 3. User secrets, in the `Development` environment only.
 4. `appsettings.{Environment}.json`.
 5. `appsettings.json`.

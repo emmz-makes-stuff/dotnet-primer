@@ -18,14 +18,14 @@ Back to [Configuration](/aspnet-core/configuration/).
 
 Default sources for `WebApplication.CreateBuilder`, **highest priority first**:
 
-| #   | Source                                                       | Example                              |
-| --- | ------------------------------------------------------------ | ------------------------------------ |
-| 1   | Command-line arguments                                       | `--Greeting:Message=Hi`              |
-| 2   | Environment variables (not `ASPNETCORE_`/`DOTNET_`-prefixed) | `Greeting__Message=Hi`               |
-| 3   | User secrets (`Development` only)                            | `dotnet user-secrets set …`          |
-| 4   | `appsettings.{Environment}.json`                             | `appsettings.Production.json`        |
-| 5   | `appsettings.json`                                           |                                      |
-| 6   | Host configuration                                           | `ASPNETCORE_ENVIRONMENT`, `DOTNET_…` |
+| #   | Source                                 | Example                              |
+| --- | -------------------------------------- | ------------------------------------ |
+| 1   | Command-line arguments                 | `--Greeting:Message=Hi`              |
+| 2   | Environment variables (all, no prefix) | `Greeting__Message=Hi`               |
+| 3   | User secrets (`Development` only)      | `dotnet user-secrets set …`          |
+| 4   | `appsettings.{Environment}.json`       | `appsettings.Production.json`        |
+| 5   | `appsettings.json`                     |                                      |
+| 6   | Host configuration                     | `ASPNETCORE_ENVIRONMENT`, `DOTNET_…` |
 
 ## Key naming
 

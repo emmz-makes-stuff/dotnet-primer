@@ -13,8 +13,8 @@ var app = builder.Build();
 
 // Do TODOs 1-3 first. Until a type is registered, ASP.NET Core treats a
 // handler parameter of that type as the request body, which a GET can't have,
-// so the endpoint returns 500 ("Body was inferred but the method does not
-// allow inferred body parameters").
+// so every endpoint, not just that one, returns 500 ("Body was inferred but
+// the method does not allow inferred body parameters").
 //
 // TODO 4: Return the next visit count from GET /visits instead of 501.
 //         Hint: add a VisitCounter parameter to the handler and call Next().

@@ -172,6 +172,26 @@
   - "Working an exercise" says which site page describes each exercise;
   - the Docker note says exercises 01–03 don't need Docker.
 
+## 9. Review fixes: code-review findings
+
+These fix F1–F7 from the verified code review. F8, sharing the files that are duplicated between
+Starter and Solution, was declined: the layout stays the same as exercise 01.
+
+- [x] 9.1 Middleware page, recommended order (F1, F7):
+  - register a cookie scheme (`AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie()`),
+    with a comment pointing to JwtBearer for APIs;
+  - re-probe that `/orders` no longer gives 500;
+  - make the lead-in say HSTS is the one step the diagram doesn't draw.
+- [x] 9.2 Exercise 03 Solution (F2): register `CorrelationIdMiddleware` after `UseExceptionHandler`
+  and before maintenance mode, and fix the order comment.
+- [x] 9.3 Exercise 02 Starter comment (F3): an unregistered handler parameter makes **every**
+  endpoint return 500.
+- [x] 9.4 Configuration page and cheatsheet (F4, F5): the environment-variables provider loads every
+  variable, with no prefix. `ASPNETCORE_`/`DOTNET_`-prefixed ones also feed host configuration,
+  with the prefix removed.
+- [x] 9.5 `dist.test.ts` (F6): the content checks fail when a page has no `.sl-markdown-content`,
+  instead of passing without checking anything.
+
 ## Workflow follow-up
 
 - Whole-change review, the change-done note, and the offer of `code-review`, per CLAUDE.md
