@@ -6,7 +6,14 @@ These are **for practice only**. The tests are there so you can check your own p
 
 ## Prerequisites
 
-- **.NET SDK 10.0.4xx.** The repo's `global.json` pins it, so the samples use .NET 10 even if your default SDK is newer. Check with `dotnet --version` from the repo root. If it fails, install a .NET 10 SDK.
+- **.NET SDK 10.0.4xx.** The repo's `global.json` pins it, so the samples use .NET 10 even if your default SDK is newer. Install it with [`dotnetup`](https://learn.microsoft.com/dotnet/core/tools/dotnetup/) from the repo root, then check that the repo selects it (it should print `10.0.4` and a patch number):
+
+  ```sh
+  dotnetup sdk install 10.0.4xx
+  dotnet --version
+  ```
+
+  A bare `dotnetup sdk install` also works: it reads `global.json`. But it tracks the wider `10.0` channel, so a later `dotnetup update` could move you to a 10.0.5xx SDK. Naming `10.0.4xx` keeps you on the band the samples pin. New to `dotnetup`? [Getting started](https://dotnet-primer.emmz.dev/platform/dotnet-10-and-cli/) covers installing it, and what to do if you already have .NET from another installer.
 - **Docker** (OrbStack or Docker Desktop). Later exercises use it, through Testcontainers and container images. Exercises 01–03 don't need it.
 
 ## Layout

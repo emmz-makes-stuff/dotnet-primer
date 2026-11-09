@@ -41,10 +41,10 @@
 
 ## 3. Samples README and dependencies
 
-- [ ] 3.1 Update `samples/README.md` prerequisites (design D3). Run `dotnetup sdk install 10.0.4xx`
+- [x] 3.1 Update `samples/README.md` prerequisites (design D3). Run `dotnetup sdk install 10.0.4xx`
   from the repo root, then `dotnet --version`, with a note that a bare `dotnetup sdk install` reads
   `global.json`, and a link to the Getting started page. Verify: the steps match what 1.1 observed.
-- [ ] 3.2 Update `docs/dependencies.md` and the `Makefile` `deps` recipe (design D3).
+- [x] 3.2 Update `docs/dependencies.md` and the `Makefile` `deps` recipe (design D3).
   - In the `dotnet` row, `dotnetup` becomes the install route.
   - Add a new `dotnetup` row and check.
   - Remove brew from the MISSING message.

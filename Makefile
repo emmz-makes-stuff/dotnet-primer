@@ -73,7 +73,8 @@ deps:
 	@fail=0; \
 	node -e "const[a,b]=process.versions.node.split('.').map(Number);process.exit(a>22||(a===22&&b>=23)?0:1)" 2>/dev/null || { echo "MISSING/WRONG VERSION node — need >=22.23: brew install node"; fail=1; }; \
 	npm --version >/dev/null 2>&1 || { echo "MISSING npm — ships with node"; fail=1; }; \
-	dotnet --list-sdks 2>/dev/null | grep -q '^10\.0\.4' || { echo "MISSING dotnet SDK 10.0.4xx — brew install --cask dotnet-sdk or dotnetup install 10.0"; fail=1; }; \
+	command -v dotnetup >/dev/null 2>&1 && dotnetup --version >/dev/null 2>&1 || { echo "MISSING dotnetup — see docs/dependencies.md"; fail=1; }; \
+	dotnet --list-sdks 2>/dev/null | grep -q '^10\.0\.4' || { echo "MISSING dotnet SDK 10.0.4xx — dotnetup sdk install 10.0.4xx"; fail=1; }; \
 	docker info --format '{{.ServerVersion}}' >/dev/null 2>&1 || { echo "MISSING docker (daemon not running?) — install Docker Desktop or OrbStack"; fail=1; }; \
 	openspec --version >/dev/null 2>&1 || { echo "MISSING openspec — npm i -g @fission-ai/openspec"; fail=1; }; \
 	gh --version >/dev/null 2>&1 || { echo "MISSING gh — brew install gh"; fail=1; }; \
