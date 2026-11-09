@@ -33,6 +33,7 @@ public sealed class OrderMetricsTests(WebApplicationFactory<Program> app) : ICla
         await PlaceOrderAsync("card", HttpStatusCode.Created);
         await PlaceOrderAsync("card", HttpStatusCode.Created);
         await PlaceOrderAsync("voucher", HttpStatusCode.PaymentRequired);
+        await PlaceOrderAsync("card", HttpStatusCode.BadGateway, email: FailingEmail);
 
         var measurements = placed.GetMeasurementSnapshot();
         Assert.True(
@@ -45,11 +46,13 @@ public sealed class OrderMetricsTests(WebApplicationFactory<Program> app) : ICla
 
         var cardAccepted = Sum(measurements, "card", "accepted");
         var voucherDeclined = Sum(measurements, "voucher", "declined");
+        var cardFailed = Sum(measurements, "card", "failed");
         Assert.True(
-            cardAccepted == 2 && voucherDeclined == 1,
-            $"Expected orders.placed to count 2 for payment.method=card, order.outcome=accepted and 1 for " +
-            $"payment.method=voucher, order.outcome=declined, but it counted {cardAccepted} and {voucherDeclined}. " +
-            "Tag every measurement with both.");
+            cardAccepted == 2 && voucherDeclined == 1 && cardFailed == 1,
+            $"Expected orders.placed to count 2 for payment.method=card, order.outcome=accepted, 1 for " +
+            $"payment.method=voucher, order.outcome=declined and 1 for payment.method=card, order.outcome=failed, " +
+            $"but it counted {cardAccepted}, {voucherDeclined} and {cardFailed}. " +
+            "Count every order, including those the gateway failed, and tag every measurement with both.");
     }
 
     [Fact]
@@ -109,12 +112,13 @@ public sealed class OrderMetricsTests(WebApplicationFactory<Program> app) : ICla
         using var placed = Collector<long>("orders.placed");
 
         await PlaceOrderAsync("Gift-Card-7f3a", HttpStatusCode.Created);
+        await PlaceOrderAsync(null, HttpStatusCode.Created);
 
         var methods = placed.GetMeasurementSnapshot()
             .Select(m => m.Tags.TryGetValue("payment.method", out var v) ? v?.ToString() : null)
             .ToList();
         Assert.True(
-            methods is ["other"],
+            methods is ["other", "other"],
             $"An unknown payment method should be tagged payment.method=other, but was [{string.Join(", ", methods)}]. " +
             "The client chooses the payment method, so use OrderMetrics.PaymentMethodTag to keep the values bounded.");
     }
@@ -130,12 +134,13 @@ public sealed class OrderMetricsTests(WebApplicationFactory<Program> app) : ICla
             .Sum(m => m.Value);
 
     private async Task<string> PlaceOrderAsync(
-        string paymentMethod, HttpStatusCode expected, decimal total = 10m, string email = Email)
+        string? paymentMethod, HttpStatusCode expected, decimal total = 10m, string email = Email)
     {
         using var client = app.CreateClient();
+        // The client's JSON, as sent: paymentMethod can be null, as from a client that leaves it out.
         using var response = await client.PostAsJsonAsync(
             "/orders",
-            new PlaceOrderRequest(email, paymentMethod, [new OrderItem("SKU-1", 1)], total),
+            new { customerEmail = email, paymentMethod, items = new[] { new OrderItem("SKU-1", 1) }, total },
             TestContext.Current.CancellationToken);
 
         Assert.True(

@@ -108,6 +108,11 @@ The exercises' **Solution** projects reference only what their tests need:
 
 That keeps each exercise about its signal.
 
+**Revised in §9 (review fixes).** None of exercises 04–06 registers OpenTelemetry, so no project
+referenced the four OpenTelemetry pins, and no gate restored or checked them. They were removed from
+`samples/Directory.Packages.props`. The pages still give the versions in prose and link to NuGet. A
+later exercise that registers OpenTelemetry adds its pins back with its first reference.
+
 ### D4. Guidance content (the "judgement" sections)
 
 Each guidance point gets a criterion and a do/don't pair:

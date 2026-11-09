@@ -63,7 +63,13 @@ _ordersPlaced.Add(1,
 _orderValue.Record(42.50, new KeyValuePair<string, object?>("payment.method", "card"));
 
 // More than three tags: a TagList, which doesn't allocate for up to eight.
-var tags = new TagList { { "payment.method", "card" }, { "order.outcome", "accepted" } };
+var tags = new TagList
+{
+    { "payment.method", "card" },
+    { "order.outcome", "accepted" },
+    { "order.channel", "web" },
+    { "order.currency", "GBP" },
+};
 _ordersPlaced.Add(1, tags);
 ```
 

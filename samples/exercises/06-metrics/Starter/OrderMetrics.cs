@@ -29,11 +29,11 @@ internal sealed class OrderMetrics
 #pragma warning restore CA1822
 
     /// <summary>
-    /// The payment method as a tag value. It comes from the client, so it could be anything: map it
+    /// The payment method as a tag value. It comes from the client, so it could be anything, or null: map it
     /// to a fixed set, or every new value becomes a new time series.
     /// </summary>
-    internal static string PaymentMethodTag(string paymentMethod) =>
-        paymentMethod.ToUpperInvariant() switch
+    internal static string PaymentMethodTag(string? paymentMethod) =>
+        paymentMethod?.ToUpperInvariant() switch
         {
             "CARD" => "card",
             "VOUCHER" => "voucher",

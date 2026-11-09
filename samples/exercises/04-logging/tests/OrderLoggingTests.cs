@@ -99,6 +99,27 @@ public sealed class OrderLoggingTests(OrderLoggingTests.App app) : IClassFixture
             "Email addresses are personal data: log the order id instead.");
     }
 
+    [Fact]
+    public async Task OrderIdIsNeverLoggedAsText()
+    {
+        string[] orderIds =
+        [
+            await PlaceOrderAsync("card", HttpStatusCode.Created),
+            await PlaceOrderAsync("voucher", HttpStatusCode.PaymentRequired),
+            await PlaceOrderAsync("card", HttpStatusCode.BadGateway, email: FailingEmail),
+        ];
+
+        var textOnly = app.Logs.GetSnapshot()
+            .Where(r => orderIds.Any(id => r.Message.Contains(id, StringComparison.Ordinal) && Property(r, "OrderId") != id))
+            .Select(r => $"[{r.Level}] {r.Message}")
+            .ToList();
+        Assert.True(
+            textOnly.Count == 0,
+            $"{textOnly.Count} log entries have the order id in their text but not as an OrderId property, " +
+            $"for example: {textOnly.FirstOrDefault()}. Those are leftover interpolated calls: replace them " +
+            "with the OrderLog methods, so every entry about an order can be found by its OrderId.");
+    }
+
     private async Task<string> PlaceOrderAsync(
         string paymentMethod, HttpStatusCode expected, int itemCount = 1, string email = Email)
     {

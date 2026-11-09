@@ -102,7 +102,7 @@ catch (PaymentGatewayException ex)
 - **`SetStatus(ActivityStatusCode.Error, …)`** is what makes the dashboard draw the span in red, and what error-rate queries count. A span's status stays `Unset` unless you set it, even if an exception passed through.
 - **`AddException(ex)`** (.NET 9 and later) adds an `exception` event with the semantic-convention attributes `exception.type`, `exception.message` and `exception.stacktrace`.
 
-Record it **on the span where it happened**, once, as with logging. ASP.NET Core's instrumentation already marks the request span as an error when the response is a 5xx, so you don't need to mark every span on the way up.
+Record it **on the span where it happened**, once, as with logging. ASP.NET Core's instrumentation already marks the request span as an error when the response is a 5xx, so you don't need to mark every span on the way up. In Exercise 05, only `ChargePayment` is marked: the error belongs to the payment step, `PlaceOrder` stays `Unset`, and the `POST /orders` request span above it is already an error because of the 502.
 
 ## Events and links
 

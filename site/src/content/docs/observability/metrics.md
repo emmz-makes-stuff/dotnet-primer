@@ -71,11 +71,11 @@ So every tag must have a small, known set of values:
 
 Tag `orders.placed` with the order id, and every order makes a new time series that's used once. A million orders is a million series: the backend slows down or starts dropping data, the bill grows, and the graph is useless anyway, because each series has one point. If you want to find one order, that's a job for a [log entry](/observability/logging/) or a [trace attribute](/observability/tracing/#choosing-attributes), where high cardinality is fine.
 
-Watch for values that **look** bounded but aren't. In Exercise 06, the payment method comes from the client, so a buggy or hostile client could send a new one with every request. The exercise maps it to a fixed set before tagging:
+Watch for values that **look** bounded but aren't. In Exercise 06, the payment method comes from the client, so a buggy or hostile client could send a new one with every request, or leave it out. The exercise maps it to a fixed set before tagging, with a missing value as `other`:
 
 ```csharp
-internal static string PaymentMethodTag(string paymentMethod) =>
-    paymentMethod.ToUpperInvariant() switch
+internal static string PaymentMethodTag(string? paymentMethod) =>
+    paymentMethod?.ToUpperInvariant() switch
     {
         "CARD" => "card",
         "VOUCHER" => "voucher",
@@ -133,11 +133,11 @@ internal sealed class OrderMetrics
             new KeyValuePair<string, object?>("payment.method", PaymentMethodTag(paymentMethod)));
 
     /// <summary>
-    /// The payment method as a tag value. It comes from the client, so it could be anything: map it
+    /// The payment method as a tag value. It comes from the client, so it could be anything, or null: map it
     /// to a fixed set, or every new value becomes a new time series.
     /// </summary>
-    internal static string PaymentMethodTag(string paymentMethod) =>
-        paymentMethod.ToUpperInvariant() switch
+    internal static string PaymentMethodTag(string? paymentMethod) =>
+        paymentMethod?.ToUpperInvariant() switch
         {
             "CARD" => "card",
             "VOUCHER" => "voucher",
@@ -166,7 +166,13 @@ metrics.OrderAccepted(order.PaymentMethod, order.Total);   // Record(total, paym
 Up to three tags have their own overloads. For more, use a `TagList`, a struct that doesn't allocate for up to eight tags:
 
 ```csharp
-var tags = new TagList { { "payment.method", "card" }, { "order.outcome", "accepted" } };
+var tags = new TagList
+{
+    { "payment.method", "card" },
+    { "order.outcome", "accepted" },
+    { "order.channel", "web" },
+    { "order.currency", "GBP" },
+};
 ordersPlaced.Add(1, tags);
 ```
 

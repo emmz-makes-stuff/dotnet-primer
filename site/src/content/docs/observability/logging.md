@@ -293,7 +293,7 @@ When a log entry is written inside a span, such as during a request that ASP.NET
 
 ## Logging on hot paths
 
-A log call costs something even when its level is turned off: the arguments are evaluated and boxed into an array, and the template is parsed. On a path that runs thousands of times a second, that shows up.
+A log call costs something even when its level is turned off: the arguments are evaluated and boxed into an array, and the parsed template is looked up in a cache. On a path that runs thousands of times a second, that shows up.
 
 **Source-generated logging methods** remove the cost. Declare a `partial` method with `[LoggerMessage]`, and the compiler writes an implementation that checks the level first, parses the template once at build time, and doesn't box:
 

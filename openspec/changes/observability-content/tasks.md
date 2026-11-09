@@ -137,6 +137,30 @@
   She also runs the dashboard command from the Logging page with a scratch app, and sees a trace.
   Record her answer in a devlog note.
 
+## 9. Review fixes: code-review findings
+
+Agreed with Emmz on 2026-11-09, from the `code-review` run on `change/observability-content`.
+
+- [x] 9.1 Exercise 04's tests catch leftover logging written as text. A log entry whose message
+  contains the order id but which has no structured `OrderId` property fails a test, with a message
+  saying to log through `OrderLog`. Verify: a scratch Starter, finished except for one email-free
+  interpolated `LogError`, fails; the Solution passes.
+- [x] 9.2 Exercise 06's tests check the gateway-failure path: a failing order is counted once, with
+  `order.outcome=failed`. Verify: a scratch Solution without the catch block's `OrderPlaced` fails;
+  the Solution passes.
+- [x] 9.3 `PaymentMethodTag` handles a `null` payment method, which maps to `other` (Solution, Starter,
+  and the Metrics page snippet), with a test case. Verify: the test, and the snippet matching the
+  file.
+- [x] 9.4 The `TagList` example has four bounded tags, so it matches "more than three" (the Metrics
+  page and the cheatsheet).
+- [x] 9.5 The Logging page's hot-path cost wording: the arguments are evaluated and boxed into an
+  array, and the template is looked up in a cache, not parsed each time.
+- [x] 9.6 Remove the four unreferenced OpenTelemetry `PackageVersion` pins from
+  `samples/Directory.Packages.props`, and add a line to design.md D3 saying why.
+- [x] 9.7 The Tracing page says why only the failing step's span (`ChargePayment`) gets Error status:
+  the error belongs to the step that failed, and the request span is already Error because of the
+  502.
+
 ## Workflow follow-up
 
 - Whole-change review, the change-done note, and the offer of `code-review`, per CLAUDE.md
