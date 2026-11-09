@@ -1,0 +1,353 @@
+---
+title: "Middleware"
+description: "The request pipeline: how requests flow through middleware, the order built-in middleware must go in, writing your own, short-circuiting, Problem Details error handling and endpoint filters."
+learn:
+  - title: "ASP.NET Core middleware"
+    url: https://learn.microsoft.com/aspnet/core/fundamentals/middleware/
+  - title: "Write custom ASP.NET Core middleware"
+    url: https://learn.microsoft.com/aspnet/core/fundamentals/middleware/write
+  - title: "Handle errors in ASP.NET Core APIs"
+    url: https://learn.microsoft.com/aspnet/core/fundamentals/error-handling-api
+  - title: "Filters in minimal API apps"
+    url: https://learn.microsoft.com/aspnet/core/fundamentals/minimal-apis/min-api-filters
+---
+
+import RequestPipeline from "../../../components/diagrams/RequestPipeline.astro";
+
+By the end of this page you'll be able to read an app's request pipeline and say what each request passes through, put the built-in middleware in the right order (and explain why it's that order), write your own middleware, turn unhandled exceptions into proper error responses, and choose between middleware and an endpoint filter.
+
+:::tip[Cheatsheet]
+Keep the [Middleware cheatsheet](/cheatsheets/middleware/) open while you work.
+:::
+
+## The pipeline
+
+Every request passes through a chain of **middleware**: small components that each get the request, can do something with it, and decide whether to pass it on to the next one. The last step is the **endpoint** that routing selected, such as a `MapGet` handler. The response then travels back out through the same middleware in **reverse order**, so each one can also act on the way out.
+
+<RequestPipeline />
+
+Two consequences follow, and the rest of this page builds on them:
+
+- **Order is behaviour.** Middleware runs in the order you register it. A middleware only sees requests that everything before it passed on, and only sees responses on the way back from what comes after it.
+- **Any middleware can stop the request.** It can answer itself and not call the next one. That's called **short-circuiting**. Static files, CORS preflight, failed authorization and maintenance pages all work this way.
+
+## `Use`, `Run` and `Map`
+
+The three building blocks, shown inline as lambdas:
+
+```csharp title="Program.cs"
+var builder = WebApplication.CreateBuilder(args);
+
+var app = builder.Build();
+
+// Use: run code before and after the rest of the pipeline.
+app.Use(async (context, next) =>
+{
+    var started = TimeProvider.System.GetTimestamp();
+
+    await next(context);
+
+    var elapsed = TimeProvider.System.GetElapsedTime(started);
+    app.Logger.LogInformation("{Method} {Path} took {Elapsed:F1} ms",
+        context.Request.Method, context.Request.Path, elapsed.TotalMilliseconds);
+});
+
+// Map: branch the pipeline for a path prefix. Run ends the branch.
+app.Map("/ping", branch => branch.Run(context => context.Response.WriteAsync("pong")));
+
+app.MapGet("/", () => "Hello");
+
+app.Run();
+```
+
+- **`app.Use`** adds middleware that gets the `HttpContext` and a `next` delegate. Code before `await next(context)` runs on the way in, and code after it on the way out. Here it times the rest of the pipeline.
+- **`app.Map("/ping", …)`** branches the pipeline. Requests whose path starts with `/ping` go down the branch, and the rest carry on.
+- **`branch.Run(…)`** adds **terminal** middleware. It has no `next`, so nothing after it runs. (Don't confuse it with `app.Run()` with no arguments, which starts the app.)
+- **`app.UseWhen(predicate, branch => …)`** is like `Map` but on any condition, and it rejoins the main pipeline afterwards.
+
+Endpoints (`MapGet` and friends) aren't middleware themselves. They're chosen by routing, and run by the endpoint middleware at the end of the pipeline.
+
+## The recommended order
+
+Microsoft's recommended order for the built-in middleware, which is also what the diagram above shows:
+
+```csharp title="Program.cs"
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddProblemDetails();
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+    policy.WithOrigins("https://app.example.com")));
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
+
+app.UseExceptionHandler();          // 1. catches exceptions from everything after it
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();                  //    tell browsers to use HTTPS only
+}
+
+app.UseHttpsRedirection();          // 2. redirect http:// to https://
+app.UseStaticFiles();               // 3. serve wwwroot files, and short-circuit
+app.UseRouting();                   // 4. choose the endpoint
+app.UseCors();                      // 5. answer CORS preflight, add CORS headers
+app.UseAuthentication();            // 6. who is the caller?
+app.UseAuthorization();             // 7. may they call the chosen endpoint?
+app.UseMiddleware<RequestTimingMiddleware>();   // 8. your own middleware
+
+app.MapGet("/orders", () => "orders").RequireAuthorization();   // 9. the endpoint
+
+app.Run();
+
+public sealed class RequestTimingMiddleware(RequestDelegate next)
+{
+    public Task InvokeAsync(HttpContext context) => next(context);
+}
+```
+
+Why that order:
+
+- **The exception handler comes first,** so it wraps everything else and can catch an exception from any of it.
+- **HTTPS redirection and static files come early,** so a request for `site.css` is answered before routing, authentication and your code spend any time on it. Static files short-circuit.
+- **Routing comes before CORS, authentication and authorization,** because those three need to know which endpoint was chosen. Authorization reads the endpoint's metadata (`RequireAuthorization()`, `[Authorize]`, `AllowAnonymous()`) to decide what to check. Before routing there's no endpoint, so there's nothing to check against.
+- **CORS comes before authentication and authorization,** so a browser's preflight `OPTIONS` request, which carries no credentials, gets its CORS answer rather than being turned away by an authorization check.
+- **Your middleware usually goes after authorization,** so it sees `context.User` and only runs for requests that are allowed through.
+
+Put authorization before routing and an endpoint that requires it fails every request:
+
+```text
+System.InvalidOperationException: Endpoint HTTP: GET /orders contains authorization metadata,
+but a middleware was not found that supports authorization.
+```
+
+`WebApplication` adds some of this for you. In `Development` it adds the developer exception page first. If you don't call `UseRouting()`, it adds routing at the start of the pipeline. It adds `UseAuthentication()` and `UseAuthorization()` straight after routing when their services are registered, and the endpoint middleware at the end. Middleware you add with `app.Use…` goes between routing and the endpoints. Call `UseRouting()`, `UseAuthentication()` and `UseAuthorization()` yourself, as above, whenever you need control: for example, to put CORS in the right place, or to run middleware before routing.
+
+## Writing middleware as a class
+
+Inline lambdas are fine for a few lines. Anything reusable or testable belongs in a class: a constructor that takes the `next` delegate, and an `InvokeAsync(HttpContext)` method:
+
+```csharp title="Program.cs"
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IRequestAudit, LoggingRequestAudit>();
+
+var app = builder.Build();
+
+app.UseRequestTiming();
+
+app.MapGet("/", () => "Hello");
+
+app.Run();
+
+public sealed class RequestTimingMiddleware(RequestDelegate next, ILogger<RequestTimingMiddleware> logger)
+{
+    // Constructor dependencies are resolved once: middleware is created when the
+    // pipeline is built. Ask for scoped services as InvokeAsync parameters instead.
+    public async Task InvokeAsync(HttpContext context, IRequestAudit audit)
+    {
+        var started = TimeProvider.System.GetTimestamp();
+
+        await next(context);
+
+        var elapsed = TimeProvider.System.GetElapsedTime(started);
+        logger.LogInformation("{Path} took {Elapsed:F1} ms", context.Request.Path, elapsed.TotalMilliseconds);
+        audit.Record(context.Request.Path, context.Response.StatusCode);
+    }
+}
+
+public static class RequestTimingMiddlewareExtensions
+{
+    public static IApplicationBuilder UseRequestTiming(this IApplicationBuilder app) =>
+        app.UseMiddleware<RequestTimingMiddleware>();
+}
+
+public interface IRequestAudit
+{
+    void Record(PathString path, int statusCode);
+}
+
+public sealed class LoggingRequestAudit(ILogger<LoggingRequestAudit> logger) : IRequestAudit
+{
+    public void Record(PathString path, int statusCode) =>
+        logger.LogInformation("Audit: {Path} -> {StatusCode}", path, statusCode);
+}
+```
+
+- `UseMiddleware<T>()` registers it. An extension method like `UseRequestTiming()` reads better in `Program.cs`, and it's the convention the built-in middleware follows.
+- **The middleware instance is created once,** when the pipeline is built. Constructor parameters (`next`, `logger`) are therefore resolved once too, so only take singletons there.
+- **Scoped services go on `InvokeAsync`,** as extra parameters (`IRequestAudit audit` here). They're resolved for each request, from that request's scope. See [Dependency Injection](/aspnet-core/dependency-injection/) for why mixing these up is a bug.
+
+## Short-circuiting
+
+To stop the pipeline, write a response and **don't call `next`**:
+
+```csharp title="Program.cs"
+var builder = WebApplication.CreateBuilder(args);
+
+var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    if (!context.Request.Headers.ContainsKey("X-Api-Key"))
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return;                     // short-circuit: next is never called
+    }
+
+    await next(context);
+});
+
+app.MapGet("/health", () => "Healthy").ShortCircuit();
+app.MapGet("/orders", () => "orders");
+
+app.Run();
+```
+
+A request to `/orders` without an `X-Api-Key` header gets a `401`, and the endpoint never runs. `.ShortCircuit()` on an endpoint does the opposite trick: the endpoint runs as soon as routing selects it, skipping the middleware registered after routing. So `/health` answers `200` even without the header. Use it for health checks and other cheap endpoints that shouldn't pay for the whole pipeline.
+
+## Exception handling with Problem Details
+
+An unhandled exception should become a proper HTTP error response, not a dropped connection or a stack trace. **Problem Details** (RFC 9457, `application/problem+json`) is the standard JSON shape for API errors, and ASP.NET Core produces it for you:
+
+```csharp title="Program.cs"
+using Microsoft.AspNetCore.Diagnostics;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<OrderNotFoundHandler>();
+
+var app = builder.Build();
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
+
+app.MapGet("/orders/{id:int}", (int id) => id == 42 ? "The answer" : throw new OrderNotFoundException(id));
+app.MapGet("/boom", string () => throw new InvalidOperationException("Boom!"));
+
+app.Run();
+
+public sealed class OrderNotFoundException(int id) : Exception($"Order {id} was not found.")
+{
+    public int OrderId { get; } = id;
+}
+
+public sealed class OrderNotFoundHandler(IProblemDetailsService problemDetails) : IExceptionHandler
+{
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext context, Exception exception, CancellationToken cancellationToken)
+    {
+        if (exception is not OrderNotFoundException notFound)
+        {
+            return false;           // not ours: let the next handler, or the default, deal with it
+        }
+
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        return await problemDetails.TryWriteAsync(new ProblemDetailsContext
+        {
+            HttpContext = context,
+            ProblemDetails = { Title = "Order not found", Detail = notFound.Message },
+            Exception = exception,
+        });
+    }
+}
+```
+
+- **`AddProblemDetails()`** registers the Problem Details writer.
+- **`UseExceptionHandler()`** catches exceptions from everything after it. It clears the response, then writes a `500` Problem Details response, and logs the exception.
+- **`AddExceptionHandler<T>()`** plugs in an `IExceptionHandler` that maps the exceptions you know about to the right status. Here, `OrderNotFoundException` becomes a `404` titled "Order not found". Returning `false` passes the exception on to the next handler, or to the default `500`.
+- **`UseStatusCodePages()`** gives empty error responses, such as the `404` for an unknown URL, a Problem Details body too.
+
+```json
+{
+  "type": "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+  "title": "Order not found",
+  "status": 404,
+  "detail": "Order 7 was not found.",
+  "traceId": "00-…"
+}
+```
+
+In `Development`, the developer exception page sits in front of all this and shows the full exception. In other environments clients get only the Problem Details response, with no stack trace. Keep it that way: exception details are for logs, not for callers.
+
+## Endpoint filters
+
+An **endpoint filter** wraps a single endpoint (or a [route group](/aspnet-core/#route-groups)) rather than the whole app. It runs after routing and model binding, so it sees the handler's **bound arguments**, and it can replace the result:
+
+```csharp title="Program.cs"
+var builder = WebApplication.CreateBuilder(args);
+
+var app = builder.Build();
+
+app.MapPost("/orders", (NewOrder order) => TypedResults.Created($"/orders/{order.Product}", order))
+    .AddEndpointFilter(async (context, next) =>
+    {
+        var order = context.GetArgument<NewOrder>(0);
+        if (order.Quantity <= 0)
+        {
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                ["quantity"] = ["Quantity must be at least 1."],
+            });
+        }
+
+        return await next(context);
+    });
+
+app.Run();
+
+public sealed record NewOrder(string Product, int Quantity);
+```
+
+A `POST /orders` with `"quantity": 0` gets a `400` validation Problem Details response, and the handler never runs. For a reusable filter, implement `IEndpointFilter` and add it with `.AddEndpointFilter<T>()`.
+
+How to choose:
+
+| Use middleware when…                                                     | Use an endpoint filter when…                                |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| it applies to every request, or to a path prefix                         | it applies to specific endpoints or groups                  |
+| it works with the raw `HttpContext`: headers, paths, the response stream | it needs the handler's typed, bound arguments or its result |
+| it should run even when no endpoint matches (static files, 404s)         | it should only run when this endpoint is selected           |
+
+## Pitfalls
+
+- **Wrong order.** Authorization before routing fails with "contains authorization metadata, but a middleware was not found that supports authorization". CORS placed after authorization can turn away the credential-less preflight requests browsers send, and middleware after a short-circuiting one never sees those requests. Fix: follow the recommended order, and remember that registration order is execution order.
+- **Setting response headers directly, then losing them.** The exception handler **clears** the response, including headers, before writing its error, so a header your middleware set directly is gone from every error response, wherever the middleware sits. Fix: set headers in `context.Response.OnStarting(…)`, which runs just before the response is sent:
+
+  ```csharp title="CorrelationIdMiddleware.cs"
+  // Lost on error responses:
+  context.Response.Headers["X-Correlation-Id"] = correlationId;
+
+  // Survives, because it runs just before the response starts:
+  context.Response.OnStarting(() =>
+  {
+      context.Response.Headers["X-Correlation-Id"] = correlationId;
+      return Task.CompletedTask;
+  });
+  ```
+
+- **Changing the response after it has started.** Once the body has started streaming, headers and the status code are sent. Setting them after `await next(context)` throws if the endpoint has already written. Fix: use `OnStarting`, or check `context.Response.HasStarted`.
+- **Scoped services in a middleware constructor.** The middleware is created once, so a scoped service captured there is shared by every request. Fix: take scoped services as `InvokeAsync` parameters.
+- **Calling `next` after writing the response.** Middleware further down may then write to, or change, a response that's already being sent. Fix: when you've answered, `return` without calling `next`.
+- **Leaking exception details.** Writing `exception.Message` or a stack trace into responses exposes internals. Fix: Problem Details with generic messages for unknown errors, and the details in logs.
+
+## Exercise 03: a correlation-id middleware
+
+**Goal:** write middleware that gives every response an `X-Correlation-Id` header, reusing the caller's id when it sends one, and place it in the pipeline so that even short-circuited and error responses carry it.
+
+**Where:** [`samples/exercises/03-middleware`](https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/03-middleware) in the GitHub repo. Clone the repo, then work in the `Starter` project.
+
+**Steps:**
+
+1. Open `Starter/CorrelationIdMiddleware.cs`. Work out the id (TODO 1), store it in `HttpContext.Items` (TODO 2), and add it to the response (TODO 3).
+2. In `Starter/Program.cs`, register the middleware with `app.UseMiddleware<CorrelationIdMiddleware>()` (TODO 4). `MaintenanceModeMiddleware` is already there, and it answers `503` without calling the rest of the pipeline, so think about where yours goes.
+3. Run the tests. If the error-response test still fails, read its message, then the [Pitfalls](#pitfalls) on this page.
+
+**Check your work:** the tests start red and turn green as you go.
+
+```sh
+dotnet test --project samples/exercises/03-middleware/Starter.Tests
+```
+
+Stuck? Compare with the `Solution` project next to it. The exercises are for practice only, and nothing is recorded or submitted.

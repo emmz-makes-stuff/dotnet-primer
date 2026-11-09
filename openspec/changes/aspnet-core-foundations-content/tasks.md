@@ -137,9 +137,9 @@
 
 ## 7. Middleware page, diagram and cheatsheet
 
-- [ ] 7.1 Create `site/src/content/docs/cheatsheets/middleware.md` (D4), and wire it into the
+- [x] 7.1 Create `site/src/content/docs/cheatsheets/middleware.md` (D4), and wire it into the
   sidebar, the intro cards and `EXPECTED_SLUGS`.
-- [ ] 7.2 Convert the Middleware page to `middleware.mdx` (D1) and rewrite it per D3 to cover every
+- [x] 7.2 Convert the Middleware page to `middleware.mdx` (D1) and rewrite it per D3 to cover every
   item in "Middleware page coverage":
   - the pipeline, with the `RequestPipeline` diagram;
   - `Use`/`Run`/`Map`;
@@ -152,11 +152,11 @@
   The Pitfalls section must include the `OnStarting` lesson from 6.3. Add the cheatsheet tip, and
   keep the exercise 03 section at the end. Verify that the URL `/aspnet-core/middleware/` is
   unchanged in `dist/`.
-- [ ] 7.3 Compile and check the snippets as in 2.2, and record the results.
-- [ ] 7.4 Add the page and cheatsheet slugs to `FULL_CONTENT_SLUGS`, and the pair to the cheatsheet
+- [x] 7.3 Compile and check the snippets as in 2.2, and record the results.
+- [x] 7.4 Add the page and cheatsheet slugs to `FULL_CONTENT_SLUGS`, and the pair to the cheatsheet
   link map. Verify with `make gates`. Check that the diagram accessibility test sees the diagram (it
   should count at least one `svg[role="img"]` on the Middleware page).
-- [ ] 7.5 Human check (stop and ask). Emmz previews the site with
+- [x] 7.5 Human check (stop and ask). Emmz previews the site with
   `npm --prefix site run build && npm --prefix site run preview`, and checks:
   - all 7 pages and the diagram in light and dark modes, including switching with the theme toggle;
   - the diagram at phone width;
