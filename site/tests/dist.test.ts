@@ -52,6 +52,7 @@ const FULL_CONTENT_SLUGS: string[] = [
   "aspnet-core/middleware",
   "cheatsheets/middleware",
   "cheatsheets/dotnet-cli",
+  "platform/dotnet-10-and-cli",
 ];
 
 /**

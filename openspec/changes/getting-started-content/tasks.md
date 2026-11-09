@@ -25,7 +25,7 @@
 
 ## 2. The .NET 10 and dotnet CLI page
 
-- [ ] 2.1 Rewrite `site/src/content/docs/platform/dotnet-10-and-cli.md` sections 1–6 per design D1.
+- [x] 2.1 Rewrite `site/src/content/docs/platform/dotnet-10-and-cli.md` sections 1–6 per design D1.
   These are the orientation, SDK/runtime/target, Install with `dotnetup` (`:::caution` preview aside
   first, with Learn links for Windows, macOS and Linux), `global.json`, the SDK-style project file, and
   the CLI loop. Keep the frontmatter Learn links and add the `dotnetup` overview.
@@ -33,10 +33,10 @@
     - the page describes the `global.json` behaviour 1.1 observed;
     - the project-file snippets are copies of real files that build with warnings as errors;
     - the `init`/`env` output matches Learn, with `<resolved-version>` placeholders.
-- [ ] 2.2 Add `## Pitfalls` and `## Check your setup` (design D1, items 7–8). Verify the setup check
+- [x] 2.2 Add `## Pitfalls` and `## Check your setup` (design D1, items 7–8). Verify the setup check
   by following it exactly in a fresh clone in the scratchpad: it ends with exercise 01's solution
   tests passing.
-- [ ] 2.3 Add `platform/dotnet-10-and-cli` to `FULL_CONTENT_SLUGS`, and check every Learn link on the
+- [x] 2.3 Add `platform/dotnet-10-and-cli` to `FULL_CONTENT_SLUGS`, and check every Learn link on the
   page with the link script. Verify: the link check passes and `make gates` shows `GATES_EXIT:0`.
 
 ## 3. Samples README and dependencies
