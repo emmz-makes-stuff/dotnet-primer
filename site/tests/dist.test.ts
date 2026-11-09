@@ -38,6 +38,7 @@ const EXPECTED_SLUGS = [
   "cheatsheets/dependency-injection",
   "cheatsheets/middleware",
   "cheatsheets/logging",
+  "cheatsheets/tracing",
 ];
 
 /**
@@ -56,6 +57,8 @@ const FULL_CONTENT_SLUGS: string[] = [
   "platform/dotnet-10-and-cli",
   "observability/logging",
   "cheatsheets/logging",
+  "observability/tracing",
+  "cheatsheets/tracing",
 ];
 
 /**
@@ -68,6 +71,7 @@ const CHEATSHEETS: Record<string, string> = {
   "aspnet-core/dependency-injection": "cheatsheets/dependency-injection",
   "aspnet-core/middleware": "cheatsheets/middleware",
   "observability/logging": "cheatsheets/logging",
+  "observability/tracing": "cheatsheets/tracing",
 };
 
 const REPO_TREE =

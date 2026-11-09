@@ -73,20 +73,20 @@
 
 ## 5. Tracing page and cheatsheet
 
-- [ ] 5.1 Create `site/src/content/docs/cheatsheets/tracing.md` (D6), and wire it in as 3.1. Verify with
+- [x] 5.1 Create `site/src/content/docs/cheatsheets/tracing.md` (D6), and wire it in as 3.1. Verify with
   `make site-build`.
-- [ ] 5.2 Rewrite `site/src/content/docs/observability/tracing.md` per D1 and D4. Cover "Tracing page
+- [x] 5.2 Rewrite `site/src/content/docs/observability/tracing.md` per D1 and D4. Cover "Tracing page
   gives tracing guidance", "Tracing page covers the tracing API" and the "In production" section with
   the AWS note.
   - Build on the Logging page's setup, without repeating it.
   - Add the Pitfalls, including "`StartActivity` returns null when the source isn't registered", and
     the cheatsheet tip.
   - Add the Exercise 05 section.
-- [ ] 5.3 Compile and check the snippets as in 3.3.
+- [x] 5.3 Compile and check the snippets as in 3.3.
   - Check in the dashboard that a custom span appears as a child of the request span.
   - Check that `StartActivity` returns `null` with no listener.
   - Record the results.
-- [ ] 5.4 Add `observability/tracing` and `cheatsheets/tracing` to `FULL_CONTENT_SLUGS`, and the pair to
+- [x] 5.4 Add `observability/tracing` and `cheatsheets/tracing` to `FULL_CONTENT_SLUGS`, and the pair to
   `CHEATSHEETS`. Run the link check. Verify that `make gates` shows `GATES_EXIT:0`.
 
 ## 6. Exercise 06: metrics
