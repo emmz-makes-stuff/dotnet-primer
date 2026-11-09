@@ -275,8 +275,11 @@ describe("full-content pages", () => {
 
 describe("exercises", () => {
   it("every exercise folder is linked from a site page", () => {
-    const folders = readdirSync(EXERCISES).filter((name) =>
-      statSync(join(EXERCISES, name)).isDirectory(),
+    // Exercise folders are named NN-topic; skip anything else (such as hidden
+    // tool folders that editors and agents create locally).
+    const folders = readdirSync(EXERCISES).filter(
+      (name) =>
+        /^\d{2}-/.test(name) && statSync(join(EXERCISES, name)).isDirectory(),
     );
     expect(folders.length).toBeGreaterThan(0);
     const hrefs = new Set(

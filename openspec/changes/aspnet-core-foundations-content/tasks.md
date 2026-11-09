@@ -65,23 +65,23 @@
 
 ## 4. Exercise 02: dependency injection
 
-- [ ] 4.1 Scaffold `samples/exercises/02-dependency-injection/`, mirroring 01 (design D6):
+- [x] 4.1 Scaffold `samples/exercises/02-dependency-injection/`, mirroring 01 (design D6):
   - `DependencyInjection.Starter` and `DependencyInjection.Solution` web projects;
   - the shared `tests/`;
   - the `Starter.Tests` and `Solution.Tests` projects.
 
   Add the starter and solution projects with their test projects to `samples/Primer.slnx`, and only
   the solution with its tests to `samples/Primer.Solutions.slnx`. Verify with `make samples-build`.
-- [ ] 4.2 Implement the Solution (`VisitCounter` singleton, `RequestContext` scoped,
+- [x] 4.2 Implement the Solution (`VisitCounter` singleton, `RequestContext` scoped,
   `RequestContextReporter` transient, `GET /visits`, `GET /request-context`) and the shared tests
   (counts 1/2/3; same IDs within a request; different `handlerId` across requests). Each assertion
   message must name the missing behaviour. Verify that `make samples-test` passes.
-- [ ] 4.3 Write the Starter with `TODO`s for the three registrations and the handler service
+- [x] 4.3 Write the Starter with `TODO`s for the three registrations and the handler service
   parameters, and with handlers returning 501. Verify that
   `dotnet test --project samples/exercises/02-dependency-injection/Starter.Tests` fails with the
   guiding messages. Then complete the TODOs in a scratch copy, confirm the tests go green, and
   discard the copy.
-- [ ] 4.4 Add the "Exercise 02" description to the DI page, in the exercise-01 format: goal, where
+- [x] 4.4 Add the "Exercise 02" description to the DI page, in the exercise-01 format: goal, where
   (with the exact GitHub tree link), steps, check your work, and "stuck?". Verify that the
   exercise-linked test passes with `make gates`.
 

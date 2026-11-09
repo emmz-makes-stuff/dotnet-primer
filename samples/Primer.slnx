@@ -13,4 +13,17 @@
   <Folder Name="/exercises/01-configuration/Starter/">
     <Project Path="exercises/01-configuration/Starter/Configuration.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/02-dependency-injection/" />
+  <Folder Name="/exercises/02-dependency-injection/Solution.Tests/">
+    <Project Path="exercises/02-dependency-injection/Solution.Tests/DependencyInjection.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/02-dependency-injection/Solution/">
+    <Project Path="exercises/02-dependency-injection/Solution/DependencyInjection.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/02-dependency-injection/Starter.Tests/">
+    <Project Path="exercises/02-dependency-injection/Starter.Tests/DependencyInjection.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/02-dependency-injection/Starter/">
+    <Project Path="exercises/02-dependency-injection/Starter/DependencyInjection.Starter.csproj" />
+  </Folder>
 </Solution>

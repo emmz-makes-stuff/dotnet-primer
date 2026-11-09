@@ -7,4 +7,11 @@
   <Folder Name="/exercises/01-configuration/Solution/">
     <Project Path="exercises/01-configuration/Solution/Configuration.Solution.csproj" />
   </Folder>
+  <Folder Name="/exercises/02-dependency-injection/" />
+  <Folder Name="/exercises/02-dependency-injection/Solution.Tests/">
+    <Project Path="exercises/02-dependency-injection/Solution.Tests/DependencyInjection.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/02-dependency-injection/Solution/">
+    <Project Path="exercises/02-dependency-injection/Solution/DependencyInjection.Solution.csproj" />
+  </Folder>
 </Solution>
