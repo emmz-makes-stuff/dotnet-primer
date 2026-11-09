@@ -60,15 +60,15 @@
 
 ## 4. Exercise 05: tracing
 
-- [ ] 4.1 Scaffold `samples/exercises/05-tracing/` like 2.1, with `Tracing.{Starter,Solution}[.Tests]`
+- [x] 4.1 Scaffold `samples/exercises/05-tracing/` like 2.1, with `Tracing.{Starter,Solution}[.Tests]`
   in both `.slnx` files the same way. Verify with `make samples-build`.
-- [ ] 4.2 Implement the Solution (D5): `ActivitySource("Orders")`, the `PlaceOrder` and `ChargePayment`
+- [x] 4.2 Implement the Solution (D5): `ActivitySource("Orders")`, the `PlaceOrder` and `ChargePayment`
   spans, the `order.id` and `order.item_count` attributes, and on gateway failure error status plus
   `AddException`. The response is 502.
   - Write the shared tests with an `ActivityListener`, filtered by the request's trace ID and in one
     xUnit collection. Cover all three spec scenarios.
   - Verify that `make samples-test` passes. Then run it twice more to check that it's stable.
-- [ ] 4.3 Write the Starter, with the endpoint working and the source and spans as `TODO`s. Verify that
+- [x] 4.3 Write the Starter, with the endpoint working and the source and spans as `TODO`s. Verify that
   the Starter tests fail with guiding messages, and that a completed scratch copy goes green.
 
 ## 5. Tracing page and cheatsheet

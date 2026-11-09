@@ -52,4 +52,17 @@
   <Folder Name="/exercises/04-logging/Starter/">
     <Project Path="exercises/04-logging/Starter/Logging.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/05-tracing/" />
+  <Folder Name="/exercises/05-tracing/Solution.Tests/">
+    <Project Path="exercises/05-tracing/Solution.Tests/Tracing.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/05-tracing/Solution/">
+    <Project Path="exercises/05-tracing/Solution/Tracing.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/05-tracing/Starter.Tests/">
+    <Project Path="exercises/05-tracing/Starter.Tests/Tracing.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/05-tracing/Starter/">
+    <Project Path="exercises/05-tracing/Starter/Tracing.Starter.csproj" />
+  </Folder>
 </Solution>

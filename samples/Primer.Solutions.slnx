@@ -28,4 +28,11 @@
   <Folder Name="/exercises/04-logging/Solution/">
     <Project Path="exercises/04-logging/Solution/Logging.Solution.csproj" />
   </Folder>
+  <Folder Name="/exercises/05-tracing/" />
+  <Folder Name="/exercises/05-tracing/Solution.Tests/">
+    <Project Path="exercises/05-tracing/Solution.Tests/Tracing.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/05-tracing/Solution/">
+    <Project Path="exercises/05-tracing/Solution/Tracing.Solution.csproj" />
+  </Folder>
 </Solution>
