@@ -60,7 +60,13 @@ export default defineConfig({
         },
         { label: "C# language", items: [{ slug: "csharp" }] },
         { label: "Coming from .NET 3.5", items: [{ slug: "coming-from-3-5" }] },
-        { label: "Cheatsheets", items: [{ slug: "cheatsheets/dotnet-cli" }] },
+        {
+          label: "Cheatsheets",
+          items: [
+            { slug: "cheatsheets/dotnet-cli" },
+            { slug: "cheatsheets/configuration" },
+          ],
+        },
       ],
     }),
   ],

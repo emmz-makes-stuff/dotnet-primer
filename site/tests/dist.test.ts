@@ -34,13 +34,18 @@ const EXPECTED_SLUGS = [
   "csharp",
   "coming-from-3-5",
   "cheatsheets/dotnet-cli",
+  "cheatsheets/configuration",
 ];
 
 /**
  * Pages delivered with full content (spec: topic-page-content). They must not
  * show the "Coming soon" placeholder aside. Add a page here when it's finished.
  */
-const FULL_CONTENT_SLUGS: string[] = ["aspnet-core"];
+const FULL_CONTENT_SLUGS: string[] = [
+  "aspnet-core",
+  "aspnet-core/configuration",
+  "cheatsheets/configuration",
+];
 
 /**
  * Topic page → its cheatsheet (spec: site-structure, Cheatsheets per area).
@@ -48,6 +53,7 @@ const FULL_CONTENT_SLUGS: string[] = ["aspnet-core"];
  */
 const CHEATSHEETS: Record<string, string> = {
   "platform/dotnet-10-and-cli": "cheatsheets/dotnet-cli",
+  "aspnet-core/configuration": "cheatsheets/configuration",
 };
 
 const REPO_TREE =

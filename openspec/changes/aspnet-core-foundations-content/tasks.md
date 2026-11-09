@@ -43,10 +43,10 @@
 
 ## 3. Configuration page and cheatsheet
 
-- [ ] 3.1 Create `site/src/content/docs/cheatsheets/configuration.md` (design D4), with a back link to
+- [x] 3.1 Create `site/src/content/docs/cheatsheets/configuration.md` (design D4), with a back link to
   the Configuration page and `learn` links. Add it to the sidebar Cheatsheets group, to a new
   "Cheatsheets" card grid on `index.mdx`, and to `EXPECTED_SLUGS`.
-- [ ] 3.2 Rewrite `site/src/content/docs/aspnet-core/configuration.md` per D3 to cover every item in
+- [x] 3.2 Rewrite `site/src/content/docs/aspnet-core/configuration.md` per D3 to cover every item in
   "Configuration page coverage":
   - providers and precedence;
   - environments;
@@ -59,8 +59,8 @@
 
   Add the Pitfalls section, put the cheatsheet tip at the top, and keep the existing exercise 01
   description (it already links to the exercise).
-- [ ] 3.3 Compile and check the snippets as in 2.2, and record the results.
-- [ ] 3.4 Add `aspnet-core/configuration` and `cheatsheets/configuration` to `FULL_CONTENT_SLUGS`, and
+- [x] 3.3 Compile and check the snippets as in 2.2, and record the results.
+- [x] 3.4 Add `aspnet-core/configuration` and `cheatsheets/configuration` to `FULL_CONTENT_SLUGS`, and
   the pair to the cheatsheet link map. Verify with `make gates`.
 
 ## 4. Exercise 02: dependency injection
