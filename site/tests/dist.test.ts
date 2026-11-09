@@ -40,7 +40,7 @@ const EXPECTED_SLUGS = [
  * Pages delivered with full content (spec: topic-page-content). They must not
  * show the "Coming soon" placeholder aside. Add a page here when it's finished.
  */
-const FULL_CONTENT_SLUGS: string[] = [];
+const FULL_CONTENT_SLUGS: string[] = ["aspnet-core"];
 
 /**
  * Topic page → its cheatsheet (spec: site-structure, Cheatsheets per area).

@@ -31,15 +31,15 @@
 
 ## 2. ASP.NET Core entry page
 
-- [ ] 2.1 Rewrite `site/src/content/docs/aspnet-core/index.md` to cover the host and `WebApplication`,
+- [x] 2.1 Rewrite `site/src/content/docs/aspnet-core/index.md` to cover the host and `WebApplication`,
   the builder → build → run shape, minimal API endpoints with route parameters, route groups,
   `TypedResults`, and when to use controllers. End with a Pitfalls section and "where next" links to
   Configuration, DI and Middleware (spec: ASP.NET Core entry page coverage). Keep or refresh the
   `learn` links.
-- [ ] 2.2 Compile every complete-file snippet on the page in a scratch `dotnet new web` project
+- [x] 2.2 Compile every complete-file snippet on the page in a scratch `dotnet new web` project
   (net10.0, warnings as errors) in the session scratchpad. Check the fragments against Microsoft
   Learn. Record what was compiled in the section-done note.
-- [ ] 2.3 Add `aspnet-core` to `FULL_CONTENT_SLUGS`. Verify with `make gates`.
+- [x] 2.3 Add `aspnet-core` to `FULL_CONTENT_SLUGS`. Verify with `make gates`.
 
 ## 3. Configuration page and cheatsheet
 
