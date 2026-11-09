@@ -35,6 +35,7 @@ const EXPECTED_SLUGS = [
   "coming-from-3-5",
   "cheatsheets/dotnet-cli",
   "cheatsheets/configuration",
+  "cheatsheets/dependency-injection",
 ];
 
 /**
@@ -45,6 +46,8 @@ const FULL_CONTENT_SLUGS: string[] = [
   "aspnet-core",
   "aspnet-core/configuration",
   "cheatsheets/configuration",
+  "aspnet-core/dependency-injection",
+  "cheatsheets/dependency-injection",
 ];
 
 /**
@@ -54,6 +57,7 @@ const FULL_CONTENT_SLUGS: string[] = [
 const CHEATSHEETS: Record<string, string> = {
   "platform/dotnet-10-and-cli": "cheatsheets/dotnet-cli",
   "aspnet-core/configuration": "cheatsheets/configuration",
+  "aspnet-core/dependency-injection": "cheatsheets/dependency-injection",
 };
 
 const REPO_TREE =

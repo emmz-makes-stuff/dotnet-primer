@@ -65,6 +65,7 @@ export default defineConfig({
           items: [
             { slug: "cheatsheets/dotnet-cli" },
             { slug: "cheatsheets/configuration" },
+            { slug: "cheatsheets/dependency-injection" },
           ],
         },
       ],

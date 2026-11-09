@@ -87,9 +87,9 @@
 
 ## 5. Dependency Injection page and cheatsheet
 
-- [ ] 5.1 Create `site/src/content/docs/cheatsheets/dependency-injection.md` (D4), and wire it into
+- [x] 5.1 Create `site/src/content/docs/cheatsheets/dependency-injection.md` (D4), and wire it into
   the sidebar, the intro cards and `EXPECTED_SLUGS`.
-- [ ] 5.2 Rewrite `site/src/content/docs/aspnet-core/dependency-injection.md` per D3 to cover every
+- [x] 5.2 Rewrite `site/src/content/docs/aspnet-core/dependency-injection.md` per D3 to cover every
   item in "Dependency Injection page coverage":
   - registration;
   - the three lifetimes, each with its lifespan and a typical use;
@@ -101,9 +101,9 @@
 
   Add the Pitfalls section and the cheatsheet tip, and keep the exercise 02 section from 4.4 at the
   end.
-- [ ] 5.3 Compile and check the snippets as in 2.2. Include a complete captive-dependency example, and
+- [x] 5.3 Compile and check the snippets as in 2.2. Include a complete captive-dependency example, and
   confirm that it throws at startup in Development. Record the results.
-- [ ] 5.4 Add the page and cheatsheet slugs to `FULL_CONTENT_SLUGS`, and the pair to the cheatsheet
+- [x] 5.4 Add the page and cheatsheet slugs to `FULL_CONTENT_SLUGS`, and the pair to the cheatsheet
   link map. Verify with `make gates`.
 
 ## 6. Exercise 03: middleware
