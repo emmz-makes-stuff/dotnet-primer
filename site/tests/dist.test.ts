@@ -51,6 +51,7 @@ const FULL_CONTENT_SLUGS: string[] = [
   "cheatsheets/dependency-injection",
   "aspnet-core/middleware",
   "cheatsheets/middleware",
+  "cheatsheets/dotnet-cli",
 ];
 
 /**

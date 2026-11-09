@@ -2,7 +2,7 @@
 
 ## 1. dotnetup probe and the dotnet CLI cheatsheet
 
-- [ ] 1.1 Probe `dotnetup` in an isolated root (design D2). Use
+- [x] 1.1 Probe `dotnetup` in an isolated root (design D2). Use
   `--install-path "<scratchpad>/dotnetup-root"` and `--manifest-path "<scratchpad>/manifest.json"`.
   - Run:
     - `sdk install 10.0.4xx`;
@@ -14,13 +14,13 @@
     - which version it resolves to;
     - the exact command syntax that worked.
   - Verify: `dotnetup list` without the custom paths is unchanged from before the probe.
-- [ ] 1.2 Rewrite `site/src/content/docs/cheatsheets/dotnet-cli.md` (design D4).
+- [x] 1.2 Rewrite `site/src/content/docs/cheatsheets/dotnet-cli.md` (design D4).
   - The Install and select SDKs section leads with `dotnetup`.
   - Add tools, user secrets, EF Core migrations, formatting and the extra publish lines.
   - Remove the "Coming soon" note and keep the "Back to" link.
   - Verify: every command has been run in a scratch folder on 10.0.4xx, with the `dotnetup` ones done
     as in 1.1, and the EF Core ones against a SQLite scratch project.
-- [ ] 1.3 Add `cheatsheets/dotnet-cli` to `FULL_CONTENT_SLUGS`. Verify that `make gates` shows
+- [x] 1.3 Add `cheatsheets/dotnet-cli` to `FULL_CONTENT_SLUGS`. Verify that `make gates` shows
   `GATES_EXIT:0`.
 
 ## 2. The .NET 10 and dotnet CLI page
