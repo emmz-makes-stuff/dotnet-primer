@@ -60,7 +60,7 @@
 
 ## 4. Human check
 
-- [ ] 4.1 Human check (stop and ask). Two parts:
+- [x] 4.1 Human check (stop and ask). Two parts:
   - **Windows** (Emmz, or a Windows 11 tester she names): follow the Windows recipe from a clean
     WSL install. Report:
     - the output of the D5 checks, in WSL and in PowerShell;
@@ -75,6 +75,10 @@
   fallback (Risks) before changing the page.
 
   **Revised by §5:** run this against the new `/platform/docker/` page, after §5 has landed.
+
+  **Revised on 2026-11-10 (Emmz):** the site part passed. Nobody is available to run the Windows
+  recipe, so the Windows part is **deferred**, not done. Emmz accepted shipping the Windows steps
+  untested on Windows, with §6's prefilled issue link as the way readers report a failure.
 
 ## 5. Review fixes: Docker as its own page
 
@@ -105,6 +109,24 @@ dotnet CLI", and that page keeps a one-line pointer to it.
 - [x] 5.3 Repoint the §3 links (samples README, the Logging page's dashboard paragraph,
   `docs/dependencies.md`) to `/platform/docker/`. Verify: `make gates`, `make deps`, and a grep for
   `#get-docker` across the repo that finds only devlog notes.
+
+## 6. Review fixes: report Windows problems
+
+Agreed with Emmz on 2026-11-10. With no Windows tester, the Windows steps ship untested on Windows.
+The page says so, and gives a prefilled issue link.
+
+- [ ] 6.1 Add a `:::note` at the top of `## Windows (WSL 2)` on `/platform/docker/`. It says the
+  steps have been checked on Linux but not yet end to end on Windows, and asks readers to open an
+  issue if a step fails. The link opens
+  `https://github.com/emmz-makes-stuff/dotnet-primer/issues/new` with:
+  - the title "Docker on Windows: ";
+  - the `content` label;
+  - a body asking for the Windows version (`winver`), the WSL version (`wsl --version`), the step
+    that failed, and the command and its output.
+
+  Update the delta spec's Windows requirement with a scenario for it, and the design's Risks.
+  Verify: the link's query string decodes to that title, label and body (checked with
+  `new URL(…).searchParams`). `openspec validate --strict` and `make gates` pass.
 
 ## Workflow follow-up
 
