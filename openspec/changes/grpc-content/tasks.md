@@ -42,7 +42,7 @@
   parts, and `TODO`s 1–5. Verify that the Starter tests fail with the guiding messages. Complete a
   scratch copy, confirm that its tests go green, and discard it. Then complete a second scratch copy
   with `CancellationToken.None` passed to the tracker, and confirm that only the deadline test fails.
-- [ ] 2.5 Push the branch, and check that the `samples` workflow passes on `ubuntu-latest` with
+- [x] 2.5 Push the branch, and check that the `samples` workflow passes on `ubuntu-latest` with
   exercise 08's tests run. Record the run ID in the section-done note.
 
 ## 3. gRPC cheatsheet and page
