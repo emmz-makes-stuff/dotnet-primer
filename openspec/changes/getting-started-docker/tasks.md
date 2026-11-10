@@ -203,6 +203,15 @@ Agreed with Emmz on 2026-11-10: fix all seven findings from the `code-review` ru
 
   Verify: `make gates`. Each check fails when its condition is broken by hand, then passes again.
 
+## 9. Review fixes: spec for the Get Docker move
+
+Found by the archive's sync check on 2026-11-10. The main spec says the .NET 10 page SHALL end with
+the setup check, but 8.3 put "Get Docker" after it. Emmz chose to amend the spec and keep the page.
+
+- [x] 9.1 Add a MODIFIED "Getting started page ends with a setup check" to the delta spec
+  `topic-page-content`: the recipe stays last, and only a short pointer to the Docker page may
+  follow it. Verify: `openspec validate getting-started-docker --strict` and `make gates`.
+
 ## Workflow follow-up
 
 - Whole-change review, the change-done note, and the offer of `code-review`, per CLAUDE.md

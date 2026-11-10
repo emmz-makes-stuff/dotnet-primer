@@ -76,3 +76,19 @@ SHALL stay unchanged, because exercises 01–06 don't need Docker.
 - **WHEN** the check fails because the daemon isn't running, or because the user isn't yet in the
   `docker` group
 - **THEN** the Docker page's Pitfalls section names that error and how to fix it
+
+## MODIFIED Requirements
+
+### Requirement: Getting started page ends with a setup check
+The page SHALL end with a recipe that confirms the reader's setup. The recipe SHALL clone the
+repository, install the SDK the samples pin, and run exercise 01's solution tests. Only a short
+pointer to the next Getting started page, Docker, MAY follow the recipe.
+
+#### Scenario: Reader checks their setup
+- **WHEN** a reader follows the setup-check recipe on a machine set up as the page describes
+- **THEN** exercise 01's solution tests pass
+
+#### Scenario: Reader moves on after the setup check
+- **WHEN** a reader finishes the setup-check recipe
+- **THEN** the only section after it is a short pointer to the Docker page, saying that exercises
+  01–06 don't need Docker
