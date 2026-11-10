@@ -128,6 +128,51 @@ The page says so, and gives a prefilled issue link.
   Verify: the link's query string decodes to that title, label and body (checked with
   `new URL(…).searchParams`). `openspec validate --strict` and `make gates` pass.
 
+## 7. Review fixes: Rancher Desktop as the default
+
+Agreed with Emmz on 2026-11-10. Rancher Desktop (free, Apache 2.0) becomes the default on Windows
+and macOS: it is "more comfortable for developers who've never done anything there wasn't a menu
+item for in Visual Studio". On Windows, Docker Engine in WSL 2 stays as an advanced option. On macOS,
+OrbStack, Docker Desktop and Colima become the alternatives. Nothing is installed on this Mac: the
+Rancher Desktop steps come from its docs, and the "not yet tested" note covers them on both
+platforms.
+
+- [x] 7.1 Record the Rancher Desktop facts (installation, requirements, container engine,
+  Kubernetes, Testcontainers, Administrative Access, licence, latest release) in a devlog note with
+  their URLs. Update the planning artifacts:
+  - **The delta spec:** the Windows requirement covers Rancher Desktop as the default, with Docker
+    Engine in WSL 2 as the advanced option (still loopback-only, and still saying it has no
+    authentication). The macOS default is Rancher Desktop. The untested-note scenario covers
+    Rancher Desktop on both platforms.
+  - **The design:** D2 and D3 revised, plus the Risks.
+  - **The proposal:** What Changes.
+
+  Verify: `openspec validate getting-started-docker --strict`.
+- [x] 7.2 Rewrite the Windows and macOS parts of `/platform/docker/`:
+  - **Windows:** install WSL (`wsl --install`, as administrator); install Rancher Desktop from the
+    MSI on its GitHub releases page, for everyone; on first run, choose **dockerd (moby)** and turn
+    off **Enable Kubernetes**; set `DOCKER_HOST=npipe:////./pipe/docker_engine` for Windows tools
+    (Testcontainers), as Rancher Desktop's Testcontainers guide says. Docker Desktop stays as an
+    alternative. The current six steps, their caution and the dashboard paragraph move into a
+    collapsed `<details>` block, "Advanced: Docker Engine in WSL 2, without a desktop app".
+  - **macOS:** Rancher Desktop from its DMG (Apple silicon or Intel), the same first-run choices,
+    and the Testcontainers pointer: Administrative Access for `/var/run/docker.sock`, or Rancher's
+    three variables. OrbStack (and its licence), Docker Desktop and Colima become the alternatives.
+  - **The notes:** the Windows note covers Rancher Desktop and the advanced WSL steps, and a new macOS
+    note covers Rancher Desktop there. Each has its own prefilled issue ("Docker on Windows: " or
+    "Docker on macOS: ") with prompts for the OS and Rancher Desktop versions.
+  - **Check Docker:** works in PowerShell or the macOS terminal for Rancher Desktop. The
+    `Invoke-RestMethod` check applies to the advanced path only.
+  - **Pitfalls:** add one for "the `docker` command isn't found, or `nerdctl` is the only CLI"
+    (containerd was chosen), whose fix is dockerd (moby) under Preferences, Container Engine. The
+    existing ones are scoped to Linux and the advanced path.
+  - **The frontmatter description.**
+
+  Verify: `make gates`. The built page has its anchors. The `<details>` block renders with its code
+  blocks (checked in `site/dist`), and the issue link decodes as intended.
+- [x] 7.3 Update the other mentions to the new defaults: the samples README's Docker prerequisite,
+  and the docker row of `docs/dependencies.md`. Verify: `make gates` and `make deps`.
+
 ## Workflow follow-up
 
 - Whole-change review, the change-done note, and the offer of `code-review`, per CLAUDE.md

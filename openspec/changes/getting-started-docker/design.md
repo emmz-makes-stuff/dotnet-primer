@@ -66,7 +66,11 @@ one short paragraph with their licence terms.
 sections. The separate page was considered then and rejected, to keep machine setup in one place.
 Emmz chose the separate page once she had read the section.
 
-### D2. Windows: Docker Engine in WSL 2
+### D2. Windows: Docker Engine in WSL 2 (the advanced path since §7)
+
+**Revised in §7:** this is no longer the default. Rancher Desktop is (D9). These steps stay on the
+page in a collapsed `<details>` block, "Advanced: Docker Engine in WSL 2, without a desktop app", for
+readers who want no GUI. The steps, the caution and the dashboard paragraph are unchanged inside it.
 
 These are the steps, run in this order:
 
@@ -119,9 +123,14 @@ small-business limits. A reader who uses it skips steps 3–6.
 
 ### D3. macOS
 
-- **Default: OrbStack.** Install it from orbstack.dev or with `brew install orbstack`, open it once,
-  and `docker` is on `PATH`. Licence: free for personal use, and paid for freelance or work use.
+**Revised in §7:** the default is now **Rancher Desktop** (D9). OrbStack moves into the
+alternatives, with its licence terms.
+
+- **Default: Rancher Desktop**, from the `.dmg` on its GitHub releases page (Apple silicon `aarch64`
+  or Intel `x86_64`), with the same first-run choices as on Windows (D9).
 - **Alternatives, one paragraph:**
+  - **OrbStack:** `brew install orbstack`. It's free for personal use only, and freelance or work use
+    needs a paid licence.
   - **Docker Desktop:** free under the small-business limits, and a subscription above them.
   - **Colima:** free and open source. Install it with `brew install colima docker`, then run
     `colima start`.
@@ -199,6 +208,36 @@ links through the same redirect check as before: Learn URLs without a locale, an
 - **Site:** `make gates`, then the usual human check of the page in light and dark, the copy
   buttons, and search for "WSL".
 
+### D9. Rancher Desktop as the Windows and macOS default (§7)
+
+Emmz chose this on 2026-11-10. Rancher Desktop is free (Apache 2.0) and is "more comfortable for
+developers who've never done anything there wasn't a menu item for in Visual Studio". It's a desktop
+app with a settings window, it puts `docker` on the `PATH`, and on Windows it serves the standard
+`docker_engine` named pipe.
+
+- **Windows:**
+  1. WSL first: `wsl --install` in an administrator PowerShell, then restart. Rancher Desktop
+     requires WSL "prior to running the Rancher Desktop installer".
+  2. The `Rancher.Desktop.Setup.X.Y.Z.msi` from the GitHub releases page, installed "for everyone",
+     so its privileged service is installed too. That needs admin rights.
+  3. On first run, choose **dockerd (moby)** as the container engine, and untick
+     **Enable Kubernetes**. Kubernetes is on by default, and the primer doesn't use it.
+  4. `DOCKER_HOST=npipe:////./pipe/docker_engine` as a user environment variable, as Rancher
+     Desktop's Testcontainers guide says ("No other environment variables are needed. Container
+     ports are accessible on localhost").
+- **macOS:** the same first-run choices. For Testcontainers, the page points to Rancher Desktop's
+  guide, which offers **Administrative Access** (it creates `/var/run/docker.sock`) or three
+  variables (`DOCKER_HOST=unix://$HOME/.rd/docker.sock`, `TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE`,
+  `TESTCONTAINERS_HOST_OVERRIDE`). The page doesn't copy them: the Testing pages will own that.
+- **The check:** the D5 `docker` commands, run in PowerShell or the macOS terminal. The
+  `Invoke-RestMethod` check stays in the advanced block only.
+- **Not tested:** nothing was installed on this Mac (Emmz's choice), so the "not yet tested" note
+  covers Rancher Desktop on Windows and macOS, and the advanced WSL steps: one note on each
+  platform, each with its own prefilled issue title.
+
+**Alternatives considered:** Docker Engine in WSL as the Windows default (the first version, now the
+advanced path); OrbStack as the macOS default (paid for work use).
+
 ## Risks / Trade-offs
 
 - **[The unauthenticated TCP endpoint]** → loopback only, a caution on the page, and the Docker
@@ -211,10 +250,12 @@ links through the same redirect check as before: Learn URLs without a locale, an
   Microsoft's pages as the source of truth, and the commands are checked verbatim on the day (D7, D8).
 - **[Licence terms change]** → the page states them "at the time of writing", and links each
   vendor's terms.
-- **[The Windows recipe is untested on Windows]** (§4: no tester available) → Emmz accepted
-  shipping it. The Windows section opens with a `:::note` that says so, and links a GitHub issue
-  prefilled with the title "Docker on Windows: ", the `content` label, and prompts for `winver`,
-  `wsl --version`, the step and its output (§6). Remove or soften the note once a Windows run passes.
+- **[The recipes are untested on Windows and macOS]** (§4: no Windows tester; §7: nothing installed on
+  this Mac for Rancher Desktop) → Emmz accepted shipping them. Since §7, the note opens the page's
+  platform parts: one note on Windows (covering Rancher Desktop and the advanced WSL steps) and one on
+  macOS. Each links a GitHub issue prefilled with its own title ("Docker on Windows: " or "Docker on
+  macOS: "), the `content` label, and prompts for the OS and Rancher Desktop (or WSL) versions, the
+  step and its output. Remove or soften a note once a run passes on that platform.
 - **[A future Engine refuses TCP without TLS]** (Engine 29.9.3 warns that it will) → the D6
   "dockerd won't start" pitfall says to read `journalctl -u docker`. If that release lands while
   the page is live, it becomes a review fix: add the opt-in flag Docker names, or move to TLS.

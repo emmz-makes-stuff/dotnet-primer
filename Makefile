@@ -75,7 +75,7 @@ deps:
 	npm --version >/dev/null 2>&1 || { echo "MISSING npm — ships with node"; fail=1; }; \
 	command -v dotnetup >/dev/null 2>&1 && dotnetup --version >/dev/null 2>&1 || { echo "MISSING dotnetup — see docs/dependencies.md"; fail=1; }; \
 	dotnet --list-sdks 2>/dev/null | grep -q '^10\.0\.4' || { echo "MISSING dotnet SDK 10.0.4xx — dotnetup sdk install 10.0.4xx"; fail=1; }; \
-	docker info --format '{{.ServerVersion}}' >/dev/null 2>&1 || { echo "MISSING docker (daemon not running?) — install Docker Desktop or OrbStack"; fail=1; }; \
+	docker info --format '{{.ServerVersion}}' >/dev/null 2>&1 || { echo "MISSING docker (daemon not running?) — see /platform/docker/ (Rancher Desktop on Windows and macOS)"; fail=1; }; \
 	openspec --version >/dev/null 2>&1 || { echo "MISSING openspec — npm i -g @fission-ai/openspec"; fail=1; }; \
 	gh --version >/dev/null 2>&1 || { echo "MISSING gh — brew install gh"; fail=1; }; \
 	gh auth status >/dev/null 2>&1 || { echo "NOT AUTHENTICATED gh — gh auth login"; fail=1; }; \

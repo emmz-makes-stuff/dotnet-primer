@@ -17,7 +17,11 @@ change once that one was archived.
   and the dotnet CLI". That page keeps a one-line pointer to it. (This was first planned as a
   section on the .NET 10 page, and §5 moved it, at Emmz's request.) It says which primer pages need
   Docker (none of exercises 01–06 do), and then covers each platform:
-  - **Windows, with WSL 2** (the default path):
+  - **Windows:** **Rancher Desktop** by default (since §7): free (Apache 2.0), a settings window
+    rather than shell steps, `docker` on the `PATH`, and the standard Docker named pipe for
+    Windows tools. Install WSL first, choose dockerd (moby), turn Kubernetes off, and set
+    `DOCKER_HOST=npipe:////./pipe/docker_engine`. The first version's steps stay as a collapsed
+    **advanced** option, Docker Engine in WSL 2 without a desktop app:
     - install WSL 2 and an Ubuntu distro;
     - turn on systemd;
     - install **Docker Engine** from Docker's apt repository;
@@ -29,8 +33,8 @@ change once that one was archived.
     It says plainly that the TCP port has no authentication, which is why it is bound to loopback.
     **Docker Desktop**, with its WSL 2 backend, is the alternative for readers who don't need a
     subscription, or whose company has one.
-  - **macOS:** **OrbStack** recommended, with **Docker Desktop** and **Colima** as alternatives. It
-    notes which of them need a licence for work use.
+  - **macOS:** **Rancher Desktop** by default (since §7), with **OrbStack**, **Docker Desktop** and
+    **Colima** as alternatives. It notes which of them need a licence for work use.
   - **Linux:** Docker Engine from Docker's own repository (not the distro's `docker.io` package),
     and the `docker` group.
 - **A Docker check** at the end of the setup steps: `docker run --rm hello-world` and

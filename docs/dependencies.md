@@ -12,7 +12,7 @@ Checks run from the repo root. The dotnet check looks for an installed 10.0.4xx 
 | npm | site package manager | >=9.6.5 | `npm --version` | — | ships with node |
 | dotnetup | install/manage SDKs; verify the Getting started page | any 0.x preview | `dotnetup --version` | — | `curl -fsSL https://aka.ms/dotnetup/get-dotnetup.sh \| bash` (Learn: *Get started with dotnetup*) |
 | dotnet | samples build/test/format | SDK 10.0.4xx (pinned by `global.json`) | `dotnet --list-sdks \| grep -q '^10\.0\.4'` | — | `dotnetup sdk install 10.0.4xx` (from the repo root) |
-| docker | Testcontainers in sample tests; container exercises | any recent, daemon running | `docker info --format '{{.ServerVersion}}'` | — | see the site's Docker page (`/platform/docker/`): Docker Engine in WSL 2 (Windows), OrbStack (macOS), Docker Engine (Linux) |
+| docker | Testcontainers in sample tests; container exercises | any recent, daemon running | `docker info --format '{{.ServerVersion}}'` | — | see the site's Docker page (`/platform/docker/`): Rancher Desktop (Windows, macOS), Docker Engine (Linux) |
 | openspec | change tracking | >=1.15 | `openspec --version` | — | `npm i -g @fission-ai/openspec` |
 | gh | PRs, Pages settings, issues | any | `gh --version` | `gh auth status` | `brew install gh`, then `gh auth login` |
 | git | source control (SSH remote `emmz-makes-stuff/dotnet-primer`) | any | `git --version` | — | `xcode-select --install` |
