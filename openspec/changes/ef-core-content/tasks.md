@@ -166,7 +166,7 @@ Rosetta on by default was rejected: Docker's settings reference lists it as "Dis
     remarks) so they don't promise an explanation on a page that's still "Coming soon".
 
   Compile the changed snippets.
-- [ ] 7.4 `make gates` to `GATES_EXIT:0`. Then a short human check: the Exercise 07 tests from a
+- [x] 7.4 `make gates` to `GATES_EXIT:0`. Then a short human check: the Exercise 07 tests from a
   clean clone (Starter red, Solution green).
 
 ## Workflow follow-up
