@@ -42,4 +42,11 @@
   <Folder Name="/exercises/06-metrics/Solution/">
     <Project Path="exercises/06-metrics/Solution/Metrics.Solution.csproj" />
   </Folder>
+  <Folder Name="/exercises/07-ef-core/" />
+  <Folder Name="/exercises/07-ef-core/Solution.Tests/">
+    <Project Path="exercises/07-ef-core/Solution.Tests/EfCore.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/07-ef-core/Solution/">
+    <Project Path="exercises/07-ef-core/Solution/EfCore.Solution.csproj" />
+  </Folder>
 </Solution>

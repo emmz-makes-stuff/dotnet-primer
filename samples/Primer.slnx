@@ -78,4 +78,17 @@
   <Folder Name="/exercises/06-metrics/Starter/">
     <Project Path="exercises/06-metrics/Starter/Metrics.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/07-ef-core/" />
+  <Folder Name="/exercises/07-ef-core/Solution.Tests/">
+    <Project Path="exercises/07-ef-core/Solution.Tests/EfCore.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/07-ef-core/Solution/">
+    <Project Path="exercises/07-ef-core/Solution/EfCore.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/07-ef-core/Starter.Tests/">
+    <Project Path="exercises/07-ef-core/Starter.Tests/EfCore.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/07-ef-core/Starter/">
+    <Project Path="exercises/07-ef-core/Starter/EfCore.Starter.csproj" />
+  </Folder>
 </Solution>

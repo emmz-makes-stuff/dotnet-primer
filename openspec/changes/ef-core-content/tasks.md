@@ -23,21 +23,21 @@
 
 ## 2. Exercise 07: EF Core
 
-- [ ] 2.1 Scaffold `samples/exercises/07-ef-core/` like 04–06 (design D4):
+- [x] 2.1 Scaffold `samples/exercises/07-ef-core/` like 04–06 (design D4):
   - `EfCore.Starter` and `EfCore.Solution` web projects;
   - the shared `tests/`;
   - `Starter.Tests` and `Solution.Tests`.
 
   Add them to `Primer.slnx`. Add only the Solution and its tests to `Primer.Solutions.slnx`. Verify
   with `make samples-build`.
-- [ ] 2.2 Implement the Solution:
+- [x] 2.2 Implement the Solution:
   - `OrdersDbContext`, the `Order`/`OrderLine` entities, and their `IEntityTypeConfiguration`
     classes;
   - the three D4 endpoints;
   - the `InitialCreate` migration, generated with `dnx dotnet-ef` and reviewed.
 
   Verify that `make samples-build` passes.
-- [ ] 2.3 Write the shared tests (D4): the assembly fixture with the pinned image and the
+- [x] 2.3 Write the shared tests (D4): the assembly fixture with the pinned image and the
   Docker-missing message, a database per test class, and the `SaveChanges` and command
   interceptors.
   - Cover every scenario in the three exercise-07 requirements, with assertion messages that name
@@ -46,7 +46,7 @@
     stable.
   - Run the tests **sandboxed**, where the sandbox blocks the Docker socket, and check the
     Docker-missing message. This avoids stopping OrbStack.
-- [ ] 2.4 Write the Starter:
+- [x] 2.4 Write the Starter:
   - registration and the configuration classes as `TODO`s, and no `Migrations/` folder;
   - a save that works but calls `SaveChanges` per line;
   - an N+1 list that works;
@@ -54,7 +54,7 @@
 
   Verify that the Starter tests fail with the guiding messages. Complete a scratch copy, including
   `dnx dotnet-ef migrations add`, confirm that its tests go green, and discard it.
-- [ ] 2.5 Push the branch, and check that the `samples` workflow passes on `ubuntu-latest` with
+- [x] 2.5 Push the branch, and check that the `samples` workflow passes on `ubuntu-latest` with
   exercise 07's tests run (D8). Record the run ID in the section-done note.
 
 ## 3. EF Core cheatsheet and page
