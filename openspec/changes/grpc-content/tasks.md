@@ -21,24 +21,24 @@
 
 ## 2. Exercise 08: gRPC
 
-- [ ] 2.1 Scaffold `samples/exercises/08-grpc/` like 07 (design D4):
+- [x] 2.1 Scaffold `samples/exercises/08-grpc/` like 07 (design D4):
   - `Grpc.Starter` and `Grpc.Solution` web projects, with `Protos/orders.proto`;
   - the shared `tests/`, with `tests/Protos/orders.proto`;
   - `Starter.Tests` and `Solution.Tests`.
 
   Add them to `Primer.slnx`. Add only the Solution and its tests to `Primer.Solutions.slnx`. Verify
   with `make samples-build`.
-- [ ] 2.2 Implement the Solution: the full contract, the pre-written `OrderStore`, validation and
+- [x] 2.2 Implement the Solution: the full contract, the pre-written `OrderStore`, validation and
   `IOrderTracker`, and `OrdersService` with the three RPCs. Check that the Solution's `.proto` and
   `tests/Protos/orders.proto` differ only in `option csharp_namespace` (design D3). Verify that
   `make samples-build` passes.
-- [ ] 2.3 Write the shared tests (D4): the factory with the gRPC channel and the test tracker, and
+- [x] 2.3 Write the shared tests (D4): the factory with the gRPC channel and the test tracker, and
   the guiding messages for "not mapped" and "RPC missing from the contract".
   - Cover every scenario in the two exercise-08 requirements, with assertion messages that name the
     missing behaviour.
   - Verify that `make samples-test` passes. Run exercise 08's tests three more times to check the
     deadline test is stable.
-- [ ] 2.4 Write the Starter: the unary-only `.proto` with a `TODO` for `TrackOrder`, the pre-written
+- [x] 2.4 Write the Starter: the unary-only `.proto` with a `TODO` for `TrackOrder`, the pre-written
   parts, and `TODO`s 1–5. Verify that the Starter tests fail with the guiding messages. Complete a
   scratch copy, confirm that its tests go green, and discard it. Then complete a second scratch copy
   with `CancellationToken.None` passed to the tracker, and confirm that only the deadline test fails.

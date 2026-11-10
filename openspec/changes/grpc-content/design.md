@@ -149,6 +149,27 @@ passes `CancellationToken.None`.
 - **deadline:** a deadline shorter than the updates take gives `DeadlineExceeded` on the client, and
   the test tracker records cancellation within a second of it.
 
+**Revised in §2:**
+- **The `Order` message has no `status`.** The store doesn't track status, only the tracker
+  simulates it, so `GetOrder` would have had to hard-code `Placed`. `placed_at` is field 5.
+- **The Starter's `PlaceOrder` works, but badly:** it stores every order, without validating. So
+  TODO 2's tests fail with "it succeeded", the 04 and 07 pattern. `GetOrder` and `TrackOrder` aren't
+  overridden in the Starter, so they answer `Unimplemented` with an empty detail.
+- **The Starter's `OrdersService` takes only `OrderStore`.** An unread primary-constructor parameter
+  (CS9113) is a build error here, so TODO 5 says to add `IOrderTracker`.
+- **A cancel test** joins the deadline test: the client cancels after the first update, gets
+  `Cancelled`, and the tracker must see its token cancelled. The requirement names both.
+- **The test channel gives the server a later deadline.** The client sends its deadline in the
+  `grpc-timeout` header, and both ends enforce it. In 1 of about 30 runs the server's timer fired
+  first, and the in-memory test server reported the server's reset as `Unavailable` ("The
+  application reset the request with error code 8"). A `DelegatingHandler` in `OrdersApp` adds a
+  second to the header, so the client's timer always ends the call, with `DeadlineExceeded`. The
+  service is still cancelled, by the client's abort. After the fix: 40 runs out of 40 passed, 4 at
+  a time.
+- **Field numbers are checked by behaviour:** with `order_id` and `status` swapped in the Starter's
+  `OrderStatusUpdate`, the streaming test fails with the field-number hint ("the wire carries
+  numbers, not names").
+
 ### D5. HTTP/2 locally
 
 gRPC needs HTTP/2. The page's hosting example runs over plain HTTP (h2c) on a fixed local port, with

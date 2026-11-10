@@ -1,0 +1,70 @@
+// The orders service's contract. The server builds from Solution/Protos/orders.proto, and callers
+// build their client from the published copy, tests/Protos/orders.proto. The two differ only in
+// csharp_namespace, so the tests' generated types don't clash with the server's. The wire contract
+// (the package, the service, RPC and message names, and the field numbers) is identical.
+syntax = "proto3";
+
+option csharp_namespace = "GrpcOrders.Contract";
+
+package orders.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// Places, reads and tracks orders.
+service Orders {
+  // Places an order and returns its id.
+  rpc PlaceOrder (PlaceOrderRequest) returns (PlaceOrderReply);
+
+  // Gets one order by its id.
+  rpc GetOrder (GetOrderRequest) returns (Order);
+
+  // Streams an order's status updates, one by one, until it has shipped.
+  rpc TrackOrder (TrackOrderRequest) returns (stream OrderStatusUpdate);
+}
+
+message PlaceOrderRequest {
+  string customer_email = 1;
+  repeated OrderLine lines = 2;
+}
+
+message OrderLine {
+  string sku = 1;
+  int32 quantity = 2;
+  // Money in minor units (cents). Protobuf has no decimal type, and a double isn't exact.
+  int64 unit_price_cents = 3;
+}
+
+message PlaceOrderReply {
+  int32 order_id = 1;
+}
+
+message GetOrderRequest {
+  int32 order_id = 1;
+}
+
+message Order {
+  int32 id = 1;
+  string customer_email = 2;
+  repeated OrderLine lines = 3;
+  int64 total_cents = 4;
+  google.protobuf.Timestamp placed_at = 5;
+}
+
+// Where an order is. Zero is "not set", as protobuf style asks for every enum.
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_PLACED = 1;
+  ORDER_STATUS_PICKED = 2;
+  ORDER_STATUS_PACKED = 3;
+  ORDER_STATUS_SHIPPED = 4;
+}
+
+message TrackOrderRequest {
+  int32 order_id = 1;
+}
+
+message OrderStatusUpdate {
+  int32 order_id = 1;
+  OrderStatus status = 2;
+  google.protobuf.Timestamp at = 3;
+}

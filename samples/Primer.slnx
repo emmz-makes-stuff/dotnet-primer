@@ -91,4 +91,17 @@
   <Folder Name="/exercises/07-ef-core/Starter/">
     <Project Path="exercises/07-ef-core/Starter/EfCore.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/08-grpc/" />
+  <Folder Name="/exercises/08-grpc/Solution.Tests/">
+    <Project Path="exercises/08-grpc/Solution.Tests/Grpc.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/08-grpc/Solution/">
+    <Project Path="exercises/08-grpc/Solution/Grpc.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/08-grpc/Starter.Tests/">
+    <Project Path="exercises/08-grpc/Starter.Tests/Grpc.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/08-grpc/Starter/">
+    <Project Path="exercises/08-grpc/Starter/Grpc.Starter.csproj" />
+  </Folder>
 </Solution>

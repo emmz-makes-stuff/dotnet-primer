@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Shared test source: the same tests also run against the solution. -->
+    <Compile Include="../tests/**/*.cs" />
+    <!-- The tests are a separate caller: they build their client from the published contract. -->
+    <Protobuf Include="../tests/Protos/orders.proto" GrpcServices="Client" Link="Protos/orders.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" />
+    <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Grpc.Tools" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Starter/Grpc.Starter.csproj" />
+  </ItemGroup>
+
+</Project>
