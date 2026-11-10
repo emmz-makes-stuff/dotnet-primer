@@ -158,8 +158,9 @@ public static class Hints
             return null;
         }
 
-        // Seen in the 1.1 probe: no endpoint is a 404; an RPC missing from the server's contract is
-        // "Method is unimplemented."; an RPC in the contract but not overridden has no detail.
+        // How the server answers each unfinished step: no endpoint is a 404; an RPC missing from the
+        // server's contract is "Method is unimplemented."; an RPC in the contract but not overridden
+        // has no detail.
         if (ex.Status.Detail.Contains("HTTP status code: 404", StringComparison.Ordinal))
         {
             return "The orders service has no endpoint. In Program.cs, register gRPC with " +

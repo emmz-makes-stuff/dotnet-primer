@@ -116,9 +116,9 @@ chose to apply it everywhere.
 
 ## 9. Review fixes: comments
 
-- [ ] 9.1 Rewrite the Starter `Protos/orders.proto` header for the Starter: the Starter builds from
+- [x] 9.1 Rewrite the Starter `Protos/orders.proto` header for the Starter: the Starter builds from
   its own copy, which TODO 4 extends with `TrackOrder`.
-- [ ] 9.2 Remove the "1.1 probe" reference from `tests/OrdersApp.cs`, keeping what it explains.
+- [x] 9.2 Remove the "1.1 probe" reference from `tests/OrdersApp.cs`, keeping what it explains.
   Verify: `make gates` shows `GATES_EXIT:0`.
 
 ## Workflow follow-up

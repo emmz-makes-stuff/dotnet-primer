@@ -1,7 +1,8 @@
-// The orders service's contract. The server builds from Solution/Protos/orders.proto, and callers
-// build their client from the published copy, tests/Protos/orders.proto. The two differ only in
-// csharp_namespace, so the tests' generated types don't clash with the server's. The wire contract
-// (the package, the service, RPC and message names, and the field numbers) is identical.
+// The orders service's contract, as this starter serves it. Callers build their client from the
+// published copy, tests/Protos/orders.proto. This copy doesn't have TrackOrder yet (TODO 4). Once
+// you add it, the two differ only in csharp_namespace, so the tests' generated types don't clash
+// with the server's. The wire contract (the package, the service, RPC and message names, and the
+// field numbers) must then be identical.
 syntax = "proto3";
 
 option csharp_namespace = "GrpcOrders.Protos";
