@@ -37,6 +37,12 @@ backend SHALL be named as the alternative.
 - **WHEN** a Windows reader restarts WSL (`wsl --shutdown`) and opens their distro again
 - **THEN** the Docker daemon is running without a manual start
 
+#### Scenario: Windows reader whose step fails
+- **WHEN** a step of the Windows recipe fails for a reader
+- **THEN** the Windows section, near its top, says whether the recipe has been tested end to end on
+  Windows, and links to a new GitHub issue prefilled with a title, the `content` label, and prompts
+  for their Windows and WSL versions, the failed step and its output
+
 ### Requirement: The Docker page ends its setup with a check
 The Docker page SHALL end its setup steps with a check that a container runs and that the daemon
 answers, with the output to expect. The .NET 10 and `dotnet` CLI page's "Check your setup" recipe

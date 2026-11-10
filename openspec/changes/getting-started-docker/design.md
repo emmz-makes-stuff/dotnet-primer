@@ -211,6 +211,10 @@ links through the same redirect check as before: Learn URLs without a locale, an
   Microsoft's pages as the source of truth, and the commands are checked verbatim on the day (D7, D8).
 - **[Licence terms change]** → the page states them "at the time of writing", and links each
   vendor's terms.
+- **[The Windows recipe is untested on Windows]** (§4: no tester available) → Emmz accepted
+  shipping it. The Windows section opens with a `:::note` that says so, and links a GitHub issue
+  prefilled with the title "Docker on Windows: ", the `content` label, and prompts for `winver`,
+  `wsl --version`, the step and its output (§6). Remove or soften the note once a Windows run passes.
 - **[A future Engine refuses TCP without TLS]** (Engine 29.9.3 warns that it will) → the D6
   "dockerd won't start" pitfall says to read `journalctl -u docker`. If that release lands while
   the page is live, it becomes a review fix: add the opt-in flag Docker names, or move to TLS.

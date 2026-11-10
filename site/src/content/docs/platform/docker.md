@@ -16,6 +16,10 @@ Pick your platform. Each one has a default that's free to use at work, and the a
 
 On Windows, run **Docker Engine** inside a Linux distro in [WSL 2](https://learn.microsoft.com/windows/wsl/install), the Windows Subsystem for Linux. Docker Engine is free for any use. .NET stays on Windows, and reaches the engine over a local port.
 
+:::note[Not yet tested end to end on Windows]
+These steps have been checked on Linux, but nobody has run all of them on a Windows machine yet. If a step doesn't work for you, please [open an issue](https://github.com/emmz-makes-stuff/dotnet-primer/issues/new?title=Docker+on+Windows%3A+&labels=content&body=Page%3A+https%3A%2F%2Fdotnet-primer.emmz.dev%2Fplatform%2Fdocker%2F%23windows-wsl-2%0A%0AWindows+version+%28from+%60winver%60%29%3A%0AWSL+version+%28from+%60wsl+--version%60%29%3A%0AThe+step+that+failed%3A%0AThe+command%2C+and+its+output%3A%0A) with the step that failed and what it printed. The link fills in the details to send.
+:::
+
 1. In PowerShell **as administrator**, install WSL 2 and Ubuntu. Restart if Windows asks you to, then open **Ubuntu** from the Start menu and create your Linux user:
 
    ```powershell

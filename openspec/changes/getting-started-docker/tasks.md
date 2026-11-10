@@ -115,7 +115,7 @@ dotnet CLI", and that page keeps a one-line pointer to it.
 Agreed with Emmz on 2026-11-10. With no Windows tester, the Windows steps ship untested on Windows.
 The page says so, and gives a prefilled issue link.
 
-- [ ] 6.1 Add a `:::note` at the top of `## Windows (WSL 2)` on `/platform/docker/`. It says the
+- [x] 6.1 Add a `:::note` at the top of `## Windows (WSL 2)` on `/platform/docker/`. It says the
   steps have been checked on Linux but not yet end to end on Windows, and asks readers to open an
   issue if a step fails. The link opens
   `https://github.com/emmz-makes-stuff/dotnet-primer/issues/new` with:
