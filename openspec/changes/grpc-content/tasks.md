@@ -66,7 +66,7 @@
 
 ## 4. Samples README
 
-- [ ] 4.1 Update `samples/README.md`: add 08 to the layout and the exercise table, and make the
+- [x] 4.1 Update `samples/README.md`: add 08 to the layout and the exercise table, and make the
   Docker prerequisite say that only exercise 07 needs it. Verify with `make gates`.
 
 ## 5. Human check
