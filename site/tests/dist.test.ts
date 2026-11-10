@@ -43,6 +43,7 @@ const EXPECTED_SLUGS = [
   "cheatsheets/metrics",
   "cheatsheets/ef-core",
   "cheatsheets/grpc",
+  "cheatsheets/testing",
 ];
 
 /**
@@ -70,6 +71,8 @@ const FULL_CONTENT_SLUGS: string[] = [
   "cheatsheets/ef-core",
   "services/grpc",
   "cheatsheets/grpc",
+  "testing",
+  "cheatsheets/testing",
 ];
 
 /**
@@ -86,6 +89,7 @@ const CHEATSHEETS: Record<string, string> = {
   "observability/metrics": "cheatsheets/metrics",
   "data/ef-core": "cheatsheets/ef-core",
   "services/grpc": "cheatsheets/grpc",
+  testing: "cheatsheets/testing",
 };
 
 const REPO_TREE =

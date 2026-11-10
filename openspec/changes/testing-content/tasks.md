@@ -67,23 +67,23 @@
 
 ## 4. Testing cheatsheet and page
 
-- [ ] 4.1 Create `site/src/content/docs/cheatsheets/testing.md` (design D9), with a back link and
+- [x] 4.1 Create `site/src/content/docs/cheatsheets/testing.md` (design D9), with a back link and
   Learn links. Add it to the sidebar's Cheatsheets group, the introduction's cheatsheet cards and
   `EXPECTED_SLUGS`. Verify that `make site-build` passes.
-- [ ] 4.2 Rewrite `site/src/content/docs/testing/index.md` per D1 and D8. Cover every item in the five
+- [x] 4.2 Rewrite `site/src/content/docs/testing/index.md` per D1 and D8. Cover every item in the five
   Testing page requirements. Add:
   - the cheatsheet tip;
   - the Pitfalls (including reading `DateTime.Now` in code under test, shared state between tests,
     and treating coverage as proof);
   - an "Exercise 09" section in the exercise-01 format. It says that the engineer writes the tests,
     that it needs no Docker, how to run the checker, and gives the exact GitHub tree link.
-- [ ] 4.3 Verify the page (D10):
+- [x] 4.3 Verify the page (D10):
   - compile every snippet in a scratch project, with warnings as errors;
   - run the filter and coverage examples, and paste their real output;
   - confirm that the "from the exercise" snippets match the real files.
 
   Record all of it in the section-done note.
-- [ ] 4.4 Add `testing` and `cheatsheets/testing` to `FULL_CONTENT_SLUGS`, and the pair to
+- [x] 4.4 Add `testing` and `cheatsheets/testing` to `FULL_CONTENT_SLUGS`, and the pair to
   `CHEATSHEETS`. Check every Learn link with the link script. Verify that `make gates` shows
   `GATES_EXIT:0`.
 
