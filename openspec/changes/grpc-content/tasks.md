@@ -71,7 +71,7 @@
 
 ## 5. Human check
 
-- [ ] 5.1 Run exercise 08 from a clean clone myself (Starter fails with guiding messages, Solution
+- [x] 5.1 Run exercise 08 from a clean clone myself (Starter fails with guiding messages, Solution
   passes), and report the result. Then stop for Emmz to check, with a copy-paste recipe:
   - the gRPC page and its cheatsheet, in light and dark schemes;
   - search finds "proto";
@@ -91,7 +91,7 @@ chose to apply it everywhere.
   `option csharp_namespace`. Update design D3. Verify: the two contracts still differ only in
   `csharp_namespace`, the snippets still compile and match the exercise, Starter 0/12 and Solution
   12/12, and `make gates` shows `GATES_EXIT:0`.
-- [ ] 6.2 Stop for Emmz to recheck the page and cheatsheet (the 5.1 recipe), then tick 5.1 and 6.2.
+- [x] 6.2 Stop for Emmz to recheck the page and cheatsheet (the 5.1 recipe), then tick 5.1 and 6.2.
 
 ## Workflow follow-up
 
