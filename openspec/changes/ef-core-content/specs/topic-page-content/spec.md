@@ -84,14 +84,22 @@ The EF Core page SHALL cover:
 - **THEN** the page shows that the second save throws `DbUpdateConcurrencyException`, and how to
   handle it
 
-### Requirement: EF Core page maps Entity Framework 3.5/4 habits
-The EF Core page SHALL map what an Entity Framework 3.5/4 developer knows to EF Core:
-- EDMX and the designer to code-first models with migrations;
-- `ObjectContext` to `DbContext`;
-- lazy loading, which is off by default, to explicit `Include` or projection;
-- silent client-side evaluation to EF Core's translation error.
+### Requirement: EF Core page maps Entity Framework 6 habits
+The EF Core page SHALL have a "Coming from Entity Framework 6" section, after its concepts and before
+its Pitfalls. It SHALL map these EF6 habits to EF Core:
+- the EDMX designer;
+- lazy loading on by default;
+- `ObjectContext` or a hand-made context;
+- EF6 migrations;
+- the `NotSupportedException` for LINQ that EF6 can't translate;
+- the `System.Data.Entity` namespace.
 
-#### Scenario: Engineer coming from EF 4 looks for the designer
+#### Scenario: Engineer coming from EF6 wonders where lazy loading went
+- **WHEN** an engineer used to EF6's `virtual` navigation properties reads the mapping
+- **THEN** it says that lazy loading is off by default in EF Core, and to use `Include` or a
+  projection instead
+
+#### Scenario: Engineer coming from EF6 looks for the designer
 - **WHEN** an engineer who used an EDMX model reads the mapping
 - **THEN** it says that EF Core has no designer, and that the model is C# code kept in step with the
   database through migrations

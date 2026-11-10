@@ -86,7 +86,9 @@ A finished learning-path page follows this skeleton:
 4. **`## Exercise NN: …`**, if the topic has one (see below).
 
 Teach modern .NET on its own terms. A one-line "you may know this as …" is fine, but old-to-new
-mappings belong on the _Coming from .NET 3.5_ page.
+mappings belong on the _Coming from .NET 3.5_ page. The one exception: when a topic replaces a
+library the readers used, its page may end the concepts with a short "Coming from …" table, before
+the Pitfalls. For example, the EF Core page has "Coming from Entity Framework 6".
 
 **C# samples must be right for .NET 10.** Compile any sample shown as a complete file in a scratch
 `dotnet new web` project, with warnings as errors, before publishing. Give fragments a `title="…"`

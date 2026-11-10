@@ -53,21 +53,31 @@
 The page follows the topic skeleton, with sections in this order:
 1. **Outcome.**
 2. **Cheatsheet tip.**
-3. **"Coming from Entity Framework 3.5/4"**, first, as a short table. The readers' existing mental
-   model is the obstacle, so it goes before the details.
-4. **A local SQL Server:** one `docker run` command and a connection string in user secrets.
-5. **`DbContext` and its lifetime.**
-6. **Modelling.**
-7. **Migrations,** including "In production".
-8. **Querying.**
-9. **Change tracking and saving.**
+3. **A local SQL Server:** one `docker run` command and a connection string in user secrets.
+4. **`DbContext` and its lifetime.**
+5. **Modelling.**
+6. **Migrations,** including "In production".
+7. **Querying.**
+8. **Change tracking and saving.**
+9. **"Coming from Entity Framework 6":** a short table.
 10. **Pitfalls,** then **Exercise 07**.
 
 Every LINQ example is followed by the SQL EF Core logged for it, trimmed only of its parameter
 declarations.
 
-- **Rejected: putting the EF 3.5/4 mapping at the end.** Readers would hit `Include` and wonder where
-  lazy loading went before the mapping explained it.
+**Revised in §3 (Emmz, 2026-11-10):**
+- **The mapping is from EF6, not EF 3.5/4.** EF6 is what these engineers are likeliest to have used
+  last. It already had `DbContext`, code-first migrations and async, so the rows were rewritten.
+- **The planned "silent client evaluation" row was wrong.** EF 3.5/4/6 threw
+  `NotSupportedException` for LINQ they couldn't translate. Silent client evaluation was EF Core 1–2,
+  so that row is gone.
+- **The table goes after the concepts, before Pitfalls,** so the page teaches EF Core on its own terms
+  first. This replaces the first plan of putting it before the details.
+- **`site/README.md`'s rule** ("old-to-new mappings belong on the *Coming from .NET 3.5* page") gains
+  an exception: a topic page may end its concepts with a short "Coming from …" table for the
+  library it replaces.
+- Where it matters earlier, a one-line "you may know this as…" is fine, as the README allows: for
+  example, lazy loading at `Include`.
 
 ### D2. The example domain
 

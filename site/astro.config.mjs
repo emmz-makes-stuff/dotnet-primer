@@ -73,6 +73,7 @@ export default defineConfig({
             { slug: "cheatsheets/logging" },
             { slug: "cheatsheets/tracing" },
             { slug: "cheatsheets/metrics" },
+            { slug: "cheatsheets/ef-core" },
           ],
         },
       ],

@@ -3,7 +3,8 @@
 ## Why
 
 EF Core is the next page on the learning path, after Metrics, and it is still a placeholder. The
-engineers know Entity Framework 3.5/4: EDMX designers, `ObjectContext`, and lazy loading everywhere.
+engineers know Entity Framework 6 (and before it EF 3.5/4): EDMX designers, `ObjectContext`, and lazy
+loading everywhere.
 Those habits cause the familiar EF Core mistakes:
 - a context that lives too long;
 - N+1 queries;
@@ -30,15 +31,15 @@ The Docker page has just shipped, so a real database for the exercise is now wit
     - `Include` against projection with `Select`;
     - `AsNoTracking`;
     - N+1, and how to spot it;
-    - the translation error that replaced EF 3.5's silent client evaluation;
+    - the translation error for a query EF Core can't run in SQL;
     - async throughout.
   - **Change tracking:**
     - entity states and `SaveChanges` as the unit of work;
     - `ExecuteUpdate`/`ExecuteDelete` for set-based changes;
     - optimistic concurrency with a `rowversion` token.
-  - **Coming from Entity Framework 3.5/4:** a mapping of old habits to their EF Core replacements
-    (EDMX → code-first with migrations, `ObjectContext` → `DbContext`, lazy loading off by default,
-    no silent client evaluation).
+  - **Coming from Entity Framework 6** (Emmz, 2026-11-10: EF6, not 3.5/4, and after the concepts):
+    a table mapping EF6 habits to EF Core (EDMX → code first only, lazy loading off by default,
+    `ObjectContext` → `DbContext` from DI, EF Core migrations, the translation error, the packages).
   - **Pitfalls,** then **Exercise 07**.
 - **An EF Core cheatsheet** (`cheatsheets/ef-core`): registration, the model configuration
   snippets, the `dotnet ef` commands, query patterns, change-tracking calls, and the SQL Server
@@ -72,7 +73,7 @@ None.
 - **`topic-page-content`:**
   - "Full-content pages carry no placeholder" adds the EF Core page and its cheatsheet.
   - New: "EF Core page covers DbContext and modelling", "… covers migrations", "… covers querying",
-    "… covers change tracking", and "EF Core page maps Entity Framework 3.5/4 habits".
+    "… covers change tracking", and "EF Core page maps Entity Framework 6 habits".
   - New: "Docker page covers x64-only images on Apple silicon".
 - **`site-structure`:** "Cheatsheets per area" grows from seven cheatsheets to eight.
 - **`sample-exercises`:**
