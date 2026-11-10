@@ -21,13 +21,12 @@
   - seeded bugs, checked by a checker;
   - the orders domain;
   - fakes first, then NSubstitute;
-  - code coverage and snapshot testing as the extras;
+  - code coverage as the extra (snapshot testing was dropped after §1.1; see D1);
   - one numbered `TODO` per technique in the Starter.
-- **Current versions** (NuGet, 2026-11-10, to confirm in §1): `NSubstitute` 6.2.0,
-  `NSubstitute.Analyzers.CSharp` 1.0.17, `Verify.XunitV3` 33.3.4, and
-  `Microsoft.Testing.Extensions.CodeCoverage` 18.12.0. `Microsoft.Extensions.TimeProvider.Testing`
-  isn't in `Directory.Packages.props` yet. Its version follows the `Microsoft.Extensions.*.Testing`
-  line the samples already pin (`Diagnostics.Testing` 10.11.0).
+- **Current versions** (NuGet, 2026-11-10, confirmed in §1.1): `NSubstitute` 6.2.0,
+  `NSubstitute.Analyzers.CSharp` 1.0.17, `Microsoft.Extensions.TimeProvider.Testing` 10.11.0 (the
+  same line as the samples' `Diagnostics.Testing`), and `Microsoft.Testing.Extensions.CodeCoverage`
+  18.12.0.
 
 ## Goals / Non-Goals
 
@@ -37,8 +36,8 @@
 - Exercise 09 gives real feedback on the engineer's tests, without anyone reading them.
 - Exercise 09 can't silently become impossible: the gate proves that the Solution tests catch every
   seeded bug.
-- Every command and output the page shows (filtering, coverage, Verify's first run and a mismatch)
-  comes from running it, not from memory.
+- Every command and output the page shows (filtering and coverage) comes from running it, not from
+  memory.
 
 **Non-Goals:**
 - A general mutation-testing tool. The four bugs are written by hand, and the checker knows only
@@ -92,13 +91,12 @@ The page follows the topic skeleton, with sections in this order:
    - the report format, and opening it;
    - "covered isn't tested": a line runs with no assertion on its result. This ties to exercise 09,
      where a test that only *calls* the API catches no bug.
-10. **Snapshot testing:**
-    - Verify's `Verify(...)`;
-    - the `*.received.*` / `*.verified.*` files, and committing the verified ones;
-    - a mismatch, and accepting a change;
-    - scrubbing unstable values (ids, dates).
-11. **"Coming from .NET 3.5":** a short table (D8).
-12. **Pitfalls,** then **Exercise 09**.
+10. **"Coming from .NET 3.5":** a short table (D8).
+11. **Pitfalls,** then **Exercise 09**.
+
+**No snapshot testing** (Emmz, 2026-11-10, after §1.1). Verify 33 fails the build without a
+licence property: it has moved to a maintenance fee, which commercial users must pay. It was one
+of the two extras, and Emmz dropped it rather than teach a paid tool or a hand-rolled substitute.
 
 MSTest and NUnit today each get a sentence, in Running tests.
 
@@ -188,7 +186,9 @@ default, and a path argument checks another test project (the gate passes `Solut
    correct API, so the tests are wrong, and exits non-zero without trying the bugs;
 3. if no tests ran, says so, points at TODO 1, and reports every bug missed;
 4. otherwise, runs it once per bug with `-p:SeededBug=n`, **one at a time**, each with its own
-   artifacts path, so the builds don't share `obj/` (to confirm in §1);
+   artifacts path (`--artifacts-path <dir>`), so the builds don't share `obj/`. The §1.1 probe
+   showed that each run builds into `<dir>/{obj,bin}/<project>/debug`, and that the default build
+   is unaffected afterwards;
 5. prints one line per bug: caught, or missed with its hint. A hint names the TODO and the technique
    ("TODO 3: a test that controls the time"), not the test;
 6. exits zero only when every bug is caught.
@@ -198,9 +198,11 @@ default, and a path argument checks another test project (the gate passes `Solut
 - 2: a test failed;
 - 8: no tests ran.
 
-Any other code is reported as a build or run error, with the output shown. For step 2's test names,
-it reads a report file that the xUnit v3 runner writes (TRX or xUnit XML, whichever needs no extra
-package; confirmed in §1).
+Any other code (a failed build is 1) is reported as a build or run error, with the output shown.
+For step 2's test names, it passes `--report-xunit-ctrf --report-xunit-ctrf-filename <name>
+--results-directory <dir>` and reads the CTRF JSON. xUnit v3 writes it with no extra package. The
+failed tests are the entries in `.results.tests[]` whose `status` is `failed`, and each one's `name`
+is the full test name (§1.1).
 
 **The checker runs on the pinned SDK only.** It shells out to `dotnet`, with the exercise folder as
 its working directory, so `global.json` applies.
@@ -215,7 +217,7 @@ its working directory, so `global.json` applies.
 
 `SAMPLES_TEST_EXIT` is non-zero if either fails. That satisfies "Seeded bug becomes uncatchable".
 CLAUDE.md's gate description for `make samples-test` is updated in the same section. The checker
-adds about 4 sequential builds and test runs to the gate (measured in §1).
+adds 5 sequential builds and test runs to the gate. In the §1.1 probe, five cold runs took 10 s.
 
 ### D7. Starter and Solution tests
 
@@ -261,23 +263,22 @@ It follows the cheatsheet shape (back link, `##` groups of copyable blocks, mini
 - fixtures (`IClassFixture`, collection, assembly, `IAsyncLifetime`);
 - doubles (a hand-written fake, `FakeTimeProvider`, `FakeLogger`, NSubstitute);
 - `WebApplicationFactory` with `ConfigureTestServices`;
-- Testcontainers in a fixture;
-- Verify.
+- Testcontainers in a fixture.
 
 ### D10. Verifying the page
 
 As for EF Core and gRPC:
 - every snippet compiles in a scratch project, with warnings as errors;
-- the filter, coverage and Verify commands are run, and their real output is pasted (for Verify,
-  the first run and a mismatch);
+- the filter and coverage commands are run, and their real output is pasted;
 - the snippets "from the exercise" are compared with the real files.
 
-Verify and the coverage extension are used only in the scratch project (proposal: Impact).
+The coverage extension is used only in the scratch project (proposal: Impact).
 
 ## Risks / Trade-offs
 
-- **The checker's builds are slow** (five test runs, each a build): about a minute, perhaps more on
-  CI. → They run one at a time with separate artifacts paths, the gate time is measured in §1, and
+- **The checker's builds take time** (five test runs, each a build): 10 s cold in the probe, perhaps
+  more on CI. → They run one at a time with separate artifacts paths, the CI time is recorded in 3.4,
+  and
   the checker prints progress so a learner doesn't think it has hung.
 - **Bug files sit outside the App's default compile**, so the build gate doesn't compile them, and
   `dotnet format` doesn't see them. → The gate's checker run builds each bug with warnings as
@@ -291,10 +292,6 @@ Verify and the coverage extension are used only in the scratch project (proposal
 - **An engineer's test that passes by luck,** for example a time test that uses real time, might
   catch bug 3 only sometimes. → The checker reports per bug, and the hints name the right tool. Exact
   flakiness detection is out of scope.
-- **The `ArtifactsPath` and report-file behaviour of `dotnet test` on Microsoft.Testing.Platform**
-  may differ from what D5 assumes. → The §1 probe checks it before the checker is written.
-  Fallbacks: run sequentially in the normal `obj/` (slower rebuilds), and parse console output for
-  names.
 - **Exercise 09 doesn't match the layout of 01–08.** → The README's layout section and the site's
   exercise description say so plainly, and the modified "Exercise layout" requirement makes it the
   defined exception.

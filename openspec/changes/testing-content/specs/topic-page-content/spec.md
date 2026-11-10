@@ -112,19 +112,6 @@ say what a coverage number does not show.
 - **THEN** the page has said that covered code can still be untested, because a line can run without
   any assertion checking what it did
 
-### Requirement: Testing page covers snapshot testing
-The Testing page SHALL show snapshot testing with Verify: the first run creating the snapshot to
-approve, later runs comparing against it, and what to do when a change is intended.
-
-#### Scenario: Reader asserts on a large object
-- **WHEN** a reader wants to check a large response object without writing an assertion per property
-- **THEN** the page shows verifying it against an approved snapshot file, kept in source control
-
-#### Scenario: Snapshot differs
-- **WHEN** the object changes and no longer matches its snapshot
-- **THEN** the page says the test fails with the difference, and how to accept the new snapshot when
-  the change is intended
-
 ### Requirement: Testing page maps .NET 3.5 habits
 The Testing page SHALL have a short table mapping test habits from the .NET 3.5 era (MSTest v1 and
 NUnit 2) to their modern xUnit v3 equivalents.

@@ -2,7 +2,7 @@
 
 ## 1. Probe and package versions
 
-- [ ] 1.1 Probe the setup (design D4, D5, D6, D10). In scratch projects on 10.0.4xx:
+- [x] 1.1 Probe the setup (design D4, D5, D6, D10). In scratch projects on 10.0.4xx:
   - a web app with one file swapped by an MSBuild property from an imported `.targets` file, and
     an xUnit v3 test project that references it. Run `dotnet test --project … -p:SeededBug=1` with a
     separate artifacts path, and check that the swapped file is compiled, that the default build is
@@ -11,12 +11,12 @@
   - which report file xUnit v3 can write with no extra package, and how to read failed test names
     from it;
   - the exact `dotnet test` filter syntax for one class, and one test, on Microsoft.Testing.Platform;
-  - the coverage extension's command and output file, and Verify's first run and mismatch;
+  - the coverage extension's command and output file;
   - how long a run of five sequential `dotnet test` builds takes.
 
   Write a devlog note with the exact commands, exit codes, output and timings, and revise design D4–D6
   if anything differs.
-- [ ] 1.2 Add `PackageVersion` entries for `NSubstitute`, `NSubstitute.Analyzers.CSharp` and
+- [x] 1.2 Add `PackageVersion` entries for `NSubstitute`, `NSubstitute.Analyzers.CSharp` and
   `Microsoft.Extensions.TimeProvider.Testing` to `samples/Directory.Packages.props`, at the newest
   stable versions. Verify that `make samples-build` and `make samples-format` pass (unsandboxed, for
   NuGet). **If restore reports a vulnerable transitive package, stop and ask.**
@@ -70,7 +70,7 @@
 - [ ] 4.1 Create `site/src/content/docs/cheatsheets/testing.md` (design D9), with a back link and
   Learn links. Add it to the sidebar's Cheatsheets group, the introduction's cheatsheet cards and
   `EXPECTED_SLUGS`. Verify that `make site-build` passes.
-- [ ] 4.2 Rewrite `site/src/content/docs/testing/index.md` per D1 and D8. Cover every item in the six
+- [ ] 4.2 Rewrite `site/src/content/docs/testing/index.md` per D1 and D8. Cover every item in the five
   Testing page requirements. Add:
   - the cheatsheet tip;
   - the Pitfalls (including reading `DateTime.Now` in code under test, shared state between tests,
@@ -79,7 +79,7 @@
     that it needs no Docker, how to run the checker, and gives the exact GitHub tree link.
 - [ ] 4.3 Verify the page (D10):
   - compile every snippet in a scratch project, with warnings as errors;
-  - run the filter, coverage and Verify examples, and paste their real output;
+  - run the filter and coverage examples, and paste their real output;
   - confirm that the "from the exercise" snippets match the real files.
 
   Record all of it in the section-done note.

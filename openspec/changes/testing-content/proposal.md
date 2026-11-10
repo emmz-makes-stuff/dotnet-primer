@@ -11,8 +11,9 @@ already depends on xUnit v3, `WebApplicationFactory` and Testcontainers without 
 ## What Changes
 
 - **Write the full Testing page** (`testing`), replacing the stub. It follows the stub's outline, plus
-  the two extras Emmz picked on 2026-11-10 (code coverage and snapshot testing; not mutation testing,
-  and no separate section on parallelism):
+  code coverage, the extra Emmz picked on 2026-11-10 (not mutation testing, and no separate section
+  on parallelism). She also picked snapshot testing, then dropped it after the §1.1 probe found that
+  Verify now needs a paid licence for commercial use:
   - **Running tests:** xUnit v3 on Microsoft.Testing.Platform, `global.json`'s test runner, and
     `dotnet test`, including filtering.
   - **Writing tests:** `[Fact]`, `[Theory]` with data, assertions, async tests and
@@ -27,12 +28,11 @@ already depends on xUnit v3, `WebApplicationFactory` and Testcontainers without 
   - **Real dependencies:** Testcontainers, briefly, pointing at exercise 07 for practice.
   - **Code coverage** with the Microsoft.Testing.Platform coverage extension, and what a coverage
     number doesn't tell you.
-  - **Snapshot testing** with Verify.
   - **Coming from .NET 3.5:** a short table mapping MSTest v1 / NUnit 2 habits to today, after the
     concepts and before the Pitfalls, as the EF Core and gRPC pages do.
   - **Pitfalls,** then **Exercise 09**.
 - **A Testing cheatsheet** (`cheatsheets/testing`): `dotnet test` commands, test shapes, fixtures,
-  doubles, `WebApplicationFactory`, coverage and Verify. It is linked both ways with the page, listed
+  doubles, `WebApplicationFactory` and coverage. It is linked both ways with the page, listed
   in the sidebar and on the introduction, and added to the site tests' maps.
 - **Exercise 09** (`samples/exercises/09-testing`) **turns the exercise pattern round**: the engineer
   writes the tests (Emmz, 2026-11-10: seeded bugs).
@@ -66,8 +66,8 @@ None.
   - "Full-content pages carry no placeholder" adds the Testing page and its cheatsheet to its
     "Every finished page is checked" scenario.
   - New: "Testing page covers running and writing tests", "… covers test doubles", "… covers
-    integration tests and real dependencies", "… covers code coverage", "… covers snapshot
-    testing", and "Testing page maps .NET 3.5 habits".
+    integration tests and real dependencies", "… covers code coverage", and "Testing page maps
+    .NET 3.5 habits".
 - **`site-structure`:** "Cheatsheets per area" grows from nine cheatsheets to ten.
 - **`sample-exercises`:**
   - "Exercise layout" allows a testing exercise, whose starter and solution are test projects for an
@@ -89,17 +89,18 @@ None.
 - **Samples:**
   - `samples/exercises/09-testing`, and both `.slnx` files;
   - new `PackageVersion` entries in `samples/Directory.Packages.props` for `NSubstitute` and
-    `Microsoft.Extensions.TimeProvider.Testing` (exact versions are fixed in §1);
+    `Microsoft.Extensions.TimeProvider.Testing` (versions fixed in §1);
   - the samples test gate in the `Makefile` (and the `samples` CI workflow, if it doesn't call the
     Makefile) gains the exercise-09 checker run (design D5);
   - `samples/README.md`.
-- **Page-only packages:** Verify (`Verify.XunitV3`) and the coverage extension
-  (`Microsoft.Testing.Extensions.CodeCoverage`) are shown on the page and checked in a scratch
-  project. No exercise uses them, so they don't go in `Directory.Packages.props`.
+- **Page-only package:** the coverage extension (`Microsoft.Testing.Extensions.CodeCoverage`) is
+  shown on the page and checked in a scratch project. No exercise uses it, so it doesn't go in
+  `Directory.Packages.props`.
 - **Tooling:** none new. The checker runs on the pinned .NET SDK, so `docs/dependencies.md` and
   `make deps` don't change.
 - **Out of scope:**
   - mutation testing tools (Stryker.NET);
+  - snapshot testing (Verify needs a paid licence for commercial use; Emmz, 2026-11-10);
   - a separate section on parallelism (xUnit's parallel collections appear only where fixtures need
     them);
   - Moq examples, beyond a sentence;
