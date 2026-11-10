@@ -81,7 +81,7 @@ var app = builder.Build();
 
 ### See it locally
 
-The standalone [Aspire dashboard](https://aspire.dev/dashboard/standalone/) is a single container that receives OTLP and shows logs, traces and metrics. It works with any app, not only Aspire ones. Start it with Docker (if you haven't set Docker up yet, see [Get Docker](/platform/dotnet-10-and-cli/#get-docker)):
+The standalone [Aspire dashboard](https://aspire.dev/dashboard/standalone/) is a single container that receives OTLP and shows logs, traces and metrics. It works with any app, not only Aspire ones. Start it with Docker (if you haven't set Docker up yet, see [Docker](/platform/docker/)):
 
 ```sh
 docker run --rm -d --name aspire-dashboard \

@@ -14,7 +14,7 @@ These are **for practice only**. The tests are there so you can check your own p
   ```
 
   A bare `dotnetup sdk install` also works: it reads `global.json`. But it tracks the wider `10.0` channel, so a later `dotnetup update` could move you to a 10.0.5xx SDK. Naming `10.0.4xx` keeps you on the band the samples pin. New to `dotnetup`? [Getting started](https://dotnet-primer.emmz.dev/platform/dotnet-10-and-cli/) covers installing it, and what to do if you already have .NET from another installer.
-- **Docker**: Docker Engine in WSL 2 on Windows, OrbStack on macOS, or Docker Engine on Linux. [Get Docker](https://dotnet-primer.emmz.dev/platform/dotnet-10-and-cli/#get-docker) has the steps for each. Later exercises use it, through Testcontainers and container images. Exercises 01–06 don't need it for their tests: 04–06 capture logs, spans and metrics in memory. The Logging, Tracing and Metrics pages use Docker for one optional extra, the local dashboard that shows your app's telemetry.
+- **Docker**: Docker Engine in WSL 2 on Windows, OrbStack on macOS, or Docker Engine on Linux. [Docker](https://dotnet-primer.emmz.dev/platform/docker/) has the steps for each. Later exercises use it, through Testcontainers and container images. Exercises 01–06 don't need it for their tests: 04–06 capture logs, spans and metrics in memory. The Logging, Tracing and Metrics pages use Docker for one optional extra, the local dashboard that shows your app's telemetry.
 
 ## Layout
 

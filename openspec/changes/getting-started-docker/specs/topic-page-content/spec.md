@@ -1,13 +1,13 @@
 ## ADDED Requirements
 
-### Requirement: Getting started page explains how to get Docker
-The Getting started page SHALL have a section on getting Docker. It SHALL say which primer pages need
-Docker and that exercises 01–06 don't, and SHALL give a recipe for each of Windows, macOS and Linux.
-Each recipe SHALL be a path whose software is free to use at work, or SHALL say which licence the
-software needs.
+### Requirement: Docker page explains how to get Docker
+The site SHALL have a Docker page that follows the topic page structure. It SHALL say which primer
+pages need Docker and that exercises 01–06 don't, and SHALL give a recipe for each of Windows, macOS
+and Linux. Each recipe SHALL be a path whose software is free to use at work, or SHALL say which
+licence the software needs. The .NET 10 and `dotnet` CLI page SHALL link to it.
 
 #### Scenario: Reader checks whether they need Docker yet
-- **WHEN** a reader starting the primer reads the section
+- **WHEN** a reader starting the primer reads the Docker page
 - **THEN** it names the pages that use Docker, and says that exercises 01–06 run without it
 
 #### Scenario: Reader at a large company picks a tool
@@ -37,17 +37,17 @@ backend SHALL be named as the alternative.
 - **WHEN** a Windows reader restarts WSL (`wsl --shutdown`) and opens their distro again
 - **THEN** the Docker daemon is running without a manual start
 
-### Requirement: The Docker section ends with a check
-The section SHALL end with a check that a container runs and that the daemon answers, with the
-output to expect. The page's final "Check your setup" recipe SHALL stay unchanged, because exercises
-01–06 don't need Docker.
+### Requirement: The Docker page ends its setup with a check
+The Docker page SHALL end its setup steps with a check that a container runs and that the daemon
+answers, with the output to expect. The .NET 10 and `dotnet` CLI page's "Check your setup" recipe
+SHALL stay unchanged, because exercises 01–06 don't need Docker.
 
 #### Scenario: Reader checks their Docker setup
-- **WHEN** a reader runs the section's check after following their platform's recipe
+- **WHEN** a reader runs the page's check after following their platform's recipe
 - **THEN** `docker run --rm hello-world` prints Docker's "Hello from Docker!" message, and
   `docker info --format '{{.ServerVersion}}'` prints a version number
 
 #### Scenario: Reader whose daemon isn't running
 - **WHEN** the check fails because the daemon isn't running, or because the user isn't yet in the
   `docker` group
-- **THEN** the page's Pitfalls list names that error and how to fix it
+- **THEN** the Docker page's Pitfalls section names that error and how to fix it

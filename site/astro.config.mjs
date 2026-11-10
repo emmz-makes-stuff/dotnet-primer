@@ -37,7 +37,10 @@ export default defineConfig({
       sidebar: [
         {
           label: "Getting started",
-          items: [{ slug: "platform/dotnet-10-and-cli" }],
+          items: [
+            { slug: "platform/dotnet-10-and-cli" },
+            { slug: "platform/docker" },
+          ],
         },
         {
           label: "Learning path",

@@ -74,6 +74,38 @@
   Record the answers in a devlog note. If the Windows forwarding fails, stop and agree the D2
   fallback (Risks) before changing the page.
 
+  **Revised by §5:** run this against the new `/platform/docker/` page, after §5 has landed.
+
+## 5. Review fixes: Docker as its own page
+
+Agreed with Emmz on 2026-11-10, while she reviewed the §2 copy. Docker gets its own page,
+`/platform/docker/`, titled "Docker". It is listed in Getting started, straight after ".NET 10 and the
+dotnet CLI", and that page keeps a one-line pointer to it.
+
+- [x] 5.1 Update the planning artifacts to match. In the delta spec (`topic-page-content`), the three
+  requirements are about "the Docker page", not a Getting started section, and the page follows the
+  topic-page structure (an outcome, the concepts, then Pitfalls). Add a `site-structure` delta: the
+  Getting started group lists the Docker page after ".NET 10 and the dotnet CLI". Revise design D1,
+  noting that this replaces the rejected alternative, and the proposal's What Changes. Verify:
+  `openspec validate getting-started-docker --strict` passes.
+- [x] 5.2 Move the content to `site/src/content/docs/platform/docker.md`:
+  - frontmatter with the title "Docker", a description, and `learn:` with "Install WSL";
+  - an opening outcome sentence, then the existing opening text;
+  - `## Windows (WSL 2)`, `## macOS`, `## Linux` and `## Check Docker`, promoted from `###`, with
+    the text unchanged;
+  - `## Pitfalls` with the four Docker pitfalls, moved from the .NET 10 page.
+
+  Add `{ slug: "platform/docker" }` to the Getting started sidebar after `platform/dotnet-10-and-cli`,
+  and add the slug to `EXPECTED_SLUGS` and `FULL_CONTENT_SLUGS` in `site/tests/dist.test.ts`. On the
+  .NET 10 page, replace the section with a one-line pointer to `/platform/docker/` (01–06 don't need
+  it), and remove the four pitfalls and the "Install WSL" Learn link. Fix the in-page anchors
+  (`#windows-wsl-2`, `#check-docker`) so they resolve on the new page. Verify: `make gates`. The
+  built page has the five headings' anchors, and `site/dist` has no link to
+  `/platform/dotnet-10-and-cli/#get-docker` left anywhere.
+- [x] 5.3 Repoint the §3 links (samples README, the Logging page's dashboard paragraph,
+  `docs/dependencies.md`) to `/platform/docker/`. Verify: `make gates`, `make deps`, and a grep for
+  `#get-docker` across the repo that finds only devlog notes.
+
 ## Workflow follow-up
 
 - Whole-change review, the change-done note, and the offer of `code-review`, per CLAUDE.md

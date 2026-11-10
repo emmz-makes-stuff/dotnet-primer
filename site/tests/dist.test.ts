@@ -17,6 +17,7 @@ const DIST = fileURLToPath(new URL("../dist/", import.meta.url));
 /** Every area and standalone slug from the sidebar (design D3). */
 const EXPECTED_SLUGS = [
   "platform/dotnet-10-and-cli",
+  "platform/docker",
   "aspnet-core",
   "aspnet-core/configuration",
   "aspnet-core/dependency-injection",
@@ -56,6 +57,7 @@ const FULL_CONTENT_SLUGS: string[] = [
   "cheatsheets/middleware",
   "cheatsheets/dotnet-cli",
   "platform/dotnet-10-and-cli",
+  "platform/docker",
   "observability/logging",
   "cheatsheets/logging",
   "observability/tracing",

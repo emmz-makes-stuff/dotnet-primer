@@ -47,18 +47,24 @@
 
 ### D1. Placement and shape
 
-A new `## Get Docker` section goes straight after "Install .NET with dotnetup" and its subsections,
-and before "Pin the SDK with global.json". It's still part of setting up the machine, and it comes
-before the project-file material. It opens with:
-- what Docker is used for in the primer, with links to the pages that need it;
-- "exercises 01–06 don't need it; set it up before Observability".
+**Revised in §5 (2026-11-10):** Docker is its own page, `/platform/docker/`, titled "Docker". It is
+listed in the Getting started group straight after ".NET 10 and the dotnet CLI". Emmz asked for this
+while she reviewed the §2 copy, which reverses the rejection below. The .NET 10 page keeps a
+one-line pointer where the section was, after the dotnetup sections.
 
-Then come three `###` subsections, **Windows (WSL 2)**, **macOS** and **Linux**, and a `### Check
-Docker` subsection. Each platform part gives a **default path** as numbered, copyable steps, then
-the alternatives in one short paragraph with their licence terms.
+The page follows the topic-page structure:
+- an outcome sentence;
+- what Docker is used for in the primer, with links to the pages that need it, and "exercises 01–06
+  don't need it; set it up before Observability";
+- `## Windows (WSL 2)`, `## macOS`, `## Linux` and `## Check Docker`;
+- `## Pitfalls`, holding the four Docker pitfalls (D6), which leave the .NET 10 page.
 
-**Alternative considered:** a separate "Docker" page in the Getting started group. Rejected: Emmz
-asked for a section on Getting started, and one setup page keeps "set up your machine" in one place.
+Each platform part gives a **default path** as numbered, copyable steps, then the alternatives in
+one short paragraph with their licence terms.
+
+**Superseded first version:** a `## Get Docker` section on the .NET 10 page, after the dotnetup
+sections. The separate page was considered then and rejected, to keep machine setup in one place.
+Emmz chose the separate page once she had read the section.
 
 ### D2. Windows: Docker Engine in WSL 2
 
@@ -150,7 +156,8 @@ Windows `docker.exe` needed.
 
 ### D6. Pitfalls
 
-These go in the page's existing Pitfalls list, in its "problem. Fix:" style:
+These go in the Docker page's Pitfalls section (§5; first written on the .NET 10 page), in the
+site's "problem. Fix:" style:
 - **`permission denied … /var/run/docker.sock`:** you're not in the `docker` group yet, or the
   terminal predates it. Fix: `usermod`, then a new login (on Windows, `wsl --shutdown`).
 - **`Cannot connect to the Docker daemon`:** the daemon isn't running. On WSL, that usually means
