@@ -92,7 +92,7 @@
 
 ## 5. Human check
 
-- [ ] 5.1 Stop for Emmz to check, with a copy-paste recipe:
+- [x] 5.1 Stop for Emmz to check, with a copy-paste recipe:
   - the EF Core page and its cheatsheet, in light and dark schemes;
   - search finds "DbContext";
   - the code-block copy button on a `dnx dotnet-ef` command;
