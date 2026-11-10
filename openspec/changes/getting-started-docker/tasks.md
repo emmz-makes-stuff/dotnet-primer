@@ -49,7 +49,7 @@
 
 ## 3. Point the other Docker mentions at the section
 
-- [ ] 3.1 Link the new section from the places that mention Docker:
+- [x] 3.1 Link the new section from the places that mention Docker:
   - the Docker prerequisite in `samples/README.md` (it names the WSL 2 path and links to
     `/platform/dotnet-10-and-cli/#get-docker`);
   - the dashboard paragraph on `observability/logging.md` ("Start it with Docker", linked);
