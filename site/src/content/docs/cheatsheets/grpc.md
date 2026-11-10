@@ -76,10 +76,22 @@ app.MapGrpcService<OrdersService>();
 ```csharp title="OrdersService.cs"
 public sealed class OrdersService(OrderStore store) : Orders.OrdersBase
 {
-    public override Task<Order> GetOrder(GetOrderRequest request, ServerCallContext context) =>
-        store.Find(request.OrderId) is { } order
-            ? Task.FromResult(order)
-            : throw new RpcException(new Status(StatusCode.NotFound, $"There's no order {request.OrderId}."));
+    public override Task<Order> GetOrder(GetOrderRequest request, ServerCallContext context)
+    {
+        var stored = store.Find(request.OrderId)
+            ?? throw new RpcException(new Status(StatusCode.NotFound, $"There's no order {request.OrderId}."));
+
+        var reply = new Order
+        {
+            Id = stored.Id,
+            CustomerEmail = stored.CustomerEmail,
+            TotalCents = stored.TotalCents,
+            PlacedAt = Timestamp.FromDateTimeOffset(stored.PlacedAt),   // Google.Protobuf.WellKnownTypes
+        };
+        reply.Lines.AddRange(stored.Lines.Select(l =>                   // repeated fields are read-only: add to them
+            new OrderLine { Sku = l.Sku, Quantity = l.Quantity, UnitPriceCents = l.UnitPriceCents }));
+        return Task.FromResult(reply);
+    }
 }
 ```
 

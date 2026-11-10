@@ -106,11 +106,11 @@ chose to apply it everywhere.
 
 ## 8. Review fixes: docs vs exercise
 
-- [ ] 8.1 Rewrite the cheatsheet's `GetOrder` so it maps the `StoredOrder` to a proto `Order`
+- [x] 8.1 Rewrite the cheatsheet's `GetOrder` so it maps the `StoredOrder` to a proto `Order`
   (`Timestamp.FromDateTimeOffset`, `Lines.AddRange`), as the page and TODO 3 do.
-- [ ] 8.2 Give both exercise projects the page's named `Grpc` endpoint on `http://localhost:5287`
+- [x] 8.2 Give both exercise projects the page's named `Grpc` endpoint on `http://localhost:5287`
   (HTTP/2), so the page's client examples reach the exercise.
-- [ ] 8.3 Fix the page's `EnableCallContextPropagation` example: give `InventoryClient` an address
+- [x] 8.3 Fix the page's `EnableCallContextPropagation` example: give `InventoryClient` an address
   of its own (not the Orders service's 5287), and show or reword the onward `Reserve` call.
   Verify: the snippets still match the exercise, and `make gates` shows `GATES_EXIT:0`.
 

@@ -303,11 +303,12 @@ When the deadline passes, the call fails with `StatusCode.DeadlineExceeded`, and
 A service that calls another service should pass its own deadline on, so the whole chain gives up together. With the client factory, that's one line:
 
 ```csharp title="Program.cs"
-builder.Services.AddGrpcClient<Inventory.InventoryClient>(o => o.Address = new Uri("http://localhost:5287"))
+// The inventory service is another app, on its own port.
+builder.Services.AddGrpcClient<Inventory.InventoryClient>(o => o.Address = new Uri("http://localhost:5288"))
     .EnableCallContextPropagation();
 ```
 
-Inside a gRPC call, every call through that client then gets the incoming call's deadline and cancellation token. With a 5-second deadline on `PlaceOrder`, the onward `Reserve` call saw 4.999 s left.
+Inside a gRPC call, every call through that client then gets the incoming call's deadline and cancellation token. If `PlaceOrder` arrives with a 5-second deadline and calls `inventory.ReserveAsync(...)` a moment later, that call gets the time that's left, and it's cancelled if the client gives up.
 
 ## Errors and status
 
