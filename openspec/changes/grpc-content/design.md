@@ -87,6 +87,9 @@ So:
 - **`tests/Protos/orders.proto` is the published contract.** The test projects generate a client from
   it (`GrpcServices="Client"`). The tests are a separate caller that has its own copy of the
   contract, which is how gRPC works between real services.
+- **The generated classes go in a `.Protos` namespace** (Emmz's convention, 2026-11-10, §6): the
+  server's `GrpcOrders.Protos`, the tests' `GrpcOrders.Tests.Protos`, and the cheatsheet's
+  `Shop.Orders.Protos`. The page recommends it.
 - **It differs from the Solution's `Protos/orders.proto` only in `option csharp_namespace`**, so the
   test assembly's generated types don't clash with the server's types, which it also sees through
   the project reference. The package, service, RPC and message names and the field numbers are

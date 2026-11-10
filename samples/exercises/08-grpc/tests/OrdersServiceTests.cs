@@ -1,5 +1,5 @@
 using Grpc.Core;
-using GrpcOrders.Tests.Contract;
+using GrpcOrders.Tests.Protos;
 
 namespace GrpcOrders.Tests;
 

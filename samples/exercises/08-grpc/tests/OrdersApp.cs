@@ -2,13 +2,13 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Grpc.Core;
 using Grpc.Net.Client;
-using GrpcOrders.Tests.Contract;
+using GrpcOrders.Tests.Protos;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using ServerStatus = GrpcOrders.Contract.OrderStatus;
+using ServerStatus = GrpcOrders.Protos.OrderStatus;
 
 namespace GrpcOrders.Tests;
 

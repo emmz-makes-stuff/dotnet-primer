@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using GrpcOrders.Contract;
+using GrpcOrders.Protos;
 
 namespace GrpcOrders;
 

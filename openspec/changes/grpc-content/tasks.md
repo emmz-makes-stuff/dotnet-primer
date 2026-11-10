@@ -79,6 +79,20 @@
 
   On PASS, tick and continue. On FAIL, add a review-fix section.
 
+## 6. Review fixes: generated-code namespace
+
+Emmz's 5.1 feedback (2026-11-10): generated classes go in a `.Protos` namespace, as a convention. She
+chose to apply it everywhere.
+
+- [x] 6.1 Rename the generated namespaces: `GrpcOrders.Contract` to `GrpcOrders.Protos` (Solution and
+  Starter contracts and their `using`s), `GrpcOrders.Tests.Contract` to `GrpcOrders.Tests.Protos`
+  (the published contract and the tests), and the cheatsheet's `Shop.Orders` to `Shop.Orders.Protos`.
+  Update the page's contract, and add a sentence recommending the convention where the page explains
+  `option csharp_namespace`. Update design D3. Verify: the two contracts still differ only in
+  `csharp_namespace`, the snippets still compile and match the exercise, Starter 0/12 and Solution
+  12/12, and `make gates` shows `GATES_EXIT:0`.
+- [ ] 6.2 Stop for Emmz to recheck the page and cheatsheet (the 5.1 recipe), then tick 5.1 and 6.2.
+
 ## Workflow follow-up
 
 - Self-review the whole change, write the change-done note, and offer the `code-review` skill.

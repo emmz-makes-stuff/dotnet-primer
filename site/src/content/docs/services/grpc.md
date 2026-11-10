@@ -33,7 +33,7 @@ gRPC is contract first. The service and its messages are written in a `.proto` f
 ```proto title="Protos/orders.proto"
 syntax = "proto3";
 
-option csharp_namespace = "GrpcOrders.Contract";
+option csharp_namespace = "GrpcOrders.Protos";
 
 package orders.v1;
 
@@ -78,7 +78,7 @@ This is part of exercise 08's contract. The things to know:
 - **Scalar types** are `int32`, `int64`, `bool`, `string`, `bytes`, `double` and a few more. `repeated` is a list. In C#, a repeated field is a read-only property: add to it with `Add` or `AddRange`.
 - **Proto3 has no null** for scalars and strings. A field the caller didn't set arrives as its default: `0`, `""` or an empty list. Check for empty, not for null.
 - **Well-known types** cover the common cases: `google.protobuf.Timestamp` and `Duration` for time, and wrappers such as `Int32Value` when you need to tell "not set" from zero. `Timestamp.FromDateTimeOffset` and `ToDateTimeOffset` convert in C#.
-- **`option csharp_namespace`** sets the C# namespace and is never sent. `package` is: it's part of every call's path, `/orders.v1.Orders/GetOrder`.
+- **`option csharp_namespace`** sets the C# namespace and is never sent. `package` is: it's part of every call's path, `/orders.v1.Orders/GetOrder`. A good convention is your app's namespace plus `.Protos`, here `GrpcOrders.Protos`, so the generated classes are easy to tell from your own and don't clash with them.
 
 ### Money
 

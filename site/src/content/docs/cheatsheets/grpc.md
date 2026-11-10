@@ -21,7 +21,7 @@ Back to [gRPC](/services/grpc/).
 ```proto title="Protos/orders.proto"
 syntax = "proto3";
 
-option csharp_namespace = "Shop.Orders";   // the C# namespace; not on the wire
+option csharp_namespace = "Shop.Orders.Protos";   // the C# namespace; not on the wire
 
 package orders.v1;                          // on the wire: part of every method's path
 

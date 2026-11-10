@@ -4,7 +4,7 @@
 // (the package, the service, RPC and message names, and the field numbers) is identical.
 syntax = "proto3";
 
-option csharp_namespace = "GrpcOrders.Contract";
+option csharp_namespace = "GrpcOrders.Protos";
 
 package orders.v1;
 

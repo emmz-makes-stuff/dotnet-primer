@@ -1,6 +1,6 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using GrpcOrders.Contract;
+using GrpcOrders.Protos;
 
 namespace GrpcOrders;
 
