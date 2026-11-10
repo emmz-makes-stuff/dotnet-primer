@@ -40,6 +40,15 @@ public sealed class OrderStore
 /// <summary>Checks a <see cref="PlaceOrderRequest"/> before it's stored.</summary>
 public static class OrderValidation
 {
+    /// <summary>The most of one SKU a line can order.</summary>
+    public const int MaxQuantity = 1_000;
+
+    /// <summary>
+    /// The highest unit price, in cents ($100,000). With <see cref="MaxQuantity"/>, it keeps an
+    /// order's total far from overflowing a long.
+    /// </summary>
+    public const long MaxUnitPriceCents = 10_000_000;
+
     /// <summary>What's wrong with the request: empty if it can be stored as it is.</summary>
     /// <remarks>
     /// Proto3 has no null for strings or repeated fields: a field the caller didn't set arrives as
@@ -78,10 +87,18 @@ public static class OrderValidation
             {
                 problems.Add($"lines[{i}].quantity must be at least 1.");
             }
+            else if (line.Quantity > MaxQuantity)
+            {
+                problems.Add($"lines[{i}].quantity can be at most {MaxQuantity}.");
+            }
 
             if (line.UnitPriceCents < 0)
             {
                 problems.Add($"lines[{i}].unit_price_cents can't be negative.");
+            }
+            else if (line.UnitPriceCents > MaxUnitPriceCents)
+            {
+                problems.Add($"lines[{i}].unit_price_cents can be at most {MaxUnitPriceCents}.");
             }
         }
 

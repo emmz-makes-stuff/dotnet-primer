@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using Grpc.Core;
 using Grpc.Net.Client;
@@ -63,19 +64,27 @@ public sealed class OrdersApp : WebApplicationFactory<Program>
         }
 
         // The header is a number of up to 8 digits and a unit: H, M, S, m (ms), u (µs) or n (ns).
-        private static long? ToMilliseconds(string timeout) =>
-            long.TryParse(timeout.AsSpan(0, timeout.Length - 1), out var n)
-                ? timeout[^1] switch
-                {
-                    'H' => n * 3_600_000,
-                    'M' => n * 60_000,
-                    'S' => n * 1_000,
-                    'm' => n,
-                    'u' => n / 1_000,
-                    'n' => n / 1_000_000,
-                    _ => null,
-                }
-                : null;
+        // Anything else is null, and the header is passed on as it is. Sub-millisecond units round
+        // up, so the server's deadline is never earlier than the client's.
+        private static long? ToMilliseconds(string timeout)
+        {
+            if (timeout.Length is < 2 or > 9
+                || !long.TryParse(timeout.AsSpan(0, timeout.Length - 1), NumberStyles.None, CultureInfo.InvariantCulture, out var n))
+            {
+                return null;
+            }
+
+            return timeout[^1] switch
+            {
+                'H' => n * 3_600_000,
+                'M' => n * 60_000,
+                'S' => n * 1_000,
+                'm' => n,
+                'u' => (n + 999) / 1_000,
+                'n' => (n + 999_999) / 1_000_000,
+                _ => null,
+            };
+        }
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder) =>

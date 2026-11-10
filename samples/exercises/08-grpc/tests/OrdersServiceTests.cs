@@ -55,7 +55,8 @@ public sealed class OrdersServiceTests
             "Use Timestamp.FromDateTimeOffset(order.PlacedAt).");
     }
 
-    public static TheoryData<string> InvalidOrders => ["no email", "a blank email", "no lines", "a quantity of 0", "a line with no SKU", "a negative price"];
+    public static TheoryData<string> InvalidOrders => ["no email", "a blank email", "no lines", "a quantity of 0", "a line with no SKU", "a negative price",
+        "an email over 256 characters", "a SKU over 32 characters", "a quantity over 1000", "a price over 10000000"];
 
     [Theory]
     [MemberData(nameof(InvalidOrders))]
@@ -71,6 +72,10 @@ public sealed class OrdersServiceTests
             case "a quantity of 0": request.Lines[0].Quantity = 0; break;
             case "a line with no SKU": request.Lines[1].Sku = ""; break;
             case "a negative price": request.Lines[1].UnitPriceCents = -1; break;
+            case "an email over 256 characters": request.CustomerEmail = new string('a', 245) + "@example.com"; break;
+            case "a SKU over 32 characters": request.Lines[1].Sku = new string('S', 33); break;
+            case "a quantity over 1000": request.Lines[0].Quantity = 1_001; break;
+            case "a price over 10000000": request.Lines[1].UnitPriceCents = 10_000_001; break;
             default: throw new ArgumentOutOfRangeException(nameof(problem), problem, "Not a known case.");
         }
 

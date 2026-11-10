@@ -93,6 +93,34 @@ chose to apply it everywhere.
   12/12, and `make gates` shows `GATES_EXIT:0`.
 - [x] 6.2 Stop for Emmz to recheck the page and cheatsheet (the 5.1 recipe), then tick 5.1 and 6.2.
 
+## 7. Review fixes: exercise code and tests
+
+- [x] 7.1 Cap each line in `OrderValidation.Problems()`: quantity at most 1,000, and
+  `unit_price_cents` at most 10,000,000. Reported as `InvalidArgument`, like the other problems.
+  Make the change in both copies of `Orders.cs`, keeping them byte-identical.
+- [x] 7.2 Add `InvalidOrders` cases for an email over 256 characters, a SKU over 32, and the two
+  caps from 7.1.
+- [x] 7.3 Make `ToMilliseconds` in `tests/OrdersApp.cs` reject a `grpc-timeout` header that's too
+  short or malformed, rather than throwing from the handler, and stop it flooring `u`/`n` to 0.
+  Verify: Starter fails all its tests, Solution passes all, and `make gates` shows `GATES_EXIT:0`.
+
+## 8. Review fixes: docs vs exercise
+
+- [ ] 8.1 Rewrite the cheatsheet's `GetOrder` so it maps the `StoredOrder` to a proto `Order`
+  (`Timestamp.FromDateTimeOffset`, `Lines.AddRange`), as the page and TODO 3 do.
+- [ ] 8.2 Give both exercise projects the page's named `Grpc` endpoint on `http://localhost:5287`
+  (HTTP/2), so the page's client examples reach the exercise.
+- [ ] 8.3 Fix the page's `EnableCallContextPropagation` example: give `InventoryClient` an address
+  of its own (not the Orders service's 5287), and show or reword the onward `Reserve` call.
+  Verify: the snippets still match the exercise, and `make gates` shows `GATES_EXIT:0`.
+
+## 9. Review fixes: comments
+
+- [ ] 9.1 Rewrite the Starter `Protos/orders.proto` header for the Starter: the Starter builds from
+  its own copy, which TODO 4 extends with `TrackOrder`.
+- [ ] 9.2 Remove the "1.1 probe" reference from `tests/OrdersApp.cs`, keeping what it explains.
+  Verify: `make gates` shows `GATES_EXIT:0`.
+
 ## Workflow follow-up
 
 - Self-review the whole change, write the change-done note, and offer the `code-review` skill.
