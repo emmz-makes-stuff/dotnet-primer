@@ -62,7 +62,7 @@
   `samples` CI workflow step, and the `make samples-test` line in CLAUDE.md's Gates list. Verify that
   `make gates` shows `GATES_EXIT:0`, and that temporarily deleting one Solution test makes
   `make samples-test` fail and name the bug (then restore it).
-- [ ] 3.4 Push the branch, and check that the `samples` workflow passes on `ubuntu-latest` with the
+- [x] 3.4 Push the branch, and check that the `samples` workflow passes on `ubuntu-latest` with the
   checker run. Record the run ID and the checker's duration in the section-done note.
 
 ## 4. Testing cheatsheet and page
