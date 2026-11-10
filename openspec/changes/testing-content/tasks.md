@@ -89,7 +89,7 @@
 
 ## 5. Samples README
 
-- [ ] 5.1 Update `samples/README.md`: add 09 to the layout and the exercise table. Describe its
+- [x] 5.1 Update `samples/README.md`: add 09 to the layout and the exercise table. Describe its
   different shape (the app is written, you write the tests, run the checker), and keep the Docker
   prerequisite saying that only exercise 07 needs it. Verify with `make gates`.
 
