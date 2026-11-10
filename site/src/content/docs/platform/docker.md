@@ -8,7 +8,7 @@ learn:
 
 By the end of this page you'll have a Docker engine running on your machine, and you'll have checked that it runs containers. On Windows, you'll also have checked that Windows-side tools such as .NET can reach it.
 
-The primer runs some tools in **containers**, so you need a Docker engine: the [Observability](/observability/logging/#see-it-locally) pages run a local dashboard in one, the [Testing](/testing/) pages start real databases with Testcontainers, and [Containers](/deploy/containers/) builds and runs images. Exercises 01–06 don't need it, so you can skip this until you reach Observability.
+The primer runs some tools in **containers**, so you need a Docker engine: the [Observability](/observability/logging/#see-it-locally) pages run a local dashboard in one, the [EF Core](/data/ef-core/) page and exercise 07's tests run SQL Server in one, the [Testing](/testing/) pages start real databases with Testcontainers, and [Containers](/deploy/containers/) builds and runs images. Exercises 01–06 don't need it, so you can skip this until you reach Observability.
 
 Pick your platform. Each one has a default that's free to use at work, and the alternatives say which licence they need. Licence terms are as they were at the time of writing: check each vendor's own terms.
 
@@ -151,6 +151,8 @@ These steps come from Rancher Desktop's docs, and nobody has run them on a Mac f
 ```sh
 export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
 ```
+
+**Images for x64 only, on Apple silicon.** Some images the primer uses are published for x64 (`linux/amd64`) only, such as SQL Server on the [EF Core](/data/ef-core/) page. On an Apple silicon Mac they run under Rosetta emulation, which your tool may need switching on. In Rancher Desktop, under **Preferences**, **Virtual Machine**, **Emulation**, keep the **VZ** type (the default), tick **Enable Rosetta support**, and select **Apply**. OrbStack needs no setting. In Docker Desktop, turn on **Use Rosetta for x86_64/amd64 emulation on Apple Silicon**, which is off by default. Start Colima with `colima start --vm-type=vz --vz-rosetta`. Microsoft supports SQL Server's images on x86-64 only, and says emulation such as Rosetta 2 [isn't tested or supported](https://learn.microsoft.com/sql/linux/install-upgrade/quickstart-install-docker): it's fine for the exercises, but not for anything you rely on. On an Intel Mac, there's nothing to do.
 
 ## Linux
 

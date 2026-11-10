@@ -79,10 +79,10 @@
 
 ## 4. Docker page, samples README and dependencies
 
-- [ ] 4.1 Add the Apple silicon note to the Docker page's `## macOS` (design D5), with the switches
+- [x] 4.1 Add the Apple silicon note to the Docker page's `## macOS` (design D5), with the switches
   checked in 1.1, and add EF Core to the opening list of pages that need Docker. Verify with
   `make gates`, and check that the built page has the note under the macOS heading.
-- [ ] 4.2 Update `samples/README.md`:
+- [x] 4.2 Update `samples/README.md`:
   - add 07 to the layout and the exercise table;
   - the Docker prerequisite says exercise 07's tests need it;
   - the line "Exercises 01–06 don't need it" still holds.

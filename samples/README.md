@@ -14,7 +14,7 @@ These are **for practice only**. The tests are there so you can check your own p
   ```
 
   A bare `dotnetup sdk install` also works: it reads `global.json`. But it tracks the wider `10.0` channel, so a later `dotnetup update` could move you to a 10.0.5xx SDK. Naming `10.0.4xx` keeps you on the band the samples pin. New to `dotnetup`? [Getting started](https://dotnet-primer.emmz.dev/platform/dotnet-10-and-cli/) covers installing it, and what to do if you already have .NET from another installer.
-- **Docker**: Rancher Desktop on Windows and macOS, or Docker Engine on Linux. [Docker](https://dotnet-primer.emmz.dev/platform/docker/) has the steps for each. Later exercises use it, through Testcontainers and container images. Exercises 01–06 don't need it for their tests: 04–06 capture logs, spans and metrics in memory. The Logging, Tracing and Metrics pages use Docker for one optional extra, the local dashboard that shows your app's telemetry.
+- **Docker**: Rancher Desktop on Windows and macOS, or Docker Engine on Linux. [Docker](https://dotnet-primer.emmz.dev/platform/docker/) has the steps for each. Later exercises use it, through Testcontainers and container images. **Exercise 07's tests need it**: they start SQL Server in a container with Testcontainers. The image is x64 only, so on an Apple silicon Mac see the Docker page's [macOS](https://dotnet-primer.emmz.dev/platform/docker/#macos) note. Exercises 01–06 don't need it for their tests: 04–06 capture logs, spans and metrics in memory. The Logging, Tracing and Metrics pages use Docker for one optional extra, the local dashboard that shows your app's telemetry.
 
 ## Layout
 
@@ -34,6 +34,7 @@ samples/
     04-logging/                # same layout
     05-tracing/                # same layout
     06-metrics/                # same layout
+    07-ef-core/                # same layout; its tests need Docker
 ```
 
 | Exercise | Practises | Described on |
@@ -44,6 +45,7 @@ samples/
 | `04-logging` | structured, source-generated logging at the right levels, with no personal data | [Logging](https://dotnet-primer.emmz.dev/observability/logging/) |
 | `05-tracing` | custom spans with attributes, and recording a failure on a span | [Tracing](https://dotnet-primer.emmz.dev/observability/tracing/) |
 | `06-metrics` | a counter and a histogram with units and low-cardinality tags | [Metrics](https://dotnet-primer.emmz.dev/observability/metrics/) |
+| `07-ef-core` | a DbContext, a fluent model and its first migration, then saving, querying and change tracking | [EF Core](https://dotnet-primer.emmz.dev/data/ef-core/) |
 
 ## Working an exercise
 
