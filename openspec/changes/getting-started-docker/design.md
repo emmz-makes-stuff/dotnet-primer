@@ -171,7 +171,8 @@ When the page is written, check these sources, and record what they said in a de
 - OrbStack's licensing page;
 - Colima's README.
 
-Frontmatter `learn:` gains Docker's Engine install page and the WSL install page. Run the
+Frontmatter `learn:` gains the WSL install page (the schema only accepts Microsoft Learn URLs, so
+Docker's pages are linked in the body instead). Run the
 links through the same redirect check as before: Learn URLs without a locale, and no redirects.
 
 ### D8. Verification

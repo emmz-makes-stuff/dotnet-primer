@@ -27,7 +27,7 @@
 
 ## 2. The Get Docker section
 
-- [ ] 2.1 Add `## Get Docker` to `site/src/content/docs/platform/dotnet-10-and-cli.md`, after the
+- [x] 2.1 Add `## Get Docker` to `site/src/content/docs/platform/dotnet-10-and-cli.md`, after the
   dotnetup sections and before "Pin the SDK with global.json" (design D1):
   - an opening that says what the primer uses Docker for, links the pages that need it, and says
     that exercises 01–06 don't;
@@ -42,7 +42,7 @@
 
   Verify: each command matches 1.1/1.2 exactly. Licence terms say "at the time of writing" and link
   each vendor's terms. `make site-build`, `make site-lint` and `make site-format` pass.
-- [ ] 2.2 Add D6's four pitfalls to the page's Pitfalls list, in its existing "problem. Fix:" style,
+- [x] 2.2 Add D6's four pitfalls to the page's Pitfalls list, in its existing "problem. Fix:" style,
   and add Docker's Engine install page and the WSL install page to the frontmatter `learn:` links.
   Verify: each pitfall's error text matches what 1.2 printed, or what the docs quote. `make gates`
   passes.
