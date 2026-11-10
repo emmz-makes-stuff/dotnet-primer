@@ -93,7 +93,8 @@ None.
   - `samples/exercises/07-ef-core`, and both `.slnx` files;
   - new `PackageVersion` entries in `samples/Directory.Packages.props` (agreed 2026-11-10):
     `Microsoft.EntityFrameworkCore.SqlServer`, `Microsoft.EntityFrameworkCore.Design` and
-    `Testcontainers.MsSql`;
+    `Testcontainers.MsSql`, plus a transitive pin of `System.Security.Cryptography.Pkcs` 10.0.14 (agreed
+    after the 1.1 probe found a vulnerable 9.0.11 under the SqlServer provider);
   - `samples/README.md`.
 - **Tooling:**
   - the `dotnet-ef` tool, run through `dnx` with no install (agreed 2026-11-10);

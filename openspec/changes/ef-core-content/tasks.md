@@ -2,7 +2,7 @@
 
 ## 1. Probe and package versions
 
-- [ ] 1.1 Probe the setup (design D3, D4, D5, D8). In a scratch `dotnet new web` app on 10.0.4xx,
+- [x] 1.1 Probe the setup (design D3, D4, D5, D8). In a scratch `dotnet new web` app on 10.0.4xx,
   unsandboxed:
   - Add `Microsoft.EntityFrameworkCore.SqlServer` and `.Design` at 10.0.14, with a two-entity model.
   - Run `dnx dotnet-ef@10.0.14 migrations add InitialCreate` and `database update` against a SQL
@@ -16,7 +16,9 @@
     Rosetta), Colima (`--vm-type vz --vz-rosetta`) and Docker Desktop. Check Azure SQL Edge's status.
   - Stop and remove the containers.
   - Write a devlog note with the exact commands, tags, preference names and timings.
-- [ ] 1.2 Add the three agreed `PackageVersion` entries to `samples/Directory.Packages.props`.
+- [x] 1.2 Add the four agreed `PackageVersion` entries to `samples/Directory.Packages.props`: the
+  three planned, plus `System.Security.Cryptography.Pkcs` 10.0.14 with
+  `CentralPackageTransitivePinningEnabled` (design D3, agreed after the 1.1 probe).
   Verify that `make samples-build` and `make samples-format` pass (unsandboxed, for NuGet).
 
 ## 2. Exercise 07: EF Core
@@ -42,7 +44,8 @@
     the missing behaviour.
   - Verify that `make samples-test` passes (unsandboxed). Run it twice more to check that it's
     stable.
-  - Stop Docker, run the tests, and check the Docker-missing message.
+  - Run the tests **sandboxed**, where the sandbox blocks the Docker socket, and check the
+    Docker-missing message. This avoids stopping OrbStack.
 - [ ] 2.4 Write the Starter:
   - registration and the configuration classes as `TODO`s, and no `Migrations/` folder;
   - a save that works but calls `SaveChanges` per line;
