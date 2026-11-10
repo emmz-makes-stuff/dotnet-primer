@@ -38,7 +38,7 @@ These steps come from Rancher Desktop's and Microsoft's docs, and the advanced s
 
 Rancher Desktop has to be running for `docker` to work: you can make it start when you log in, under **Preferences**, **Application**. The ports a container publishes are on Windows' `localhost`, so the Observability dashboard opens in your browser at `http://localhost:18888`, and an app you `dotnet run` sends it telemetry on `localhost:4317`.
 
-**Alternative: Docker Desktop.** [Docker Desktop](https://docs.docker.com/desktop/features/wsl/) works the same way, with its engine in WSL 2 and `docker` on Windows' `PATH`, and needs no `DOCKER_HOST`. It's free for personal use, education, non-commercial open source, and companies with fewer than 250 employees **and** less than $10 million in annual revenue. Larger companies and government entities need a paid subscription: see Docker's [licence terms](https://docs.docker.com/subscription-billing/desktop-license/).
+**Alternative: Docker Desktop.** [Docker Desktop](https://docs.docker.com/desktop/features/wsl/) works the same way, with its engine in WSL 2 and `docker` on Windows' `PATH`, and needs no `DOCKER_HOST`. If you set one for Rancher Desktop, remove it with `[Environment]::SetEnvironmentVariable("DOCKER_HOST", $null, "User")`, then open a new terminal. It's free for personal use, education, non-commercial open source, and companies with fewer than 250 employees **and** less than $10 million in annual revenue. Larger companies and government entities need a paid subscription: see Docker's [licence terms](https://docs.docker.com/subscription-billing/desktop-license/).
 
 <details id="docker-engine-in-wsl-2">
 <summary>Advanced: Docker Engine in WSL 2, without a desktop app</summary>
@@ -109,7 +109,7 @@ If you'd rather not run a desktop app, run **Docker Engine** inside a Linux dist
    sudo systemctl restart docker
    ```
 
-   The engine logs warnings that this port isn't encrypted, and that a future version will refuse to start without TLS. See the caution below.
+   The engine logs warnings that this port isn't encrypted, and that a future version will refuse to start without TLS. See the caution below. If `systemctl restart docker` fails instead, see the last item in [Pitfalls](#pitfalls).
 
 6. In a normal PowerShell, point Windows tools at that port, then open a new terminal so it sees the variable. WSL forwards Windows' `localhost` to the distro, so `localhost:2375` on Windows reaches the engine:
 
@@ -117,7 +117,7 @@ If you'd rather not run a desktop app, run **Docker Engine** inside a Linux dist
    [Environment]::SetEnvironmentVariable("DOCKER_HOST", "tcp://localhost:2375", "User")
    ```
 
-   Tools that talk to Docker from Windows read `DOCKER_HOST`, Testcontainers among them.
+   Tools that talk to Docker from Windows read `DOCKER_HOST`, Testcontainers among them. This replaces any `DOCKER_HOST` you set for Rancher Desktop.
 
 :::caution[The port has no authentication]
 Anything that can reach `localhost:2375` can control Docker, and through it become root in your Ubuntu distro. That includes every program you run, and possibly scripts in a web page. Keep it bound to `127.0.0.1` exactly as above: never `0.0.0.0`, and never on a machine that other people use. If that's not acceptable where you work, use Rancher Desktop instead (above).
@@ -178,6 +178,6 @@ docker info --format '{{.ServerVersion}}'   # prints the engine's version, such 
 
 - **`docker` isn't found, or only `nerdctl` works, with Rancher Desktop.** It's using the containerd engine. Fix: in **Preferences**, set **Container Engine** to **dockerd (moby)**, then **Apply**.
 - **`permission denied while trying to connect to the docker API at unix:///var/run/docker.sock`** (on Linux, or the advanced Windows path). Your user isn't in the `docker` group yet, or the terminal was opened before you added it. Fix: `sudo usermod -aG docker $USER`, then log in again. In WSL, that means `wsl --shutdown` in PowerShell and reopening Ubuntu.
-- **`Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`** The engine isn't running. Fix: with Rancher Desktop, open it and wait until it's ready. On Linux, `sudo systemctl enable --now docker`. On the advanced Windows path, systemd is usually off: run the systemd check in step 2 of the [advanced steps](#docker-engine-in-wsl-2), then `sudo systemctl enable --now docker`.
-- **Windows tools can't find Docker.** `DOCKER_HOST` isn't set in that terminal, or the engine isn't running. Fix: open a new terminal, and start Rancher Desktop (on the advanced path, open Ubuntu: WSL stops a distro that has been idle for a while). Then run [Check Docker](#check-docker) in PowerShell.
+- **`Cannot connect to the Docker daemon at unix:///…/docker.sock. Is the docker daemon running?`**, or on Windows **`open //./pipe/docker_engine: The system cannot find the file specified`**. The engine isn't running. The path in the message says which engine `docker` looked for: `~/.rd/docker.sock` or the `docker_engine` pipe is Rancher Desktop, and `/var/run/docker.sock` is Docker Engine (or Rancher Desktop on macOS with Administrative Access). Fix: with Rancher Desktop, open it and wait until it's ready. On Linux, `sudo systemctl enable --now docker`. On the advanced Windows path, reopen Ubuntu, because WSL stops a distro that has been idle for a while, and systemd starts the engine again. If it still isn't running, `sudo systemctl status docker` says why: if it failed after you added the port, see the last item below.
+- **Windows tools can't find Docker.** `DOCKER_HOST` isn't set in that terminal, it still names an engine you've stopped using, or the engine isn't running. Fix: open a new terminal, and start Rancher Desktop (on the advanced path, open Ubuntu: WSL stops a distro that has been idle for a while). Then run [Check Docker](#check-docker) in PowerShell.
 - **The engine won't start after you add the port** (the advanced Windows path). `sudo systemctl restart docker` fails. Fix: `journalctl -u docker` says why. If it says "the following directives are specified both as a flag and in the configuration file: hosts", remove `hosts` from `/etc/docker/daemon.json`, because the port belongs in the override file only. If it says that binding without TLS is no longer allowed, you have a newer engine than this page was written for: follow the [remote access](https://docs.docker.com/engine/daemon/remote-access/) page, or use Rancher Desktop.

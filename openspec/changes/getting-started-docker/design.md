@@ -49,14 +49,17 @@
 
 **Revised in §5 (2026-11-10):** Docker is its own page, `/platform/docker/`, titled "Docker". It is
 listed in the Getting started group straight after ".NET 10 and the dotnet CLI". Emmz asked for this
-while she reviewed the §2 copy, which reverses the rejection below. The .NET 10 page keeps a
-one-line pointer where the section was, after the dotnetup sections.
+while she reviewed the §2 copy, which reverses the rejection below. The .NET 10 page keeps a short
+`## Get Docker` pointer. **Moved in §8:** it was where the section had been, after the dotnetup
+sections. It is now the page's last section, after `## Check your setup`, where a reader moves on
+(a code-review finding that Emmz accepted).
 
 The page follows the topic-page structure:
 - an outcome sentence;
 - what Docker is used for in the primer, with links to the pages that need it, and "exercises 01–06
   don't need it; set it up before Observability";
-- `## Windows (WSL 2)`, `## macOS`, `## Linux` and `## Check Docker`;
+- `## Windows`, `## macOS`, `## Linux` and `## Check Docker` (the Windows heading was "Windows
+  (WSL 2)" until §7);
 - `## Pitfalls`, holding the four Docker pitfalls (D6), which leave the .NET 10 page.
 
 Each platform part gives a **default path** as numbered, copyable steps, then the alternatives in

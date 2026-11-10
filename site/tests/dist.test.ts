@@ -301,6 +301,64 @@ describe("full-content pages", () => {
   });
 });
 
+describe("Docker page (spec: getting-started-docker)", () => {
+  it("is listed straight after the .NET 10 page in the Getting started group", () => {
+    const docker = pageAt("platform/docker")!;
+    const group = docker.root
+      .querySelectorAll("ul.top-level > li")
+      .find(
+        (li) =>
+          li.querySelector(".group-label")?.textContent.trim() ===
+          "Getting started",
+      );
+    expect(group, "no Getting started group in the sidebar").toBeDefined();
+    const hrefs = group!
+      .querySelectorAll("a[href]")
+      .map((a) => a.getAttribute("href"));
+    const dotnet = hrefs.indexOf("/platform/dotnet-10-and-cli/");
+    expect(dotnet, `Getting started links: ${hrefs.join(", ")}`).not.toBe(-1);
+    expect(hrefs[dotnet + 1]).toBe("/platform/docker/");
+  });
+
+  it("is linked from the .NET 10 page", () => {
+    const dotnet = pageAt("platform/dotnet-10-and-cli")!;
+    expect(contentLinks(dotnet).has("/platform/docker/")).toBe(true);
+  });
+
+  it("each untested-platform note links a prefilled content issue", () => {
+    const docker = pageAt("platform/docker")!;
+    const notes = (content(docker)?.querySelectorAll("aside") ?? []).filter(
+      (a) =>
+        a
+          .getAttribute("aria-label")
+          ?.startsWith("Not yet tested end to end on"),
+    );
+    const platforms = notes.map((a) =>
+      a.getAttribute("aria-label")!.replace(/^.* on /, ""),
+    );
+    expect(platforms.sort()).toEqual(["Windows", "macOS"]);
+    const failures: string[] = [];
+    for (const [i, note] of notes.entries()) {
+      const href = note
+        .querySelectorAll("a[href]")
+        .map((a) => a.getAttribute("href")!)
+        .find((h) => h.startsWith(`${ISSUES_URL}?`));
+      if (!href) {
+        failures.push(`${platforms[i]}: no new-issue link`);
+        continue;
+      }
+      const params = new URL(href).searchParams;
+      if (!params.get("title")?.trim())
+        failures.push(`${platforms[i]}: no prefilled title`);
+      if (params.get("labels") !== "content")
+        failures.push(`${platforms[i]}: labels is ${params.get("labels")}`);
+      if (!params.get("body")?.includes(`${docker.url}#`))
+        failures.push(`${platforms[i]}: body does not name the page section`);
+    }
+    expect(failures, failures.join("\n")).toEqual([]);
+  });
+});
+
 describe("exercises", () => {
   it("every exercise folder is linked from a site page", () => {
     // Exercise folders are named NN-topic; skip anything else (such as hidden

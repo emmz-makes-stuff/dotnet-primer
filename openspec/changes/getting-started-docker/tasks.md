@@ -173,6 +173,36 @@ platforms.
 - [x] 7.3 Update the other mentions to the new defaults: the samples README's Docker prerequisite,
   and the docker row of `docs/dependencies.md`. Verify: `make gates` and `make deps`.
 
+## 8. Review fixes: code-review findings
+
+Agreed with Emmz on 2026-11-10: fix all seven findings from the `code-review` run on
+`change/getting-started-docker`.
+
+- [x] 8.1 Docker page wording, in `site/src/content/docs/platform/docker.md`:
+  - **The daemon pitfall:** drop "systemd is usually off" on the advanced path, which step 2
+    contradicts. Name the likely causes instead: WSL stopped the idle distro, or the port override
+    failed (which the last pitfall covers).
+  - **The daemon pitfall:** also quote Rancher Desktop's own errors. That is
+    `unix:///Users/<you>/.rd/docker.sock` on macOS, and the `npipe:////./pipe/docker_engine` pipe on
+    Windows.
+  - **`DOCKER_HOST`:** say to clear it when switching tools on Windows (Docker Desktop needs none,
+    and the advanced path sets its own).
+  - **Step 5:** point at the TLS pitfall from the step itself.
+
+  Verify: `make gates`.
+- [x] 8.2 Use the full `https://dotnet-primer.emmz.dev/platform/docker/` URL in the `make deps`
+  hint and in the docker row of `docs/dependencies.md`. Verify: `make deps`.
+- [x] 8.3 Move the .NET page's `## Get Docker` hand-off to the end of the page, after
+  `## Check your setup`. This replaces task 2.1's placement. Update `design.md` where it records the
+  placement. Verify: `make gates`.
+- [x] 8.4 Add `dist.test.ts` checks for the spec:
+  - Docker comes straight after the .NET 10 page in the sidebar's Getting started group;
+  - the .NET 10 page links to `/platform/docker/`;
+  - each of the Docker page's untested-platform notes links to a new issue whose query has
+    `labels=content` and a title.
+
+  Verify: `make gates`. Each check fails when its condition is broken by hand, then passes again.
+
 ## Workflow follow-up
 
 - Whole-change review, the change-done note, and the offer of `code-review`, per CLAUDE.md

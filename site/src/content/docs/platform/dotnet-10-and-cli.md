@@ -155,10 +155,6 @@ dotnetup sdk uninstall 10.0 --source GlobalJson
 
 Uninstalling removes a **spec**, not a version. Files are deleted only once no spec needs them any more. If `10.0.4xx` and the repo's `10.0` both resolved to 10.0.403, uninstalling `10.0.4xx` keeps 10.0.403, and `dotnetup` says which spec still needs it. A spec that came from `global.json` needs `--source GlobalJson`, because uninstall only matches specs you typed unless told otherwise.
 
-## Get Docker
-
-Some later pages run tools in containers, so they need Docker. Exercises 01–06 don't. The next page, [Docker](/platform/docker/), sets it up on Windows, macOS and Linux.
-
 ## Pin the SDK with global.json
 
 `global.json` sits at the root of a repository and says which SDK the `dotnet` commands there must use. `dotnet` looks for it in the current folder, then in each parent folder. The primer's own:
@@ -352,3 +348,7 @@ dotnet test --project samples/exercises/01-configuration/Solution.Tests
 ```
 
 If they do, you're ready for [ASP.NET Core](/aspnet-core/).
+
+## Get Docker
+
+Some later pages run tools in containers, so they need Docker. Exercises 01–06 don't, so you can start on ASP.NET Core first. The next page in Getting started, [Docker](/platform/docker/), sets it up on Windows, macOS and Linux.
