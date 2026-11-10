@@ -23,18 +23,18 @@
 
 ## 2. Exercise 09: the API, the bugs and the Solution tests
 
-- [ ] 2.1 Scaffold `samples/exercises/09-testing/` per design D2:
+- [x] 2.1 Scaffold `samples/exercises/09-testing/` per design D2:
   - `Testing.App`, `Testing.Starter.Tests`, `Testing.Solution.Tests` and `Testing.Checker`;
   - `bugs/SeededBugs.targets`, imported by the App.
 
   Add all of them to `Primer.slnx`, and only the App and the Solution tests to
   `Primer.Solutions.slnx`. Verify with `make samples-build`.
-- [ ] 2.2 Implement the App per D3: the three endpoints, `Pricing`, `CancelPolicy`, `OrderService`,
+- [x] 2.2 Implement the App per D3: the three endpoints, `Pricing`, `CancelPolicy`, `OrderService`,
   `IWarehouse` with its logging implementation, `OrderRegistration` and validation. Verify that
   `make samples-build` passes, and hit each endpoint once by hand on a local run.
-- [ ] 2.3 Write `Testing.Solution.Tests` per D7: the four files, with NSubstitute, `FakeTimeProvider`
+- [x] 2.3 Write `Testing.Solution.Tests` per D7: the four files, with NSubstitute, `FakeTimeProvider`
   and a `WebApplicationFactory<Program>` subclass. Verify that `make samples-test` passes.
-- [ ] 2.4 Write the four seeded bugs per D3, each a copy of one App file with one marked change.
+- [x] 2.4 Write the four seeded bugs per D3, each a copy of one App file with one marked change.
   Verify each by hand with `dotnet test --project Solution.Tests -p:SeededBug=n`: at least one test
   fails per bug, and it's the test for that bug's technique.
 

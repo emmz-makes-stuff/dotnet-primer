@@ -135,14 +135,18 @@ In memory, money in integer cents as in 08. Every endpoint is a minimal API:
 **The rules, each in its own small file, so a bug replaces exactly one** (D4):
 - `Pricing.cs`, static and pure: the subtotal, with **10% off when the subtotal is $100.00 (10,000
   cents) or more**. Computed in integer cents, with the discount rounded down.
-- `CancelPolicy.cs`, which takes a `TimeProvider`: an order can be cancelled **up to and including
-  30 minutes after it was placed**.
-- `OrderService.cs`: place and cancel. It takes `OrderStore`, `IWarehouse`, `CancelPolicy` and
-  `TimeProvider`.
+- `CancelPolicy.cs`, static, `CanCancel(Order, TimeProvider)`: an order can be cancelled **up to
+  and including 30 minutes after it was placed**. *Revised in §2:* it's a static method taking the
+  `TimeProvider`, not a registered class with a primary constructor. Bug 3's copy ignores the
+  parameter, and an unread primary-constructor parameter (CS9113) would fail the warnings-as-errors
+  build. An unused method parameter doesn't.
+- `OrderService.cs`: place and cancel. It takes `OrderStore`, `IWarehouse` and `TimeProvider`.
+  Cancelling an already cancelled order is a `409`, like a closed window, so stock isn't released
+  twice.
 - `IWarehouse.cs`: `Task ReleaseAsync(int orderId, IReadOnlyList<OrderLine> lines, CancellationToken)`.
   The app's own implementation only logs: there's no real warehouse.
-- `OrderRegistration.cs`: an `AddOrders()` extension that registers `OrderStore` as a singleton,
-  the service, the policy, `IWarehouse` and `TimeProvider.System`. `Program.cs` calls it, maps the
+- `OrderRegistration.cs`: an `AddOrders()` extension that registers `OrderStore` as a singleton, the
+  service (scoped), `IWarehouse` and `TimeProvider.System`. `Program.cs` calls it, maps the
   endpoints, and ends with `public partial class Program;`.
 
 **The seeded bugs** (the requirement's four scenarios):
@@ -150,12 +154,15 @@ In memory, money in integer cents as in 08. Every endpoint is a minimal API:
 | # | Replaces | The bug | Caught by | TODO |
 |---|---|---|---|---|
 | 1 | `Pricing.cs` | the discount needs *more than* $100.00 (`>` for `>=`) | a unit test of `Pricing` at the threshold | 1 |
-| 2 | `OrderService.cs` | a successful cancel doesn't call `ReleaseAsync` | a test double for `IWarehouse` | 2 |
+| 2 | `OrderService.cs` | a successful cancel calls `ReleaseAsync` with no lines, so no stock goes back | a test double for `IWarehouse`, checking the arguments | 2 |
 | 3 | `CancelPolicy.cs` | the window is judged against `DateTimeOffset.UtcNow`, not the `TimeProvider` | `FakeTimeProvider` advanced past 30 minutes | 3 |
 | 4 | `OrderRegistration.cs` | `OrderStore` is registered as scoped, so each request gets an empty store | `WebApplicationFactory`: place, then get | 4 |
 
-Each bug file is a copy of the App file with the one change. A `// SEEDED BUG n:` comment marks the
-change. The bugs are deliberately simple, with no trick or ambiguity, so a missed bug means a missing
+Each bug file is a copy of the App file with **exactly one changed line**, which ends with a
+`// SEEDED BUG n: …` comment. The checker's drift check relies on that (same line count, and the
+only differing line carries the marker). *Revised in §2:* bug 2 can't just remove the
+`ReleaseAsync` call, because the `async` method would then have no `await` (CS1998), so it releases
+an empty list instead. The bugs are deliberately simple, with no trick or ambiguity, so a missed bug means a missing
 test, not a misunderstanding.
 
 **Rejected:** a bug in validation (`400`). A plain HTTP test would catch it as easily as a unit

@@ -1,0 +1,27 @@
+<Project>
+  <!--
+    The seeded bugs. The checker builds the app once per bug with -p:SeededBug=n. Each bug removes
+    one of the app's files from the build and compiles a broken copy in its place. With no
+    SeededBug property, none of this applies, and the app is the correct one.
+  -->
+  <PropertyGroup>
+    <_SeededBugFile Condition="'$(SeededBug)' == '1'">Pricing.cs</_SeededBugFile>
+    <_SeededBugFolder Condition="'$(SeededBug)' == '1'">1-discount</_SeededBugFolder>
+    <_SeededBugFile Condition="'$(SeededBug)' == '2'">OrderService.cs</_SeededBugFile>
+    <_SeededBugFolder Condition="'$(SeededBug)' == '2'">2-warehouse</_SeededBugFolder>
+    <_SeededBugFile Condition="'$(SeededBug)' == '3'">CancelPolicy.cs</_SeededBugFile>
+    <_SeededBugFolder Condition="'$(SeededBug)' == '3'">3-clock</_SeededBugFolder>
+    <_SeededBugFile Condition="'$(SeededBug)' == '4'">OrderRegistration.cs</_SeededBugFile>
+    <_SeededBugFolder Condition="'$(SeededBug)' == '4'">4-registration</_SeededBugFolder>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(_SeededBugFile)' != ''">
+    <Compile Remove="$(_SeededBugFile)" />
+    <Compile Include="$(MSBuildThisFileDirectory)$(_SeededBugFolder)/$(_SeededBugFile)" Link="$(_SeededBugFile)" />
+  </ItemGroup>
+
+  <Target Name="_RejectUnknownSeededBug" BeforeTargets="CoreCompile"
+          Condition="'$(SeededBug)' != '' and '$(_SeededBugFile)' == ''">
+    <Error Text="There's no seeded bug '$(SeededBug)'. Use 1, 2, 3 or 4." />
+  </Target>
+</Project>

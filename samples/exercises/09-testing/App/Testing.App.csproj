@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- The checker's switch: with -p:SeededBug=n, one file below is swapped for a broken copy from
+       ../bugs. Without it, nothing changes. You can ignore it while writing your tests. -->
+  <Import Project="../bugs/SeededBugs.targets" />
+
+</Project>

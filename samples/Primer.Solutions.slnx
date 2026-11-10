@@ -56,4 +56,11 @@
   <Folder Name="/exercises/08-grpc/Solution/">
     <Project Path="exercises/08-grpc/Solution/Grpc.Solution.csproj" />
   </Folder>
+  <Folder Name="/exercises/09-testing/" />
+  <Folder Name="/exercises/09-testing/App/">
+    <Project Path="exercises/09-testing/App/Testing.App.csproj" />
+  </Folder>
+  <Folder Name="/exercises/09-testing/Solution.Tests/">
+    <Project Path="exercises/09-testing/Solution.Tests/Testing.Solution.Tests.csproj" />
+  </Folder>
 </Solution>
