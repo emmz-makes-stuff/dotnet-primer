@@ -16,12 +16,9 @@ var app = builder.Build();
 
 app.MapPost("/orders", async (PlaceOrderRequest request, OrdersDbContext db, CancellationToken ct) =>
 {
-    if (request.Items is not { Count: > 0 })
+    if (request.Validate() is { Count: > 0 } errors)
     {
-        return Results.ValidationProblem(new Dictionary<string, string[]>
-        {
-            ["items"] = ["An order needs at least one item."],
-        });
+        return Results.ValidationProblem(errors);
     }
 
     var order = new Order
@@ -42,6 +39,12 @@ app.MapPost("/orders", async (PlaceOrderRequest request, OrdersDbContext db, Can
 
     return Results.Created($"/orders/{order.Id}", new PlaceOrderResponse(order.Id));
 });
+
+app.MapGet("/orders/{id:int}", async (int id, OrdersDbContext db, CancellationToken ct) =>
+    // Read-only, so not tracked. Include loads the lines with the order, in one query.
+    await db.Orders.AsNoTracking().Include(o => o.Lines).SingleOrDefaultAsync(o => o.Id == id, ct) is { } order
+        ? Results.Ok(order)
+        : Results.NotFound());
 
 app.MapGet("/customers/{email}/orders", async (string email, OrdersDbContext db, CancellationToken ct) =>
     // A projection is one SQL command, with the line count as a subquery. It's never tracked,

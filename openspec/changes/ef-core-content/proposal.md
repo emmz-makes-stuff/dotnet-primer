@@ -54,6 +54,9 @@ The Docker page has just shipped, so a real database for the exercise is now wit
   - lists a customer's orders in a single SQL query, with no N+1;
   - cancels an order through change tracking.
 
+  Request validation (400s, with money limited to `decimal(10,2)`) and `GET /orders/{id}` come
+  already written in both projects (added in §7, Emmz, 2026-11-10).
+
   **The tests run against a real SQL Server through Testcontainers** (`Testcontainers.MsSql`), so
   this is the first exercise that needs Docker.
 - **The Docker page's macOS part** says how to run x64-only images such as SQL Server on Apple

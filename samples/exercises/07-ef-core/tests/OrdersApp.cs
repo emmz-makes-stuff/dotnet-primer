@@ -54,7 +54,26 @@ public sealed class OrdersApp(SqlServerFixture sql) : WebApplicationFactory<Prog
         return await use(db);
     }
 
-    /// <summary>Applies the app's migrations to this database, once, after checking there are some.</summary>
+    /// <summary>
+    /// Runs <paramref name="use"/> with a context from a new DI scope, for work that returns nothing.
+    /// </summary>
+    public Task WithContextAsync(Func<OrdersDbContext, Task> use) =>
+        WithContextAsync(async db =>
+        {
+            await use(db);
+            return 0;
+        });
+
+    /// <summary>The hint for a model that has changed since the last migration.</summary>
+    public const string PendingModelChangesHint =
+        "The model has changes that no migration covers. After changing the model or its configuration, " +
+        "add a migration: `dnx dotnet-ef@10.0.14 migrations add <Name>` in the Starter folder. " +
+        "(Before you've shipped it, you can also remove the last one with `migrations remove --force` and add it again.)";
+
+    /// <summary>
+    /// Applies the app's migrations to this database, once, after checking there are some and that
+    /// they cover the model.
+    /// </summary>
     public async Task MigrateAsync()
     {
         await _migrateOnce.WaitAsync(TestContext.Current.CancellationToken);
@@ -71,8 +90,11 @@ public sealed class OrdersApp(SqlServerFixture sql) : WebApplicationFactory<Prog
                     db.Database.GetMigrations().Any(),
                     "The app has no migrations yet. In the Starter folder, run " +
                     "`dnx dotnet-ef@10.0.14 migrations add InitialCreate` to create the first one from your model.");
+
+                // Check this first: since EF Core 9, MigrateAsync throws on pending model changes,
+                // with a message that doesn't say how to fix it.
+                Assert.False(db.Database.HasPendingModelChanges(), PendingModelChangesHint);
                 await db.Database.MigrateAsync(TestContext.Current.CancellationToken);
-                return true;
             });
             _migrated = true;
         }

@@ -10,8 +10,8 @@ namespace Orders.Tests;
 /// tests share it, and each test class gets its own database on it (see <see cref="OrdersApp"/>).
 /// </summary>
 /// <remarks>
-/// You don't need to change anything here to do the exercise. The Testing page explains fixtures
-/// and Testcontainers.
+/// You don't need to change anything here to do the exercise. The primer's Testing pages, still to
+/// come, will cover fixtures and Testcontainers.
 /// </remarks>
 public sealed class SqlServerFixture : IAsyncLifetime
 {

@@ -128,6 +128,47 @@ the page, the cheatsheet and exercise 07, and to make the long-lived path `AddPo
   changed snippet, and check any new Learn link.
 - [x] 6.5 `make gates` to `GATES_EXIT:0`, then repeat the 5.1 human check.
 
+## 7. Review fixes: code review findings, and the exercise's input handling
+
+From the `code-review` run (high) on `change/ef-core-content`. Emmz chose (2026-11-10) to fix all six
+findings, and to make all three input-handling changes. The finding that Docker Desktop turns
+Rosetta on by default was rejected: Docker's settings reference lists it as "Disabled".
+
+- [x] 7.1 Tests: `OrdersApp.MigrateAsync` checks `HasPendingModelChanges()` before migrating, and
+  fails with the friendly hint (the `dnx … migrations add` and `migrations remove --force`
+  commands), because EF Core 10's `MigrateAsync` throws first. `ModelIsConfigured` also checks the
+  `CustomerEmail` index, the `OrderLines` table name and `Sku`'s maximum length of 32, each with a
+  hint. Add a `WithContextAsync(Func<OrdersDbContext, Task>)` overload and drop the dummy returns.
+  Check each new hint by breaking the Solution temporarily.
+- [x] 7.2 Exercise input handling. It is **pre-written in both Starter and Solution**: not a new TODO,
+  because the exercise teaches EF Core, not validation.
+  - `POST /orders` returns `400` with a validation problem when:
+    - the email is missing or longer than 256 characters;
+    - an item is null;
+    - a Sku is missing or longer than 32 characters;
+    - a quantity is 0 or less;
+    - a unit price is negative or has more than 2 decimal places;
+    - the total doesn't fit `decimal(10,2)`.
+
+    So money is **rejected, not rounded**, and the stored total always equals the sum of the
+    stored lines.
+  - `GET /orders/{id}` returns the order with its lines (no tracking, `Include`), or `404`. So the
+    `201`'s `Location` header points at a real endpoint.
+  - Tests for each: one test for the 400 cases, and one that follows `Location` after a POST.
+  - Update the `sample-exercises` requirement ("saving, querying and change tracking") with
+    scenarios for both, and the page's Exercise 07 Goal sentence if it needs it.
+- [x] 7.3 Page and cheatsheet:
+  - say that EF Core maps an unconfigured `decimal` to `decimal(18,2)` (also in the Solution's and
+    the page's `OrderConfiguration` comment, which must stay identical);
+  - give each line of the cheatsheet's Save block its own entity, so the block really sends an
+    INSERT, an UPDATE and a DELETE;
+  - reword the Testing-page pointers (the page's Exercise 07 "Where" and `SqlServerFixture`'s
+    remarks) so they don't promise an explanation on a page that's still "Coming soon".
+
+  Compile the changed snippets.
+- [ ] 7.4 `make gates` to `GATES_EXIT:0`. Then a short human check: the Exercise 07 tests from a
+  clean clone (Starter red, Solution green).
+
 ## Workflow follow-up
 
 - Whole-change review, the change-done note, and the offer of `code-review`, per CLAUDE.md

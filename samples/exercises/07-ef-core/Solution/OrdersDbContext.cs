@@ -24,7 +24,7 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         order.Property(o => o.CustomerEmail).HasMaxLength(256);
         order.HasIndex(o => o.CustomerEmail);
 
-        // Without a precision, EF warns and SQL Server uses decimal(18,2).
+        // Without a precision, EF warns and maps it to decimal(18,2).
         order.Property(o => o.Total).HasPrecision(10, 2);
 
         // Store the status by name, so the column still reads correctly if the enum is reordered.

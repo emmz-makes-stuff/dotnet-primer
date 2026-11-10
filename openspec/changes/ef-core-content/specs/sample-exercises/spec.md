@@ -60,6 +60,19 @@ In exercise 07, the engineer's endpoints SHALL:
 - list a customer's orders with each order's line count, in one SQL command;
 - cancel an order by changing its status through change tracking.
 
+The app SHALL also come with request validation and a `GET /orders/{id}` endpoint, already written
+in both the starter and the solution.
+
+#### Scenario: Invalid order is rejected
+- **WHEN** an order arrives with a missing or over-long email, a null item, a missing or over-long
+  SKU, a quantity below 1, a unit price that is negative or has more than 2 decimal places, or a
+  total too big for `decimal(10,2)`
+- **THEN** the app returns 400 and saves nothing
+
+#### Scenario: Placed order can be read back
+- **WHEN** a client follows the `Location` header of a placed order's 201 response
+- **THEN** it gets the order with its total and lines, and an unknown id returns 404
+
 #### Scenario: Order and lines are saved together
 - **WHEN** the engineer's completed app accepts an order with 3 lines
 - **THEN** the database holds the order and its 3 lines, with the total and prices stored exactly

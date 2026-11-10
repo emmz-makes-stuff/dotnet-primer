@@ -127,7 +127,7 @@ public sealed class OrderLine
 }
 ```
 
-Conventions don't know your data, though. Left alone, a `string` becomes `nvarchar(max)`, which SQL Server can't index, a `decimal` gets no precision (EF Core warns, and SQL Server uses `decimal(18,2)`), and an enum is stored as a number, which changes meaning if someone reorders it. Say what you mean with the **fluent API**, one configuration class per entity. This is the exercise's:
+Conventions don't know your data, though. Left alone, a `string` becomes `nvarchar(max)`, which SQL Server can't index, a `decimal` gets no precision (EF Core warns, and maps it to `decimal(18,2)`), and an enum is stored as a number, which changes meaning if someone reorders it. Say what you mean with the **fluent API**, one configuration class per entity. This is the exercise's:
 
 ```csharp title="OrdersDbContext.cs"
 internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
@@ -138,7 +138,7 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         order.Property(o => o.CustomerEmail).HasMaxLength(256);
         order.HasIndex(o => o.CustomerEmail);
 
-        // Without a precision, EF warns and SQL Server uses decimal(18,2).
+        // Without a precision, EF warns and maps it to decimal(18,2).
         order.Property(o => o.Total).HasPrecision(10, 2);
 
         // Store the status by name, so the column still reads correctly if the enum is reordered.
@@ -444,9 +444,9 @@ Many APIs keep their names, such as `DbSet`, `Include`, `SaveChanges` and `AsNoT
 
 ## Exercise 07: a database for the orders app
 
-**Goal:** give the orders app a real SQL Server database. Register the context, configure the model, create the first migration, then fix three endpoints that work but talk to the database badly: a save that isn't one unit of work, a list with an N+1 query, and a cancel that isn't written yet.
+**Goal:** give the orders app a real SQL Server database. Register the context, configure the model, create the first migration, then fix three endpoints that work but talk to the database badly: a save that isn't one unit of work, a list with an N+1 query, and a cancel that isn't written yet. The request validation and `GET /orders/{id}` are already written, so you don't need to change them.
 
-**Where:** [`samples/exercises/07-ef-core`](https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/07-ef-core) in the GitHub repo. Clone the repo, then work in the `Starter` project. **The tests need [Docker](/platform/docker/) running**: they start SQL Server in a container with Testcontainers, so the first run downloads the image. You don't need to change the test setup; the [Testing](/testing/) page explains it.
+**Where:** [`samples/exercises/07-ef-core`](https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/07-ef-core) in the GitHub repo. Clone the repo, then work in the `Starter` project. **The tests need [Docker](/platform/docker/) running**: they start SQL Server in a container with Testcontainers, so the first run downloads the image. You don't need to change the test setup. The [Testing](/testing/) pages will cover fixtures and Testcontainers when they're written.
 
 **Steps:**
 

@@ -80,12 +80,7 @@ public sealed class OrdersDatabaseTests(OrdersApp app) : IClassFixture<OrdersApp
         {
             var pending = await db.Database.GetPendingMigrationsAsync(Ct);
             Assert.True(!pending.Any(), $"Migrations weren't applied: {string.Join(", ", pending)}.");
-            Assert.False(
-                db.Database.HasPendingModelChanges(),
-                "The model has changes that no migration covers. After changing the model or its configuration, " +
-                "add a migration: `dnx dotnet-ef@10.0.14 migrations add <Name>` in the Starter folder. " +
-                "(Before you've shipped it, you can also remove the last one with `migrations remove --force` and add it again.)");
-            return true;
+            Assert.False(db.Database.HasPendingModelChanges(), OrdersApp.PendingModelChangesHint);
         });
     }
 
@@ -103,6 +98,18 @@ public sealed class OrdersDatabaseTests(OrdersApp app) : IClassFixture<OrdersApp
                 email.GetMaxLength() is not null,
                 "Order.CustomerEmail has no maximum length, so it's stored as nvarchar(max), which can't be indexed. " +
                 "In OrderConfiguration, give it HasMaxLength(256).");
+            Assert.True(
+                order.GetIndexes().Any(i => i.Properties.Count == 1 && i.Properties[0] == email),
+                "Order.CustomerEmail has no index, so listing a customer's orders scans the whole table. " +
+                "In OrderConfiguration, add HasIndex(o => o.CustomerEmail).");
+
+            Assert.True(
+                line.GetTableName() == "OrderLines",
+                $"OrderLine is stored in a table called \"{line.GetTableName()}\". There's no DbSet<OrderLine>, so the table " +
+                "is named after the class by convention. In OrderLineConfiguration, name it with ToTable(\"OrderLines\").");
+            Assert.True(
+                line.FindProperty(nameof(OrderLine.Sku))!.GetMaxLength() == 32,
+                "OrderLine.Sku should have a maximum length of 32. In OrderLineConfiguration, give it HasMaxLength(32).");
 
             foreach (var (entity, name) in new[] { (order, nameof(Order.Total)), (line, nameof(OrderLine.UnitPrice)) })
             {
@@ -124,7 +131,7 @@ public sealed class OrdersDatabaseTests(OrdersApp app) : IClassFixture<OrdersApp
                 lines is { IsCollection: true } && lines.ForeignKey.Properties.Single().Name == nameof(OrderLine.OrderId),
                 "Order.Lines should be a one-to-many relationship, keyed by OrderLine.OrderId. " +
                 "In OrderConfiguration: HasMany(o => o.Lines).WithOne().HasForeignKey(l => l.OrderId).");
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         });
     }
 
@@ -160,6 +167,62 @@ public sealed class OrdersDatabaseTests(OrdersApp app) : IClassFixture<OrdersApp
             "The lines' unit prices weren't stored exactly as sent.");
     }
 
+    /// <summary>Bodies <c>POST /orders</c> must reject, as raw JSON, so they can hold nulls.</summary>
+    public static TheoryData<string, string> InvalidOrders => new()
+    {
+        { """{"customerEmail":null,"items":[{"sku":"A","quantity":1,"unitPrice":1}]}""", "no customer email" },
+        { $$"""{"customerEmail":"{{new string('a', 245)}}@example.test","items":[{"sku":"A","quantity":1,"unitPrice":1}]}""", "an email over 256 characters" },
+        { """{"customerEmail":"a@example.test","items":[]}""", "no items" },
+        { """{"customerEmail":"a@example.test","items":[null]}""", "a null item" },
+        { $$"""{"customerEmail":"a@example.test","items":[{"sku":"{{new string('S', 33)}}","quantity":1,"unitPrice":1}]}""", "a SKU over 32 characters" },
+        { """{"customerEmail":"a@example.test","items":[{"sku":"A","quantity":0,"unitPrice":1}]}""", "a quantity of 0" },
+        { """{"customerEmail":"a@example.test","items":[{"sku":"A","quantity":1,"unitPrice":-1}]}""", "a negative price" },
+        { """{"customerEmail":"a@example.test","items":[{"sku":"A","quantity":3,"unitPrice":0.333}]}""", "a price with 3 decimal places" },
+        { """{"customerEmail":"a@example.test","items":[{"sku":"A","quantity":2,"unitPrice":60000000}]}""", "a total too big for decimal(10,2)" },
+    };
+
+    [Theory]
+    [MemberData(nameof(InvalidOrders))]
+    public async Task InvalidOrdersAreRejected(string json, string problem)
+    {
+        await app.MigrateAsync();
+        using var client = app.CreateClient();
+
+        app.Saves.Reset();
+        using var response = await client.PostAsync(
+            "/orders", new StringContent(json, System.Text.Encoding.UTF8, "application/json"), Ct);
+
+        // The validation is already written; these fail only if it's been removed or bypassed.
+        Assert.True(
+            response.StatusCode == HttpStatusCode.BadRequest,
+            $"POST /orders with {problem} should return 400 Bad Request, but returned {(int)response.StatusCode}. " +
+            "Keep the request.Validate() check at the top of the endpoint.");
+        Assert.True(app.Saves.Count == 0, $"POST /orders with {problem} saved something. Validate before you save.");
+    }
+
+    [Fact]
+    public async Task PlacedOrderCanBeReadBack()
+    {
+        await app.MigrateAsync();
+        var email = NewCustomer();
+        using var client = app.CreateClient();
+        using var placed = await client.PostAsJsonAsync(
+            "/orders", new PlaceOrderRequest(email, [new("SKU-1", 2, 4.99m), new("SKU-2", 1, 10.50m)]), Ct);
+        Assert.True(
+            placed.StatusCode == HttpStatusCode.Created && placed.Headers.Location is not null,
+            $"POST /orders should return 201 Created with a Location header, but returned {(int)placed.StatusCode}.");
+
+        var order = await client.GetFromJsonAsync<StoredOrder>(placed.Headers.Location, Ct);
+        Assert.True(
+            order is { Lines.Count: 2, Total: 20.48m } && order.CustomerEmail == email,
+            "GET on the Location that POST /orders returned should give back the order, with its total and its 2 lines.");
+
+        using var unknown = await client.GetAsync("/orders/2147483000", Ct);
+        Assert.True(
+            unknown.StatusCode == HttpStatusCode.NotFound,
+            $"GET /orders/{{id}} for an order that doesn't exist should return 404 Not Found, but returned {(int)unknown.StatusCode}.");
+    }
+
     [Fact]
     public async Task ListingOrdersAvoidsNPlusOne()
     {
@@ -178,7 +241,7 @@ public sealed class OrdersDatabaseTests(OrdersApp app) : IClassFixture<OrdersApp
                 db.Orders.Add(order);
             }
 
-            return await db.SaveChangesAsync(Ct);
+            await db.SaveChangesAsync(Ct);
         });
 
         using var client = app.CreateClient();
@@ -228,4 +291,10 @@ public sealed class OrdersDatabaseTests(OrdersApp app) : IClassFixture<OrdersApp
 
     /// <summary>A row of the list, read as JSON: the status arrives as its name.</summary>
     private sealed record Summary(int Id, string Status, decimal Total, int LineCount);
+
+    /// <summary>The body of <c>GET /orders/{id}</c>, read as JSON.</summary>
+    private sealed record StoredOrder(int Id, string CustomerEmail, string Status, decimal Total, List<StoredLine> Lines);
+
+    /// <summary>One line of a <see cref="StoredOrder"/>.</summary>
+    private sealed record StoredLine(string Sku, int Quantity, decimal UnitPrice);
 }

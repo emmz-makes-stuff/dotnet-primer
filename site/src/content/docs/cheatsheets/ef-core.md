@@ -121,10 +121,10 @@ var count = await db.Orders.CountAsync(o => o.Status == OrderStatus.Placed, ct);
 ## Save
 
 ```csharp
-db.Orders.Add(order);                  // INSERT, with its lines
-order.Status = OrderStatus.Cancelled;  // a tracked entity: UPDATE of that column only
-db.Orders.Remove(order);               // DELETE
-await db.SaveChangesAsync(ct);         // all of the above, in one transaction
+db.Orders.Add(newOrder);                  // INSERT, with its lines
+placed.Status = OrderStatus.Cancelled;    // a tracked entity: UPDATE of that column only
+db.Orders.Remove(old);                    // DELETE
+await db.SaveChangesAsync(ct);            // all of the above, in one transaction
 
 // Set-based: straight to SQL, no loading, no tracking, no SaveChanges.
 await db.Orders.Where(o => o.PlacedAt < cutoff)
