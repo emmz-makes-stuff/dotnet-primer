@@ -2,7 +2,7 @@
 
 ## 1. Facts check and Linux probe
 
-- [ ] 1.1 Check the D7 sources and write a devlog note. Record exactly what each says on the day:
+- [x] 1.1 Check the D7 sources and write a devlog note. Record exactly what each says on the day:
   - Docker's "Install Docker Engine on Ubuntu" page: the apt commands, verbatim;
   - Microsoft's WSL install page and its systemd page (`wsl --install -d Ubuntu`, whether systemd
     is on by default);
@@ -13,7 +13,7 @@
 
   Verify: the note quotes each source with its URL. Every URL returns 200 with no redirect (checked
   through `ctx_execute` `fetch`).
-- [ ] 1.2 Run the Linux probe (design D8) in a throwaway OrbStack Ubuntu machine (unsandboxed):
+- [x] 1.2 Run the Linux probe (design D8) in a throwaway OrbStack Ubuntu machine (unsandboxed):
   - run D2 steps 3–5 and D4 verbatim, as the page will show them: the apt repository, the packages,
     the `docker` group, the systemd drop-in with the TCP endpoint, then reload and restart;
   - run D5's checks (`hello-world`, `docker info --format '{{.ServerVersion}}'`);

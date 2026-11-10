@@ -78,9 +78,11 @@ These are the steps, run in this order:
    page says that membership is root-equivalent on that distro.
 5. **The TCP endpoint for Windows.** A systemd drop-in,
    `/etc/systemd/system/docker.service.d/override.conf`, that clears `ExecStart` and starts
-   `dockerd -H fd:// -H tcp://127.0.0.1:2375 --containerd=/run/containerd/containerd.sock`. Add
-   whatever flag the current Engine needs to accept a TCP endpoint without TLS (D8). Then
+   `dockerd -H fd:// -H tcp://127.0.0.1:2375 --containerd=/run/containerd/containerd.sock`. Then
    `systemctl daemon-reload` and `systemctl restart docker`.
+   - **Probed in §1** on Engine 29.9.3: no extra flag is needed. dockerd logs `[DEPRECATION NOTICE]`
+     warnings ("In future versions this will be a hard failure preventing the daemon from
+     starting!"). The page says so, and says what to check if a later Engine refuses to start.
    - **Why a drop-in, not `daemon.json`'s `hosts`:** the packaged unit already passes `-H fd://`, and
      dockerd refuses to start when `hosts` is set in both places.
 6. **`DOCKER_HOST` on Windows.** In PowerShell:
@@ -156,8 +158,9 @@ These go in the page's existing Pitfalls list, in its "problem. Fix:" style:
 - **Windows tools can't find Docker:** `DOCKER_HOST` isn't set in that terminal, or WSL isn't
   running. Fix: open a new terminal, start the distro, and run the D5 Windows check.
 - **dockerd won't start after adding the TCP endpoint:** `hosts` is set in both `daemon.json` and
-  the unit, or the non-TLS flag is missing. Fix: `journalctl -u docker` shows which, and the endpoint
-  belongs in the drop-in only.
+  the unit (dockerd says "the following directives are specified both as a flag and in the
+  configuration file: hosts"), or a newer Engine refuses TCP without TLS. Fix: `journalctl -u docker`
+  shows which. The endpoint belongs in the drop-in only.
 
 ### D7. Facts and links
 
@@ -200,6 +203,9 @@ links through the same redirect check as before: Learn URLs without a locale, an
   Microsoft's pages as the source of truth, and the commands are checked verbatim on the day (D7, D8).
 - **[Licence terms change]** → the page states them "at the time of writing", and links each
   vendor's terms.
+- **[A future Engine refuses TCP without TLS]** (Engine 29.9.3 warns that it will) → the D6
+  "dockerd won't start" pitfall says to read `journalctl -u docker`. If that release lands while
+  the page is live, it becomes a review fix: add the opt-in flag Docker names, or move to TLS.
 - **[The daemon is stopped when WSL idles]** → WSL shuts a distro down after it has been idle for a
   while. With systemd, `docker` starts again as soon as the distro does, but Windows tools fail
   while the distro is down. The pitfall in D6 covers it.
