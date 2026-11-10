@@ -29,7 +29,9 @@ samples-build:
 	@dotnet build samples/Primer.slnx; code=$$?; echo "SAMPLES_BUILD_EXIT:$$code"; exit $$code
 
 samples-test:
-	@dotnet test --solution samples/Primer.Solutions.slnx; code=$$?; echo "SAMPLES_TEST_EXIT:$$code"; exit $$code
+	@dotnet test --solution samples/Primer.Solutions.slnx && \
+		dotnet run --project samples/exercises/09-testing/Checker -- Solution.Tests; \
+		code=$$?; echo "SAMPLES_TEST_EXIT:$$code"; exit $$code
 
 samples-format:
 	@dotnet format samples/Primer.slnx --verify-no-changes; code=$$?; echo "SAMPLES_FORMAT_EXIT:$$code"; exit $$code

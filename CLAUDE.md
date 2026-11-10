@@ -18,7 +18,9 @@ lines exactly; never paraphrase them.
 - `make samples-build` runs `dotnet build samples/Primer.slnx`. This is also the samples lint:
   analyzer warnings are treated as errors.
 - `make samples-format` runs `dotnet format samples/Primer.slnx --verify-no-changes`.
-- `make samples-test` runs `dotnet test --solution samples/Primer.Solutions.slnx`.
+- `make samples-test` runs `dotnet test --solution samples/Primer.Solutions.slnx`, then exercise
+  09's checker on its solution tests (`dotnet run --project samples/exercises/09-testing/Checker --
+  Solution.Tests`), which fails unless they catch every seeded bug.
 - `make validate` runs `openspec validate --strict` on every active change.
 - `make gates` runs all of the above, in that order.
 

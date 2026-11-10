@@ -108,6 +108,9 @@
   <Folder Name="/exercises/09-testing/App/">
     <Project Path="exercises/09-testing/App/Testing.App.csproj" />
   </Folder>
+  <Folder Name="/exercises/09-testing/Checker/">
+    <Project Path="exercises/09-testing/Checker/Testing.Checker.csproj" />
+  </Folder>
   <Folder Name="/exercises/09-testing/Solution.Tests/">
     <Project Path="exercises/09-testing/Solution.Tests/Testing.Solution.Tests.csproj" />
   </Folder>

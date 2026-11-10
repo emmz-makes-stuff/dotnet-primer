@@ -38,3 +38,6 @@ jobs:
         run: dotnet format samples/Primer.slnx --verify-no-changes
       - name: test
         run: dotnet test --solution samples/Primer.Solutions.slnx
+      # Exercise 09: the solution tests must catch every seeded bug, or the exercise can't be done.
+      - name: exercise 09 checker
+        run: dotnet run --project samples/exercises/09-testing/Checker -- Solution.Tests

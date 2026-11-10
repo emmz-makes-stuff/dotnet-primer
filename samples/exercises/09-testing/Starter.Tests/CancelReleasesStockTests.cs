@@ -6,6 +6,8 @@ namespace TestingOrders.Tests;
 //   NSubstitute substitute (Substitute.For<IWarehouse>(), then .Received(...)). Then check what
 //   the warehouse was told, and when it shouldn't have been told anything.
 //   OrderService also needs an OrderStore (use a real one) and a TimeProvider (see TODO 3).
+//   CancelAsync is async, so the test is too: make it `async Task`, and pass it
+//   TestContext.Current.CancellationToken (the build insists, through xUnit's analyzer).
 //   The Testing page: "Test doubles".
 public class CancelReleasesStockTests
 {

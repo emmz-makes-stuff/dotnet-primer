@@ -40,7 +40,7 @@
 
 ## 3. Exercise 09: the checker and the gate
 
-- [ ] 3.1 Write `Testing.Checker` per D5:
+- [x] 3.1 Write `Testing.Checker` per D5:
   - the drift check of each bug file against its App file;
   - the correct-API run first;
   - one run per bug, with progress output, the caught/missed report and the hints;
@@ -55,10 +55,10 @@
   - a scratch edit that drifts a bug file: the drift is reported.
 
   Discard the scratch copies.
-- [ ] 3.2 Write the Starter tests per D7: four files with numbered `TODO`s and no tests. Complete a
+- [x] 3.2 Write the Starter tests per D7: four files with numbered `TODO`s and no tests. Complete a
   scratch copy with tests of my own (not copied from the Solution), confirm that the checker reports
   all four caught, and discard it.
-- [ ] 3.3 Add the checker run to the samples test gate (D6): the `Makefile`'s `samples-test`, the
+- [x] 3.3 Add the checker run to the samples test gate (D6): the `Makefile`'s `samples-test`, the
   `samples` CI workflow step, and the `make samples-test` line in CLAUDE.md's Gates list. Verify that
   `make gates` shows `GATES_EXIT:0`, and that temporarily deleting one Solution test makes
   `make samples-test` fail and name the bug (then restore it).
