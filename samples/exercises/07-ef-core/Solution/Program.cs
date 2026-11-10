@@ -4,8 +4,9 @@ using Orders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Scoped by default: each request gets its own context, and its change tracker.
-builder.Services.AddDbContext<OrdersDbContext>(options =>
+// Pooled: each request still gets its own context, and its change tracker, but a finished request's
+// context is reset and reused instead of being built again.
+builder.Services.AddDbContextPool<OrdersDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Orders")));
 
 builder.Services.ConfigureHttpJsonOptions(options =>

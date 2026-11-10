@@ -92,6 +92,20 @@ The fluent configuration lives in `IEntityTypeConfiguration<T>` classes applied 
 `ApplyConfigurationsFromAssembly`. Data annotations are shown once, as the alternative. **Reason:**
 the fluent API covers everything, and it keeps the entity classes plain.
 
+**Revised in §6 (Emmz, 2026-11-10): context pooling.** The page, the cheatsheet and exercise 07
+register the context with `AddDbContextPool`, for performance and scalability. Code that outlives a
+request uses `AddPooledDbContextFactory`. The page states pooling's one rule: the context holds no
+per-request state. The 6.1 probe showed why: a pooled context's constructor services come from the
+root provider, so a scoped one throws "Cannot resolve scoped service … from root provider" when
+scopes are validated, and is silently the wrong instance when they aren't. The other 6.1 findings:
+- a pooled context is still one instance per scope;
+- a disposed scope's context goes back to the pool, reset, and is handed out again, which plain
+  `AddDbContext` never does. The pool is first in, first out, so the next scope gets the oldest
+  pooled instance, not always the one just returned. The exercise's new test therefore runs 20
+  scopes in turn and expects fewer than 20 distinct instances;
+- `AddPooledDbContextFactory` also registers the context itself;
+- `ConfigureDbContext` interceptors still apply.
+
 ### D3. Packages and the `dotnet ef` tool (agreed with Emmz, 2026-11-10)
 
 **`PackageVersion` entries** for `samples/Directory.Packages.props`:
@@ -221,7 +235,8 @@ pages that need Docker gains EF Core.
 ### D6. Cheatsheet
 
 It follows the cheatsheet shape (back link, `##` groups of copyable blocks, minimal prose):
-- registration (`AddDbContext`, the factory, pooling);
+- registration (`AddDbContextPool`, `AddPooledDbContextFactory`, and plain `AddDbContext`; revised in
+  §6);
 - an `IEntityTypeConfiguration` skeleton with the common fluent calls;
 - the `dnx dotnet-ef` commands (`migrations add`/`remove`/`list`/`script --idempotent`,
   `database update`, `migrations bundle`);

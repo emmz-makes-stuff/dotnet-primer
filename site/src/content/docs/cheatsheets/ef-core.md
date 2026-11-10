@@ -26,23 +26,24 @@ dotnet add package Microsoft.EntityFrameworkCore.Design   # for the dotnet ef to
 ## Register a context
 
 ```csharp title="Program.cs"
-// Scoped: one context per request. The usual choice in a web app.
-builder.Services.AddDbContext<OrdersDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Orders")));
-
-// For singletons and background work: create a short-lived context when you need one.
-builder.Services.AddDbContextFactory<OrdersDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Orders")));
-
-// Reuses context instances across requests, for very high request rates.
+// Pooled: one context per request, reset and reused afterwards. The usual choice in a web app.
 builder.Services.AddDbContextPool<OrdersDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Orders")));
+
+// Pooled, for singletons and background work too: rent a short-lived context when you need one.
+// Also registers the context for requests, from the same pool.
+builder.Services.AddPooledDbContextFactory<OrdersDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Orders")));
+
+// Not pooled: a new context for every request. Only for a context that holds per-request state.
+builder.Services.AddDbContext<OrdersDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Orders")));
 ```
 
-Use one of the three for a given context, not all of them.
+Use one of the three for a given context, not all of them. A pooled context takes only its `DbContextOptions` in its constructor: no scoped services, and no per-request state.
 
 ```csharp title="With a factory"
-await using var db = await dbFactory.CreateDbContextAsync(ct);
+await using var db = await dbFactory.CreateDbContextAsync(ct);   // disposing returns it to the pool
 ```
 
 ```sh

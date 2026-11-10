@@ -29,18 +29,27 @@ page with its cheatsheet. If one of them shows the placeholder, the site test ga
 
 ## ADDED Requirements
 
-### Requirement: EF Core page covers DbContext and modelling
+### Requirement: EF Core page covers DbContext and its lifetime
 The EF Core page SHALL teach EF Core against SQL Server. It SHALL cover:
-- registering a `DbContext` with `AddDbContext`, and why its scoped lifetime means one context per
-  request, never shared across threads;
-- `AddDbContextFactory` or context pooling for code that outlives a request;
-- modelling by convention, then with the fluent API: keys, required and maximum-length strings,
-  `decimal` precision, a one-to-many relationship, and an enum value conversion.
+- registering a `DbContext` with `AddDbContextPool`, recommended for performance and scalability,
+  and why a context is still one per request, never shared across threads;
+- pooling's rule that a pooled context holds no per-request state;
+- `AddPooledDbContextFactory` for code that outlives a request.
 
 #### Scenario: Reader registers a context
 - **WHEN** a reader follows the page's registration example in an ASP.NET Core app
-- **THEN** the context reads its connection string from configuration, and each request gets its own
-  context instance
+- **THEN** the context reads its connection string from configuration, comes from a pool, and each
+  request gets its own context instance
+
+### Requirement: EF Core page covers modelling
+The EF Core page SHALL cover modelling by convention, then with the fluent API: keys, required and
+maximum-length strings, `decimal` precision, a one-to-many relationship, and an enum value
+conversion.
+
+#### Scenario: Reader configures what conventions don't know
+- **WHEN** a reader follows the page's fluent configuration for orders
+- **THEN** the customer email has a maximum length, the total is `decimal(10,2)`, and the status is
+  stored by name
 
 ### Requirement: EF Core page covers migrations
 The EF Core page SHALL cover creating and applying migrations with the `dotnet ef` tool, and

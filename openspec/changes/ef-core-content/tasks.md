@@ -100,6 +100,34 @@
 
   On PASS, tick and continue. On FAIL, add a review-fix section.
 
+## 6. Review fixes: context pooling
+
+Emmz's 5.1 feedback (2026-11-10): the page should recommend `AddDbContextPool`. She chose to change
+the page, the cheatsheet and exercise 07, and to make the long-lived path `AddPooledDbContextFactory`.
+
+- [x] 6.1 Probe pooling in a scratch project before writing anything (D7):
+  - `AddDbContextPool` gives one instance per scope, two open scopes get different instances, and a
+    scope opened after one is disposed gets the same, reset instance back;
+  - whether `AddPooledDbContextFactory` also registers the context itself, and whether it can sit
+    next to `AddDbContextPool` for the same context;
+  - what a pooled context with an extra constructor parameter does (the exact error);
+  - that the tests' `ConfigureDbContext` interceptors still apply with a pool.
+- [x] 6.2 Update the plan: design D2 (Revised in §6), the `topic-page-content` requirement
+  "EF Core page covers DbContext and modelling" (split into "… DbContext and its lifetime" and
+  "… modelling", because the pooling text took it past openspec's 500-character limit), the
+  `sample-exercises` requirement for the model (registered with `AddDbContextPool`), and the
+  proposal's What Changes.
+- [x] 6.3 Exercise 07: TODO 1 in `Starter/Program.cs`, `Solution/Program.cs` and its comment, the
+  `OrdersDbContext` summary, and every test hint that names `AddDbContext`. Add a test that the
+  context is pooled: a scope opened after another is disposed gets the same instance back, with a
+  hint that names `AddDbContextPool`.
+- [x] 6.4 The page's "DbContext and its lifetime": recommend `AddDbContextPool`, say what pooling
+  saves and its one rule (no per-request state in the context), and switch the long-lived example to
+  `AddPooledDbContextFactory`. Update the "from the exercise" snippet, the Exercise 07 step 1 and
+  the "shared context" pitfall. Update the cheatsheet's Register block to match. Compile every
+  changed snippet, and check any new Learn link.
+- [x] 6.5 `make gates` to `GATES_EXIT:0`, then repeat the 5.1 human check.
+
 ## Workflow follow-up
 
 - Whole-change review, the change-done note, and the offer of `code-review`, per CLAUDE.md

@@ -6,6 +6,8 @@ learn:
     url: https://learn.microsoft.com/ef/core/
   - title: "DbContext lifetime, configuration, and initialization"
     url: https://learn.microsoft.com/ef/core/dbcontext-configuration/
+  - title: "DbContext pooling"
+    url: https://learn.microsoft.com/ef/core/performance/advanced-performance-topics#dbcontext-pooling
   - title: "Migrations overview"
     url: https://learn.microsoft.com/ef/core/managing-schemas/migrations/
   - title: "Applying migrations"
@@ -68,11 +70,12 @@ public sealed class OrdersDbContext(DbContextOptions<OrdersDbContext> options) :
 }
 ```
 
-Register it with `AddDbContext`. That makes it **scoped**: one instance per request, shared by everything in that request, and disposed at its end. This is from the exercise:
+Register it with `AddDbContextPool`. Each request still gets its own context, shared by everything in that request. But when the request ends, the context isn't thrown away: EF Core resets it and keeps it in a **pool** for a later request. That saves setting up a new context for every request, which adds up when there are many. This is from the exercise:
 
 ```csharp title="Program.cs"
-// Scoped by default: each request gets its own context, and its change tracker.
-builder.Services.AddDbContext<OrdersDbContext>(options =>
+// Pooled: each request still gets its own context, and its change tracker, but a finished request's
+// context is reset and reused instead of being built again.
+builder.Services.AddDbContextPool<OrdersDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Orders")));
 ```
 
@@ -83,18 +86,21 @@ app.MapGet("/orders/{id:int}", async (int id, OrdersDbContext db, CancellationTo
     await db.Orders.FindAsync([id], ct) is { } order ? Results.Ok(order) : Results.NotFound());
 ```
 
-**A context is not thread-safe**, and it remembers everything it loads. So never share one: not as a singleton, not across requests, and not between two queries running at once with `Task.WhenAll`. Code that lives longer than a request, such as a singleton or a `BackgroundService`, uses a factory and makes a short-lived context each time:
+**A pooled context holds no per-request state.** The pool creates each context once and reuses it, so its constructor runs once, with services from the app's root provider rather than the request's. Give it only its `DbContextOptions`, as above. If it also asks for a scoped service, it fails in Development with "Cannot resolve scoped service '…' from root provider", and elsewhere it gets an instance that isn't the request's. Pass per-request values to the code that uses the context instead. If a context really must hold them, register it with `AddDbContext`, which builds a new one for every request.
+
+**A context is not thread-safe**, and it remembers everything it loads. So never share one: not as a singleton, not across requests, and not between two queries running at once with `Task.WhenAll`. Code that lives longer than a request, such as a singleton or a `BackgroundService`, uses a pooled factory and rents a short-lived context each time:
 
 ```csharp title="Program.cs"
-builder.Services.AddDbContextFactory<OrdersDbContext>(options =>
+builder.Services.AddPooledDbContextFactory<OrdersDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Orders")));
 ```
 
 ```csharp title="OrderSweeper.cs"
+// Disposing the context returns it to the pool.
 await using var db = await dbFactory.CreateDbContextAsync(ct);
 ```
 
-`AddDbContextFactory` also registers the context itself as scoped, so endpoints can still take `OrdersDbContext`. For very high request rates, `AddDbContextPool` reuses context instances instead of creating one per request. Measure before you reach for it.
+`AddPooledDbContextFactory` also registers the context itself for requests, from the same pool, so endpoints can still take `OrdersDbContext`. Register one or the other: `AddDbContextPool` when only requests use the context, `AddPooledDbContextFactory` when longer-lived code does too.
 
 ## Modelling
 
@@ -426,7 +432,8 @@ Many APIs keep their names, such as `DbSet`, `Include`, `SaveChanges` and `AsNoT
 
 ## Pitfalls
 
-- **A context shared across requests or threads.** Registered as a singleton, captured by a singleton, or used by two queries at once, it throws "A second operation was started on this context instance before a previous operation completed", or quietly serves stale data. Fix: `AddDbContext` (scoped) for request code, `AddDbContextFactory` for anything longer-lived, and `await` each query before the next.
+- **A context shared across requests or threads.** Registered as a singleton, captured by a singleton, or used by two queries at once, it throws "A second operation was started on this context instance before a previous operation completed", or quietly serves stale data. Fix: `AddDbContextPool` for request code, `AddPooledDbContextFactory` for anything longer-lived, and `await` each query before the next.
+- **Per-request state in a pooled context.** A scoped service in the context's constructor fails with "Cannot resolve scoped service '…' from root provider" in Development. A field set for one request is still there for the next. Fix: give a pooled context only its options, and pass per-request values to the code that uses it, or register that context with `AddDbContext`.
 - **N+1 queries.** A query inside a loop over another query's results. Fine on test data, slow in production. Fix: one query with `Select` or `Include`. Watch the logged SQL for the same command repeated.
 - **Strings and decimals left to convention.** `nvarchar(max)` columns that can't be indexed, and money in `decimal(18,2)` with a warning in the log when the model is first used. Fix: `HasMaxLength` and `HasPrecision` in the configuration, then a migration.
 - **A model change with no migration.** The app's queries fail with `SqlException: Invalid column name`, and `database update` refuses to run: "The model for context 'OrdersDbContext' has pending changes. Add a new migration before updating the database." Fix: `migrations add` after every model change, and review what it generates.
@@ -443,7 +450,7 @@ Many APIs keep their names, such as `DbSet`, `Include`, `SaveChanges` and `AsNoT
 
 **Steps:**
 
-1. In `Starter/Program.cs`, register `OrdersDbContext` with `AddDbContext`, using SQL Server and the `Orders` connection string (TODO 1).
+1. In `Starter/Program.cs`, register `OrdersDbContext` with `AddDbContextPool`, using SQL Server and the `Orders` connection string (TODO 1).
 2. In `Starter/OrdersDbContext.cs`, configure the order and its lines: maximum lengths, `decimal(10,2)` for money, the status stored by name, the relationship, and the `OrderLines` table name (TODO 2).
 3. From the `Starter` folder, create the first migration, then read what it generated (TODO 3):
 

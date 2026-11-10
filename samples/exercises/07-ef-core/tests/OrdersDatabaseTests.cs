@@ -28,15 +28,15 @@ public sealed class OrdersDatabaseTests(OrdersApp app) : IClassFixture<OrdersApp
         var a = first.ServiceProvider.GetService<OrdersDbContext>();
         Assert.True(
             a is not null,
-            "OrdersDbContext isn't registered. In Program.cs, register it with builder.Services.AddDbContext<OrdersDbContext>(…).");
+            "OrdersDbContext isn't registered. In Program.cs, register it with builder.Services.AddDbContextPool<OrdersDbContext>(…).");
 
         Assert.True(
             ReferenceEquals(a, first.ServiceProvider.GetRequiredService<OrdersDbContext>()),
-            "Within one request, OrdersDbContext should be the same instance everywhere. Register it with AddDbContext, which makes it scoped.");
+            "Within one request, OrdersDbContext should be the same instance everywhere. Register it with AddDbContextPool, which gives each request its own.");
         Assert.False(
             ReferenceEquals(a, second.ServiceProvider.GetRequiredService<OrdersDbContext>()),
             "Each request should get its own OrdersDbContext, but two requests shared one. A context isn't thread-safe: " +
-            "register it with AddDbContext (scoped), never as a singleton.");
+            "register it with AddDbContextPool, never as a singleton.");
 
         // Compare where it points, not the text: SqlClient may normalise or drop parts of the string.
         var expected = new SqlConnectionStringBuilder(app.ConnectionString);
@@ -45,6 +45,30 @@ public sealed class OrdersDatabaseTests(OrdersApp app) : IClassFixture<OrdersApp
             actual.DataSource == expected.DataSource && actual.InitialCatalog == expected.InitialCatalog,
             "OrdersDbContext isn't using the connection string named \"Orders\" from configuration. " +
             "Use options.UseSqlServer(builder.Configuration.GetConnectionString(\"Orders\")).");
+    }
+
+    [Fact]
+    public void ContextIsPooled()
+    {
+        // Requests one after another, each scope disposed before the next. A pool resets each
+        // finished context and hands it out again, so a few instances keep coming back (first in,
+        // first out, so not always the one just returned). AddDbContext builds a new one every time.
+        const int Requests = 20;
+        var seen = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        for (var i = 0; i < Requests; i++)
+        {
+            using var scope = app.Services.CreateScope();
+            var db = scope.ServiceProvider.GetService<OrdersDbContext>();
+            Assert.True(
+                db is not null,
+                "OrdersDbContext isn't registered. In Program.cs, register it with builder.Services.AddDbContextPool<OrdersDbContext>(…).");
+            seen.Add(db);
+        }
+
+        Assert.True(
+            seen.Count < Requests,
+            "OrdersDbContext isn't pooled: each request builds a new one. Register it with " +
+            "builder.Services.AddDbContextPool<OrdersDbContext>(…), which resets a finished request's context and reuses it.");
     }
 
     [Fact]

@@ -35,7 +35,7 @@ public sealed class OrdersApp(SqlServerFixture sql) : WebApplicationFactory<Prog
     {
         builder.UseSetting("ConnectionStrings:Orders", ConnectionString);
         builder.ConfigureTestServices(services =>
-            // Adds to whatever AddDbContext configured; it doesn't register the context itself.
+            // Adds to whatever AddDbContextPool configured; it doesn't register the context itself.
             services.ConfigureDbContext<OrdersDbContext>(options => options.AddInterceptors(Selects, Saves)));
     }
 
@@ -49,7 +49,7 @@ public sealed class OrdersApp(SqlServerFixture sql) : WebApplicationFactory<Prog
         Assert.True(
             db is not null,
             "OrdersDbContext isn't registered. In Program.cs, register it with " +
-            "builder.Services.AddDbContext<OrdersDbContext>(options => options.UseSqlServer(" +
+            "builder.Services.AddDbContextPool<OrdersDbContext>(options => options.UseSqlServer(" +
             "builder.Configuration.GetConnectionString(\"Orders\"))).");
         return await use(db);
     }

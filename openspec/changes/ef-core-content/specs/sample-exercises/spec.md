@@ -39,7 +39,8 @@ SHALL cover the goal, the steps, and how to run the tests. It SHALL link to the 
 
 ### Requirement: EF Core exercise practises the model and migrations
 Exercise 07 SHALL have the engineer give the orders app a SQL Server database through EF Core:
-- an `OrdersDbContext`, registered as scoped, whose connection string comes from configuration;
+- an `OrdersDbContext`, registered with `AddDbContextPool` (one instance per request, reused from a
+  pool), whose connection string comes from configuration;
 - a model with orders and their lines, configured with a maximum-length customer email, a
   `decimal(10,2)` total and line price, a stored status, and a one-to-many relationship;
 - an initial migration that matches the model.

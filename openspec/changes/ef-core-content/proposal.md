@@ -17,9 +17,9 @@ The Docker page has just shipped, so a real database for the exercise is now wit
 
 - **Write the full EF Core page** (`data/ef-core`), replacing the stub. It uses SQL Server through
   `Microsoft.EntityFrameworkCore.SqlServer`, as Emmz chose on 2026-11-10.
-  - **`DbContext` and its lifetime:** `AddDbContext` as scoped, one context per request, why a
-    context isn't thread-safe, and `AddDbContextFactory`/pooling for singletons and background
-    work.
+  - **`DbContext` and its lifetime:** `AddDbContextPool` (revised in §6), still one context per
+    request, why a context isn't thread-safe, pooling's rule of no per-request state, and
+    `AddPooledDbContextFactory` for singletons and background work.
   - **Modelling:** conventions first, then the fluent API (`OnModelCreating`,
     `IEntityTypeConfiguration<T>`) over data annotations. It covers keys, required and max-length
     strings, `decimal` precision, one-to-many relationships, and value conversions for an enum.
@@ -72,7 +72,8 @@ None.
 
 - **`topic-page-content`:**
   - "Full-content pages carry no placeholder" adds the EF Core page and its cheatsheet.
-  - New: "EF Core page covers DbContext and modelling", "… covers migrations", "… covers querying",
+  - New: "EF Core page covers DbContext and its lifetime", "… covers modelling" (split in §6),
+    "… covers migrations", "… covers querying",
     "… covers change tracking", and "EF Core page maps Entity Framework 6 habits".
   - New: "Docker page covers x64-only images on Apple silicon".
 - **`site-structure`:** "Cheatsheets per area" grows from seven cheatsheets to eight.

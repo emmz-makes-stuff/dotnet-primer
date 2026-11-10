@@ -3,7 +3,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Orders;
 
-/// <summary>The orders database. Registered as scoped: one instance per request.</summary>
+/// <summary>
+/// The orders database. Registered with a pool: one instance per request, reused afterwards, so it
+/// holds no per-request state.
+/// </summary>
 public sealed class OrdersDbContext(DbContextOptions<OrdersDbContext> options) : DbContext(options)
 {
     public DbSet<Order> Orders => Set<Order>();

@@ -5,8 +5,8 @@ using Orders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// TODO 1: register OrdersDbContext with AddDbContext, using SQL Server and the connection string
-// named "Orders" from configuration. (Locally, keep that string in user secrets, not in
+// TODO 1: register OrdersDbContext with AddDbContextPool, using SQL Server and the connection
+// string named "Orders" from configuration. (Locally, keep that string in user secrets, not in
 // appsettings.json.)
 
 builder.Services.ConfigureHttpJsonOptions(options =>
