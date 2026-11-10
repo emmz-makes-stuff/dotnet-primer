@@ -2,7 +2,7 @@
 
 ## 1. Probe and package versions
 
-- [ ] 1.1 Probe the setup (design D3, D5, D8, D9). In scratch projects on 10.0.4xx:
+- [x] 1.1 Probe the setup (design D3, D5, D8, D9). In scratch projects on 10.0.4xx:
   - a `dotnet new web` server with `Grpc.AspNetCore` 2.85.0 and a two-RPC `.proto`, run on Kestrel
     with the page's h2c setting, and called from a scratch console client (`Grpc.Net.Client`);
   - the same client against an HTTP/1.1-only endpoint, recording the exact error;
@@ -15,7 +15,7 @@
     cancelled.
 
   Write a devlog note with the exact settings, error texts and statuses.
-- [ ] 1.2 Add the four `PackageVersion` entries from design D8 to `samples/Directory.Packages.props`.
+- [x] 1.2 Add the four `PackageVersion` entries from design D8 to `samples/Directory.Packages.props`.
   Verify that `make samples-build` and `make samples-format` pass (unsandboxed, for NuGet). **If
   restore reports a vulnerable transitive package, stop and ask.**
 
