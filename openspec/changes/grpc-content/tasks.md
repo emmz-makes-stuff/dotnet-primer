@@ -47,20 +47,20 @@
 
 ## 3. gRPC cheatsheet and page
 
-- [ ] 3.1 Create `site/src/content/docs/cheatsheets/grpc.md` (design D6), with a back link and Learn
+- [x] 3.1 Create `site/src/content/docs/cheatsheets/grpc.md` (design D6), with a back link and Learn
   links. Add it to the sidebar's Cheatsheets group, the introduction's cheatsheet cards and
   `EXPECTED_SLUGS`. Verify that `make site-build` passes.
-- [ ] 3.2 Rewrite `site/src/content/docs/services/grpc.md` per D1, D2, D5 and D7. Cover every item in
+- [x] 3.2 Rewrite `site/src/content/docs/services/grpc.md` per D1, D2, D5 and D7. Cover every item in
   the six gRPC page requirements. Add the cheatsheet tip, the Pitfalls (including the HTTP/1.1-only
   endpoint and `double` for money), and an "Exercise 08" section in the exercise-01 format. That
   section says it needs no Docker and gives the exact GitHub tree link.
-- [ ] 3.3 Verify the page (D9):
+- [x] 3.3 Verify the page (D9):
   - compile every snippet in a scratch project (warnings as errors);
   - run the deadline, error, health-check and HTTP/1.1 examples, and paste their real output;
   - confirm that the "from the exercise" snippets match the real files.
 
   Record all of it in the section-done note.
-- [ ] 3.4 Add `services/grpc` and `cheatsheets/grpc` to `FULL_CONTENT_SLUGS`, and the pair to
+- [x] 3.4 Add `services/grpc` and `cheatsheets/grpc` to `FULL_CONTENT_SLUGS`, and the pair to
   `CHEATSHEETS`. Check every Learn link with the link script. Verify that `make gates` shows
   `GATES_EXIT:0`.
 
