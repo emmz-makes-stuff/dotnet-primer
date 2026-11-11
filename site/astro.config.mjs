@@ -79,6 +79,7 @@ export default defineConfig({
             { slug: "cheatsheets/security" },
             { slug: "cheatsheets/async-and-performance" },
             { slug: "cheatsheets/containers" },
+            { slug: "cheatsheets/orchestration-and-aws" },
           ],
         },
       ],

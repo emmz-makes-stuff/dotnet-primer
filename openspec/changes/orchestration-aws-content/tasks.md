@@ -57,17 +57,17 @@
   fails against it with its guiding message, and that completing a scratch copy with the
   Solution's code passes everything. Then complete scratch copies that each leave out one TODO,
   and confirm that only that TODO's tests fail.
-- [ ] 2.5 Push the branch, and run the `samples` workflow on it
+- [x] 2.5 Push the branch, and run the `samples` workflow on it
   (`gh workflow run samples.yml --ref change/orchestration-aws-content`). Check that it passes on
   `ubuntu-latest` with exercise 13's tests, and record the run ID in the section-done note.
   - `SITE_TEST_EXIT:1` is expected here (D10). Record it as a deliberate red.
 
 ## 3. Orchestration & AWS cheatsheet and page
 
-- [ ] 3.1 Create `site/src/content/docs/cheatsheets/orchestration-and-aws.md` (design D11), with a
+- [x] 3.1 Create `site/src/content/docs/cheatsheets/orchestration-and-aws.md` (design D11), with a
   back link, Learn links, and aspire.dev and AWS links. Add it to the sidebar's Cheatsheets group,
   the introduction's cheatsheet cards and `EXPECTED_SLUGS`. Verify that `make site-build` passes.
-- [ ] 3.2 Rewrite `site/src/content/docs/deploy/orchestration-and-aws.md` per D1, D3 and D6–D8.
+- [x] 3.2 Rewrite `site/src/content/docs/deploy/orchestration-and-aws.md` per D1, D3 and D6–D8.
   Cover every item in the seven Orchestration page requirements. Add:
   - the cheatsheet tip;
   - the Pitfalls, including:
@@ -82,14 +82,14 @@
     the exact GitHub tree link.
 
   Retarget the Containers page's link for app health checks to `#health-checks`.
-- [ ] 3.3 Verify the page (D12):
+- [x] 3.3 Verify the page (D12):
   - compile every C# snippet in a scratch project, with warnings as errors;
   - run every non-AWS command as shown, and syntax-check every AWS one as D8 says;
   - check that every number and output on the page comes from §1's real output;
   - confirm that the "from the exercise" blocks match the real files.
 
   Record all of it in the section-done note.
-- [ ] 3.4 Add `deploy/orchestration-and-aws` and `cheatsheets/orchestration-and-aws` to
+- [x] 3.4 Add `deploy/orchestration-and-aws` and `cheatsheets/orchestration-and-aws` to
   `FULL_CONTENT_SLUGS`, and the pair to `CHEATSHEETS`. Fetch every URL on both pages. Verify that
   `make gates` shows `GATES_EXIT:0`.
 

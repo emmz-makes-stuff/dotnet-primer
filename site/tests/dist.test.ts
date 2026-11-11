@@ -47,6 +47,7 @@ const EXPECTED_SLUGS = [
   "cheatsheets/security",
   "cheatsheets/async-and-performance",
   "cheatsheets/containers",
+  "cheatsheets/orchestration-and-aws",
 ];
 
 /**
@@ -82,6 +83,8 @@ const FULL_CONTENT_SLUGS: string[] = [
   "cheatsheets/async-and-performance",
   "deploy/containers",
   "cheatsheets/containers",
+  "deploy/orchestration-and-aws",
+  "cheatsheets/orchestration-and-aws",
 ];
 
 /**
@@ -102,6 +105,7 @@ const CHEATSHEETS: Record<string, string> = {
   security: "cheatsheets/security",
   "performance/async-and-performance": "cheatsheets/async-and-performance",
   "deploy/containers": "cheatsheets/containers",
+  "deploy/orchestration-and-aws": "cheatsheets/orchestration-and-aws",
 };
 
 const REPO_TREE =

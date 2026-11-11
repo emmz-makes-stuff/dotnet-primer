@@ -319,7 +319,7 @@ Compose reads `${DB_PASSWORD}` from a `.env` file next to it, which stays out of
 DB_PASSWORD=Choose-A-Strong-Password-1
 ```
 
-The API reaches the database by its service name, `db`. The `healthcheck` runs a query until SQL Server answers, and `depends_on` with `condition: service_healthy` holds the API back until then. Without it, the API starts first and fails to connect. The health check here is the database's: health checks for the app itself are on the [Orchestration & AWS](/deploy/orchestration-and-aws/) page. `init: true` runs a small init process as PID 1, with the app under it, so that if the app crashes, its container stops: see [Pitfalls](#pitfalls).
+The API reaches the database by its service name, `db`. The `healthcheck` runs a query until SQL Server answers, and `depends_on` with `condition: service_healthy` holds the API back until then. Without it, the API starts first and fails to connect. The health check here is the database's: health checks for the app itself are on the [Orchestration & AWS](/deploy/orchestration-and-aws/#health-checks) page. `init: true` runs a small init process as PID 1, with the app under it, so that if the app crashes, its container stops: see [Pitfalls](#pitfalls).
 
 ```sh
 docker compose up -d --build
