@@ -111,7 +111,7 @@
 
 ## 5. Samples README
 
-- [ ] 5.1 Update `samples/README.md`: add 11 and `benchmarks/` to the layout, 11 to the exercise
+- [x] 5.1 Update `samples/README.md`: add 11 and `benchmarks/` to the layout, 11 to the exercise
   table, and how to run the benchmarks (Release, `--filter`, and that the gates don't run them).
   Keep the Docker prerequisite saying that only exercise 07 needs it. Verify with `make gates`.
 
