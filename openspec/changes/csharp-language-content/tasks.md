@@ -2,14 +2,14 @@
 
 ## 1. Probe: language version, new features, and the exercise's reflection
 
-- [ ] 1.1 In a scratch tree with the repo's `global.json`, `.editorconfig` and
+- [x] 1.1 In a scratch tree with the repo's `global.json`, `.editorconfig` and
   `samples/Directory.Build.props` (design D5), record:
   - the default language version for net10.0 on the pinned SDK, from `#error version`;
   - that `params` collections, the `field` keyword, extension members and null-conditional
     assignment each compile with warnings as errors.
 
   Write a devlog note with the exact compiler output, versions and platform.
-- [ ] 1.2 Probe the reflection that exercise 14's tests will use (D7), against a C# 3-style type and
+- [x] 1.2 Probe the reflection that exercise 14's tests will use (D7), against a C# 3-style type and
   a modern one:
   - `RequiredMemberAttribute` on `required` properties;
   - `IsExternalInit` as a required custom modifier on `init` setters;
@@ -18,7 +18,7 @@
 
   **If any check doesn't work as D7 needs, stop and ask** before the test design changes. Write a
   devlog note.
-- [ ] 1.3 Build a C# 3-style file with `#nullable disable` under the repo's rules (D8), and confirm
+- [x] 1.3 Build a C# 3-style file with `#nullable disable` under the repo's rules (D8), and confirm
   it builds clean. Then delete that line and record the exact warnings. Fetch Learn's "What's new in
   C#" pages (7.0 to 14) and the language version history, and write the feature → version → URL
   table that D2 needs, for every feature the pages will tag. Write a devlog note.
