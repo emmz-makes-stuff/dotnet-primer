@@ -117,7 +117,7 @@
 
 ## 6. Human check
 
-- [ ] 6.1 Run exercise 11 from a clean clone myself (the Starter fails with guiding messages, and
+- [x] 6.1 Run exercise 11 from a clean clone myself (the Starter fails with guiding messages, and
   the Solution passes), and report the result. Then stop for Emmz to check, with a copy-paste recipe:
   - the Async & performance page and its cheatsheet, in light and dark schemes, including the wide
     benchmark tables;
