@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -54,8 +55,14 @@ public sealed class FakeWarehouse : IWarehouse, IDisposable
     /// <summary>How long a quote call waits for the other two to start, before it gives up.</summary>
     public static readonly TimeSpan QuoteTimeout = TimeSpan.FromSeconds(5);
 
-    // The three quote calls meet here: it opens only when all three are in flight at once.
-    private readonly Barrier _quoteCalls = new(3);
+    // The three quote calls meet here: the third to start completes it. Awaiting it holds no thread,
+    // so the test doesn't depend on how many pool threads are free.
+    private readonly TaskCompletionSource _allQuoteCallsStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private int _quoteCallsStarted;
+
+    // Completed by ReleaseNotifications, to let held notifications finish.
+    private readonly TaskCompletionSource _notificationsReleased = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly ConcurrentQueue<int> _notified = new();
 
     // Cancelled on Dispose, to end a reservation that its own token never cancels.
     private readonly CancellationTokenSource _released = new();
@@ -66,6 +73,18 @@ public sealed class FakeWarehouse : IWarehouse, IDisposable
 
     /// <summary>When set, <see cref="NotifyAsync"/> fails.</summary>
     public bool FailNotifications { get; set; }
+
+    /// <summary>When set, <see cref="NotifyAsync"/> waits for <see cref="ReleaseNotifications"/>, or its token.</summary>
+    public bool HoldNotifications { get; set; }
+
+    /// <summary>Completes when a held notification has started.</summary>
+    public TaskCompletionSource NotifyStarted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    /// <summary>The ids of the orders the warehouse was told about.</summary>
+    public IReadOnlyCollection<int> Notified => _notified;
+
+    /// <summary>Lets every held notification finish.</summary>
+    public void ReleaseNotifications() => _notificationsReleased.TrySetResult();
 
     /// <summary>Completes when a held reservation has started.</summary>
     public TaskCompletionSource ReserveStarted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -111,10 +130,21 @@ public sealed class FakeWarehouse : IWarehouse, IDisposable
         return ShippingCents;
     }
 
-    public Task NotifyAsync(Order order, CancellationToken cancellationToken) =>
-        FailNotifications
-            ? Task.FromException(new InvalidOperationException($"The warehouse is down: order {order.Id} wasn't sent."))
-            : Task.CompletedTask;
+    public async Task NotifyAsync(Order order, CancellationToken cancellationToken)
+    {
+        if (FailNotifications)
+        {
+            throw new InvalidOperationException($"The warehouse is down: order {order.Id} wasn't sent.");
+        }
+
+        if (HoldNotifications)
+        {
+            NotifyStarted.TrySetResult();
+            await _notificationsReleased.Task.WaitAsync(cancellationToken);
+        }
+
+        _notified.Enqueue(order.Id);
+    }
 
     // WebApplicationFactory's DisposeAsync calls Dispose(true) again, so this runs twice.
     public void Dispose()
@@ -126,16 +156,22 @@ public sealed class FakeWarehouse : IWarehouse, IDisposable
 
         _released.Cancel();
         _released.Dispose();
-        _quoteCalls.Dispose();
     }
 
-    // Waits on a thread-pool thread, not the request's: the barrier is a test device, and blocking
-    // the caller would hide the very thing the test looks for.
-    private Task MeetTheOtherQuoteCallsAsync(CancellationToken cancellationToken) => Task.Run(() =>
+    private async Task MeetTheOtherQuoteCallsAsync(CancellationToken cancellationToken)
     {
-        if (!_quoteCalls.SignalAndWait(QuoteTimeout, cancellationToken))
+        if (Interlocked.Increment(ref _quoteCallsStarted) == 3)
+        {
+            _allQuoteCallsStarted.TrySetResult();
+        }
+
+        try
+        {
+            await _allQuoteCallsStarted.Task.WaitAsync(QuoteTimeout, cancellationToken);
+        }
+        catch (TimeoutException)
         {
             throw new TimeoutException($"This quote call waited {QuoteTimeout.TotalSeconds} s for the other two, and they never started.");
         }
-    }, cancellationToken);
+    }
 }

@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Reflection;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace AsyncOrders.Tests;
@@ -83,9 +84,7 @@ public sealed class AsyncOrderTests
         using var client = app.CreateClient();
 
         var id = await PlaceOrderAsync(client);
-        var logged = await EventuallyAsync(() => app.Logs.GetSnapshot().Any(record =>
-            record.Level == LogLevel.Error
-            && record.StructuredState?.Any(p => p.Key == "OrderId" && p.Value == id.ToString(CultureInfo.InvariantCulture)) == true));
+        var logged = await EventuallyAsync(() => ErrorLoggedFor(app, id));
 
         Assert.True(logged,
             $"the warehouse notification for order {id} failed, and nothing logged it: the failure was lost. "
@@ -94,6 +93,44 @@ public sealed class AsyncOrderTests
         // The failure didn't take the app down.
         using var response = await client.GetAsync($"/orders/{id}", TestContext.Current.CancellationToken);
         Expect.Status(response, HttpStatusCode.OK, "the app stopped answering after a notification failed.");
+    }
+
+    [Fact]
+    public async Task QueuedNotificationsAreSentWhenTheAppStops()
+    {
+        using var app = new AsyncOrdersApp();
+        app.Warehouse.HoldNotifications = true;
+        using var client = app.CreateClient();
+        int[] ids = [await PlaceOrderAsync(client), await PlaceOrderAsync(client), await PlaceOrderAsync(client)];
+        await Within(app.Warehouse.NotifyStarted.Task, "no order was sent to the warehouse after it was placed (TODO 3).");
+
+        // The app starts stopping with the first notification in flight, and the others queued.
+        var stopping = Worker(app).StopAsync(TestContext.Current.CancellationToken);
+        app.Warehouse.ReleaseNotifications();
+        await stopping;
+
+        var sent = await EventuallyAsync(() => ids.All(app.Warehouse.Notified.Contains));
+        Assert.True(sent,
+            $"the app stopped with orders queued, and the warehouse heard about only [{string.Join(", ", app.Warehouse.Notified)}] "
+            + $"of [{string.Join(", ", ids)}]. NotificationWorker should send the queued orders before it stops.");
+    }
+
+    [Fact]
+    public async Task UnsentNotificationsAreLoggedWhenStoppingRunsOutOfTime()
+    {
+        using var app = new AsyncOrdersApp();
+        app.Warehouse.HoldNotifications = true;
+        using var client = app.CreateClient();
+        int[] ids = [await PlaceOrderAsync(client), await PlaceOrderAsync(client), await PlaceOrderAsync(client)];
+        await Within(app.Warehouse.NotifyStarted.Task, "no order was sent to the warehouse after it was placed (TODO 3).");
+
+        // A shutdown timeout that has already run out: there's no time to send any of them.
+        await Worker(app).StopAsync(new CancellationToken(canceled: true));
+
+        var logged = await EventuallyAsync(() => ids.All(id => ErrorLoggedFor(app, id)));
+        Assert.True(logged,
+            $"the app stopped before orders [{string.Join(", ", ids)}] reached the warehouse, and nothing logged them. "
+            + "Hand each order to OrderNotifications, whose worker logs every order it had no time to send (TODO 3).");
     }
 
     [Fact]
@@ -132,6 +169,16 @@ public sealed class AsyncOrderTests
         var order = await response.Content.ReadFromJsonAsync<Order>(TestContext.Current.CancellationToken);
         return order!.Id;
     }
+
+    /// <summary>Whether an Error entry has been logged with this order's id as its OrderId property.</summary>
+    private static bool ErrorLoggedFor(AsyncOrdersApp app, int orderId) =>
+        app.Logs.GetSnapshot().Any(record =>
+            record.Level == LogLevel.Error
+            && record.StructuredState?.Any(p => p.Key == "OrderId" && p.Value == orderId.ToString(CultureInfo.InvariantCulture)) == true);
+
+    /// <summary>The app's pre-written notification worker, to stop it as the host would.</summary>
+    private static NotificationWorker Worker(AsyncOrdersApp app) =>
+        app.Services.GetServices<IHostedService>().OfType<NotificationWorker>().Single();
 
     /// <summary>The handler method of the app's endpoint for this method and route.</summary>
     private static MethodInfo Handler(AsyncOrdersApp app, string httpMethod, string route)

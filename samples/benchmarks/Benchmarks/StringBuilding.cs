@@ -22,7 +22,9 @@ public class StringBuilding
         var result = "";
         for (var i = 0; i < _skus.Length; i++)
         {
-            result += i == 0 ? _skus[i] : "," + _skus[i];
+            // One string.Concat(result, ",", sku) per round, so the only cost measured is copying
+            // the string so far. Not `result += "," + sku`: that makes a temporary string as well.
+            result = i == 0 ? _skus[i] : result + "," + _skus[i];
         }
 
         return result;

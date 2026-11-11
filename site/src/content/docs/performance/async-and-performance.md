@@ -150,16 +150,21 @@ Then the stack trace, and exit code 134. "Still running." never printed. In a we
 ```csharp title="From exercise 11: OrderNotifications.cs"
 protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 {
-    await foreach (var order in notifications.ReadAllAsync(stoppingToken))
+    await foreach (var order in notifications.ReadAllAsync())
     {
+        if (_outOfTime.IsCancellationRequested)
+        {
+            LogNotSent(order.Id);
+            continue;
+        }
+
         try
         {
-            await warehouse.NotifyAsync(order, stoppingToken);
+            await warehouse.NotifyAsync(order, _outOfTime.Token);
         }
-        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        catch (OperationCanceledException) when (_outOfTime.IsCancellationRequested)
         {
-            // The app is stopping: that's not a failed notification.
-            return;
+            LogNotSent(order.Id);
         }
         catch (Exception exception)
         {
@@ -168,9 +173,21 @@ protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         }
     }
 }
+
+public override async Task StopAsync(CancellationToken cancellationToken)
+{
+    // No more orders: ExecuteAsync sends what's queued, then ends.
+    notifications.Complete();
+
+    // cancellationToken is cancelled when the host's shutdown timeout runs out.
+    using var outOfTime = cancellationToken.Register(_outOfTime.Cancel);
+    await base.StopAsync(cancellationToken);
+}
 ```
 
 The request adds the order to `OrderNotifications` (a `Channel<T>`) and answers at once. The worker is registered with `builder.Services.AddHostedService<NotificationWorker>()`.
+
+**Stopping is where background work gets lost.** When the app stops, the host cancels `stoppingToken` straight away. A worker that reads its queue with that token, or passes it on, drops every order still queued, without a word. So this one doesn't. `StopAsync` closes the queue, the worker sends what's left, and it only gives up when the host's shutdown timeout (30 seconds by default) runs out. Then it logs every order it never sent. An in-memory queue still can't survive a crash or a killed container, though: when losing the work isn't acceptable, put it on a durable queue, such as Amazon SQS, and let a worker take it from there.
 
 ## Thread-pool starvation
 
@@ -275,13 +292,13 @@ Each allocation is cheap, but the garbage collector has to find and reclaim it l
 | NewArray | 100000 | 40,024.8 ns |  1.00 | 31.1890 | 31.1890 |  100045 B |
 | Pooled   | 100000 | 32,157.7 ns |  0.80 |       - |       - |         - |
 
-**Building strings.** `+=` in a loop copies the whole string so far every time round. `StringBuilder` grows one buffer. When you can work out the length first, `string.Create` writes the characters once, straight into the new string. Joining 100 SKUs:
+**Building strings.** Concatenating in a loop (`result = result + "," + sku`) copies the whole string so far every time round. `StringBuilder` grows one buffer. When you can work out the length first, `string.Create` writes the characters once, straight into the new string. Joining 100 SKUs:
 
 | Method      |       Mean | Ratio | Allocated | Alloc Ratio |
 | ----------- | ---------: | ----: | --------: | ----------: |
-| Concatenate | 3,722.0 ns |  1.00 |  73.43 KB |        1.00 |
-| Builder     |   445.2 ns |  0.12 |   3.87 KB |        0.05 |
-| Create      |   274.7 ns |  0.07 |   1.38 KB |        0.02 |
+| Concatenate | 3,243.2 ns |  1.00 |  69.56 KB |        1.00 |
+| Builder     |   439.3 ns |  0.14 |   3.87 KB |        0.06 |
+| Create      |   273.8 ns |  0.08 |   1.38 KB |        0.02 |
 
 **JSON.** By default, `System.Text.Json` works out each type's shape by reflection (once, and then caches it). A source-generated `JsonSerializerContext` has it at build time, and works with trimming and Native AOT:
 
@@ -356,7 +373,7 @@ A `Stopwatch` round a loop misleads in three ways:
 - **Tiering:** .NET compiles quickly first, then recompiles hot methods with optimizations, so the speed changes mid-loop.
 - **Dead code:** if the result isn't used, the JIT can skip the work entirely.
 
-A Debug build misleads too: it's unoptimized. BenchmarkDotNet deals with all of it: it builds in Release, warms up, runs enough iterations to be sure, and reports the spread.
+A Debug build misleads too: it's unoptimized. BenchmarkDotNet deals with the first three: it warms up, runs enough iterations to be sure, uses each result, and reports the spread. For the last, it refuses: started from a Debug build, it runs nothing, and says `Assembly Benchmarks which defines benchmarks is non-optimized`. So always start it with `-c Release`.
 
 ```csharp title="From the benchmark project: Lookups.cs"
 [MemoryDiagnoser]
@@ -410,7 +427,7 @@ public class Lookups
 dotnet run -c Release --project samples/benchmarks/Benchmarks -- --filter '*Lookups*'
 ```
 
-Reading the results: **Mean** is the average time per call. **Error** is half the 99.9% confidence interval: the true mean is within Mean ± Error. **StdDev** is how much single runs varied. When two Means are closer than their Errors, as in the frozen-dictionary table, there's no proven difference. **Allocated** is the managed memory one call allocated, and `-` means none.
+Reading the results: **Mean** is the average time per call. **Error** is half the 99.9% confidence interval: the true mean is very probably within Mean ± Error, though not certainly, and BenchmarkDotNet warns when the timings don't look normally distributed. **StdDev** is how much single runs varied. When two Means are closer than their Errors, as in the frozen-dictionary table, there's no proven difference. **Allocated** is the managed memory one call allocated, and `-` means none.
 
 The full project, with all five benchmarks on this page, is [`samples/benchmarks/Benchmarks`](https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/benchmarks/Benchmarks). The gates build it, but never run it.
 

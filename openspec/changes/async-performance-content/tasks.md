@@ -126,6 +126,27 @@
 
   On PASS, tick and continue. On FAIL, add a review-fix section.
 
+## 7. Review fixes: code-review findings
+
+- [x] 7.1 `NotificationWorker` (Solution and Starter) drains the queue on shutdown: complete the
+  writer when the app stops, finish the queued notifications within the shutdown timeout, and log
+  each order still unsent at Error with its id. The page says that an in-memory queue can't survive
+  a crash, so a real system uses a durable queue (such as SQS). Re-check the page's
+  `OrderNotifications.cs` block against the file.
+- [x] 7.2 `BlockingCalls` also flags `Task.WaitAll` and `Task.WaitAny`. Verify with scratch variants
+  of the Solution's `POST /orders` that use each, both of which must fail the blocking test.
+- [x] 7.3 The fake's quote rendezvous holds no thread: an `Interlocked` counter and a
+  `TaskCompletionSource` that the third caller completes, awaited with `WaitAsync(QuoteTimeout)`.
+  Re-run the Starter, the Solution (three runs) and leave-one-out.
+- [x] 7.4 The page's benchmarking wording: BenchmarkDotNet needs the host project built in Release
+  (a Debug host stops with a non-optimized-assembly error), and Error is a 99.9% confidence
+  interval, not a certainty.
+- [x] 7.5 `StringBuilding.Concatenate` appends `","` and the SKU separately, with no extra temporary
+  string. Re-run `--filter '*StringBuilding*'` in Release, and replace the page's table and every
+  number quoted from it.
+- [x] 7.6 `make deps` checks that `dotnet-counters` and `dotnet-trace` are 10.x, as
+  `docs/dependencies.md` says. Verify `DEPS_EXIT:0`.
+
 ## Workflow follow-up
 
 - Self-review the whole change, write the change-done note, and offer the `code-review` skill.

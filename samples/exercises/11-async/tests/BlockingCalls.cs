@@ -6,7 +6,7 @@ namespace AsyncOrders.Tests;
 
 /// <summary>
 /// Finds the calls in a method that make a thread wait for a task: <c>Task.Result</c>,
-/// <c>Task&lt;T&gt;.Result</c>, <c>Task.Wait</c>, and an awaiter's <c>GetResult()</c> without an
+/// <c>Task&lt;T&gt;.Result</c>, <c>Task.Wait</c>, <c>Task.WaitAll</c>, <c>Task.WaitAny</c>, and an awaiter's <c>GetResult()</c> without an
 /// <c>await</c>. It reads the IL, so it checks the code, not how long the code took to run.
 /// For an <c>async</c> method, the body is in the compiler's state machine, so it reads that too.
 /// It checks this one method only, not the methods it calls.
@@ -38,7 +38,7 @@ public static class BlockingCalls
 
         // The compiler never emits these, so any call to them is the code's own.
         var found = calls
-            .Where(call => IsTask(call.DeclaringType!) && call.Name is "get_Result" or "Wait")
+            .Where(call => IsTask(call.DeclaringType!) && call.Name is "get_Result" or "Wait" or "WaitAll" or "WaitAny")
             .Select(Describe)
             .ToList();
 

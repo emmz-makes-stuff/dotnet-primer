@@ -75,39 +75,64 @@ app.MapGet("/report", async (CancellationToken cancellationToken) => { /* … */
 
 ## Background work
 
-```csharp title="OrderNotifications.cs: a queue, and a worker that awaits each item"
+```csharp title="OrderNotifications.cs: a queue, and a worker that awaits each item, and drains on stop"
 public sealed class OrderNotifications
 {
     private readonly Channel<Order> _orders = Channel.CreateUnbounded<Order>();
 
-    public void Add(Order order) => _orders.Writer.TryWrite(order);
+    public void Add(Order order)
+    {
+        if (!_orders.Writer.TryWrite(order))       // only once Complete has been called
+        {
+            throw new InvalidOperationException("The app is stopping.");
+        }
+    }
 
-    public IAsyncEnumerable<Order> ReadAllAsync(CancellationToken cancellationToken) =>
-        _orders.Reader.ReadAllAsync(cancellationToken);
+    public void Complete() => _orders.Writer.TryComplete();
+
+    public IAsyncEnumerable<Order> ReadAllAsync() => _orders.Reader.ReadAllAsync();   // ends once completed and empty
 }
 
 public sealed partial class NotificationWorker(
     OrderNotifications notifications, IWarehouse warehouse, ILogger<NotificationWorker> logger) : BackgroundService
 {
+    private readonly CancellationTokenSource _outOfTime = new();   // not stoppingToken: that's cancelled as stopping starts
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await foreach (var order in notifications.ReadAllAsync(stoppingToken))
+        await foreach (var order in notifications.ReadAllAsync())
         {
             try
             {
-                await warehouse.NotifyAsync(order, stoppingToken);
+                _outOfTime.Token.ThrowIfCancellationRequested();
+                await warehouse.NotifyAsync(order, _outOfTime.Token);
             }
-            catch (Exception exception) when (!stoppingToken.IsCancellationRequested)
+            catch (Exception exception)
             {
                 LogNotifyFailed(exception, order.Id);    // seen, and the worker carries on
             }
         }
     }
 
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        notifications.Complete();                                    // send what's queued, then stop
+        using var _ = cancellationToken.Register(_outOfTime.Cancel); // until the shutdown timeout
+        await base.StopAsync(cancellationToken);
+    }
+
+    public override void Dispose()
+    {
+        _outOfTime.Dispose();
+        base.Dispose();
+    }
+
     [LoggerMessage(Level = LogLevel.Error, Message = "Notifying the warehouse about order {OrderId} failed.")]
     private partial void LogNotifyFailed(Exception exception, int orderId);
 }
 ```
+
+An in-memory queue is lost in a crash. When the work mustn't be lost, use a durable queue, such as Amazon SQS.
 
 ```csharp title="Program.cs"
 builder.Services.AddSingleton<OrderNotifications>();

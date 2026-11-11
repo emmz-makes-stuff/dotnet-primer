@@ -77,8 +77,8 @@ deps:
 	npm --version >/dev/null 2>&1 || { echo "MISSING npm — ships with node"; fail=1; }; \
 	command -v dotnetup >/dev/null 2>&1 && dotnetup --version >/dev/null 2>&1 || { echo "MISSING dotnetup — see docs/dependencies.md"; fail=1; }; \
 	dotnet --list-sdks 2>/dev/null | grep -q '^10\.0\.4' || { echo "MISSING dotnet SDK 10.0.4xx — dotnetup sdk install 10.0.4xx"; fail=1; }; \
-	dotnet-counters --version >/dev/null 2>&1 || { echo "MISSING dotnet-counters — dotnet tool install -g dotnet-counters"; fail=1; }; \
-	dotnet-trace --version >/dev/null 2>&1 || { echo "MISSING dotnet-trace — dotnet tool install -g dotnet-trace"; fail=1; }; \
+	dotnet-counters --version 2>/dev/null | grep -q "^10\." || { echo "MISSING dotnet-counters 10.x — dotnet tool install -g dotnet-counters"; fail=1; }; \
+	dotnet-trace --version 2>/dev/null | grep -q "^10\." || { echo "MISSING dotnet-trace 10.x — dotnet tool install -g dotnet-trace"; fail=1; }; \
 	docker info --format '{{.ServerVersion}}' >/dev/null 2>&1 || { echo "MISSING docker (daemon not running?) — see https://dotnet-primer.emmz.dev/platform/docker/ (Rancher Desktop on Windows and macOS)"; fail=1; }; \
 	openspec --version >/dev/null 2>&1 || { echo "MISSING openspec — npm i -g @fission-ai/openspec"; fail=1; }; \
 	gh --version >/dev/null 2>&1 || { echo "MISSING gh — brew install gh"; fail=1; }; \
