@@ -64,7 +64,7 @@
   fails against it with its guiding message, and that completing a scratch copy with the
   Solution's code passes everything. Then complete another scratch copy that leaves out each TODO
   in turn, and confirm that only that TODO's test fails.
-- [ ] 2.5 Push the branch, and run the `samples` workflow on it
+- [x] 2.5 Push the branch, and run the `samples` workflow on it
   (`gh workflow run samples.yml --ref change/async-performance-content`). Check that it passes on
   `ubuntu-latest` with exercise 11's tests, and record the run ID in the section-done note. One run
   is enough, because no test depends on timing.
@@ -72,11 +72,11 @@
 
 ## 3. Benchmark project
 
-- [ ] 3.1 Create `samples/benchmarks/Benchmarks` (design D4), in `Primer.slnx` only, with the five
+- [x] 3.1 Create `samples/benchmarks/Benchmarks` (design D4), in `Primer.slnx` only, with the five
   benchmark classes, a baseline and `[MemoryDiagnoser]` in each, and `BenchmarkSwitcher`. Relax only
   the analyzer rules BenchmarkDotNet needs, and say which in the section note. Verify that
   `make samples-build` and `make samples-format` pass, and that `make samples-test` doesn't run it.
-- [ ] 3.2 Run it in Release on this Mac, with `--filter '*'`. Keep the full result tables and the
+- [x] 3.2 Run it in Release on this Mac, with `--filter '*'`. Keep the full result tables and the
   environment block for the page. Check that `git status` shows no artifacts outside an ignored
   `BenchmarkDotNet.Artifacts/` folder, and ignore it if needed.
   - `SITE_TEST_EXIT:1` is still expected (D10).

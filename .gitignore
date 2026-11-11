@@ -8,6 +8,8 @@ bin/
 obj/
 *.binlog
 TestResults/
+# BenchmarkDotNet's reports and logs, wherever the benchmarks are run from.
+BenchmarkDotNet.Artifacts/
 
 # OS / editors
 .DS_Store

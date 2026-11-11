@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/benchmarks/" />
+  <Folder Name="/benchmarks/Benchmarks/">
+    <Project Path="benchmarks/Benchmarks/Benchmarks.csproj" />
+  </Folder>
   <Folder Name="/exercises/" />
   <Folder Name="/exercises/01-configuration/" />
   <Folder Name="/exercises/01-configuration/Solution.Tests/">
