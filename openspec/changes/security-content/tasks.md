@@ -90,7 +90,7 @@
 
 ## 5. Human check
 
-- [ ] 5.1 Run exercise 10 from a clean clone myself (the Starter fails with guiding messages, and
+- [x] 5.1 Run exercise 10 from a clean clone myself (the Starter fails with guiding messages, and
   the Solution passes), and report the result. Then stop for Emmz to check, with a copy-paste recipe:
   - the Security & auth page and its cheatsheet, in light and dark schemes;
   - search finds "JWT";
