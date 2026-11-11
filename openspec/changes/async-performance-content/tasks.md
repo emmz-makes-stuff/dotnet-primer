@@ -2,7 +2,7 @@
 
 ## 1. Probe, tools and package versions
 
-- [ ] 1.1 **Stop and ask Emmz first** whether to add `dotnet-counters` and `dotnet-trace` (design
+- [x] 1.1 **Stop and ask Emmz first** whether to add `dotnet-counters` and `dotnet-trace` (design
   D5, proposal Impact). On a yes:
   - install both with `dotnet tool install -g` (unsandboxed);
   - add their rows to `docs/dependencies.md`, and their checks to `make deps`;
@@ -10,7 +10,7 @@
 
   Verify with `make deps` showing `DEPS_EXIT:0`. On a no, rewrite D5 and the starvation
   requirement's diagnostics with Emmz before going on.
-- [ ] 1.2 Probe the exercise's test approach (design D3), in a scratch copy of the shape D2
+- [x] 1.2 Probe the exercise's test approach (design D3), in a scratch copy of the shape D2
   describes:
   - that a cancelled `HttpClient` request through `TestServer` cancels `RequestAborted`, and that
     the fake warehouse sees it;
@@ -29,7 +29,7 @@
     be made to work, stop and ask** whether to fall back to the timing test (design D3).
 
   Write a devlog note with the results.
-- [ ] 1.3 Probe the page's claims (design D5, D6, D11), in scratch projects on 10.0.4xx:
+- [x] 1.3 Probe the page's claims (design D5, D6, D11), in scratch projects on 10.0.4xx:
   - `dotnet-counters` against `/blocking` and `/async` under the same load: the counter names .NET
     10 prints, and the values;
   - `dotnet-trace collect` on the blocking run, and whether `--format speedscope` or
@@ -44,7 +44,7 @@
     `latest-recommended`.
 
   Write a devlog note with the exact outputs and versions.
-- [ ] 1.4 Add the `BenchmarkDotNet` `PackageVersion` (design D9) to `samples/Directory.Packages.props`.
+- [x] 1.4 Add the `BenchmarkDotNet` `PackageVersion` (design D9) to `samples/Directory.Packages.props`.
   Verify that `make samples-build` and `make samples-format` pass (unsandboxed, for NuGet). **If
   restore reports a vulnerable package, stop and ask.**
 
@@ -55,7 +55,7 @@
   them to `Primer.slnx`, and the Solution and its tests to `Primer.Solutions.slnx`. Verify with
   `make samples-build`.
 - [ ] 2.2 Write the Solution: the store, the validation, `IWarehouse` and its `Task.Delay` version,
-  the `NotificationQueue` and its `BackgroundService`, and both endpoints with TODOs 1–4 solved.
+  the `OrderNotifications` queue and its `BackgroundService`, and both endpoints with TODOs 1–4 solved.
   Verify by running it and calling both endpoints.
 - [ ] 2.3 Write the tests (design D3): the test app with a controllable fake warehouse, the IL
   reader for the blocking check, and one test per bug. No test asserts on elapsed time. Each failure

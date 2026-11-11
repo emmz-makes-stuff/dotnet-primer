@@ -104,10 +104,13 @@ projects):
 **The Starter's TODOs:**
 1. Make `POST /orders` async all the way, with no blocking call.
 2. Take the endpoint's `CancellationToken`, and pass it to every warehouse call.
-3. Hand the notification to the pre-written `NotificationQueue` and its `BackgroundService`, which
-   awaits each one and logs a failure at Error with the order id. The queue is a `Channel<T>`,
-   pre-written so that the exercise doesn't teach channels (proposal: out of scope).
-4. Start the three `/quote` calls together, and `await Task.WhenAll`.
+3. Hand the notification to the pre-written `OrderNotifications` queue and its
+   `BackgroundService`, which awaits each one and logs a failure at Error with the order id. The
+   queue is a `Channel<T>`, pre-written so that the exercise doesn't teach channels (proposal: out
+   of scope). It's not `NotificationQueue`, because CA1711 refuses a type name ending in `Queue`
+   (probe note `20261111-1330`).
+4. Start the three `/quote` calls together, `await Task.WhenAll`, then read each result with
+   `await`, not `.Result`.
 
 **Rejected:**
 - **`async void` as the lost-failure bug.** A thrown exception in an `async void` method crashes the
@@ -152,6 +155,11 @@ asserts on elapsed time.
   checks the handler and its state machine only, not the methods they call. The Starter's blocking
   call is in the handler, and TODO 1 says to keep the work there. A helper that blocks is a page
   pitfall, not a test case.
+
+  **Revised in §1** (probe note `20261111-1330`): the compiler's own `await` calls the awaiter's
+  `GetResult()` in `MoveNext`, after an `IsCompleted` check. So the check flags a `GetResult()`
+  only when there's no `IsCompleted` check to pair it with. `Task.Result` and `Task.Wait` are never
+  compiler-emitted, so any call to them counts. All six probe handlers came out as expected.
 
   **Fallback, only with Emmz's agreement:** if the probe finds the IL check unworkable, a timing
   test (twice as many concurrent requests as the pool's minimum threads, against a 1-second fake,
