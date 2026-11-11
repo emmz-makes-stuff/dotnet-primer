@@ -1,24 +1,5 @@
 ## MODIFIED Requirements
 
-### Requirement: Exercise layout
-Each exercise SHALL live in its own numbered folder under `samples/exercises/`. It SHALL contain a
-starter project, a solution project, and tests that can run against either one. The starter SHALL mark
-what the engineer must complete with `TODO` comments.
-
-A testing exercise, in which the engineer writes tests, SHALL instead contain the app under test,
-already written; a starter test project with `TODO` comments; a solution test project; the seeded
-bugs; and a checker that runs a test project against the app and against each seeded bug.
-
-#### Scenario: Engineer opens an exercise
-- **WHEN** an engineer opens `samples/exercises/01-configuration/`
-- **THEN** they find a starter project with `TODO` markers, a solution project, and tests they can run
-  against the starter
-
-#### Scenario: Engineer opens the testing exercise
-- **WHEN** an engineer opens `samples/exercises/09-testing/`
-- **THEN** they find the app to test, a starter test project with `TODO` markers, a solution test
-  project, and a checker they can run against the starter tests
-
 ### Requirement: Practice, not assessment
 Exercises SHALL be for self-checking practice only. Running the tests against the starter SHALL report
 which behaviours are incomplete, and nothing is recorded or submitted anywhere. In a testing exercise,
@@ -105,6 +86,16 @@ SHALL cover the goal, the steps, and how to run the tests. It SHALL link to the 
 - **THEN** the site test gate fails and names the exercise folder
 
 ## ADDED Requirements
+
+### Requirement: Testing exercise layout
+A testing exercise, in which the engineer writes tests, SHALL instead contain the app under test,
+already written; a starter test project with `TODO` comments; a solution test project; the seeded
+bugs; and a checker that runs a test project against the app and against each seeded bug.
+
+#### Scenario: Engineer opens the testing exercise
+- **WHEN** an engineer opens `samples/exercises/09-testing/`
+- **THEN** they find the app to test, a starter test project with `TODO` markers, a solution test
+  project, and a checker they can run against the starter tests
 
 ### Requirement: Testing exercise seeds a bug for each technique
 Exercise 09 SHALL give the engineer a working orders API, in memory with no Docker, to write tests
