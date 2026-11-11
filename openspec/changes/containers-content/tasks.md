@@ -58,7 +58,7 @@
   fails against it with its guiding message, and that completing a scratch copy with the
   Solution's code passes everything. Then complete scratch copies that each leave out one TODO,
   and confirm that only that TODO's tests fail.
-- [ ] 2.5 Push the branch, and run the `samples` workflow on it
+- [x] 2.5 Push the branch, and run the `samples` workflow on it
   (`gh workflow run samples.yml --ref change/containers-content`). Check that it passes on
   `ubuntu-latest` (`linux/amd64`) with exercise 12's tests, and record the run ID in the
   section-done note.
@@ -66,10 +66,10 @@
 
 ## 3. Containers cheatsheet and page
 
-- [ ] 3.1 Create `site/src/content/docs/cheatsheets/containers.md` (design D10), with a back link
+- [x] 3.1 Create `site/src/content/docs/cheatsheets/containers.md` (design D10), with a back link
   and Learn links. Add it to the sidebar's Cheatsheets group, the introduction's cheatsheet cards
   and `EXPECTED_SLUGS`. Verify that `make site-build` passes.
-- [ ] 3.2 Rewrite `site/src/content/docs/deploy/containers.md` per D1 and D6–D8. Cover every item
+- [x] 3.2 Rewrite `site/src/content/docs/deploy/containers.md` per D1 and D6–D8. Cover every item
   in the eight Containers page requirements. Add:
   - the cheatsheet tip;
   - the Pitfalls, including:
@@ -83,14 +83,14 @@
     - `latest` in production;
   - an "Exercise 12" section in the exercise-07 format. It says that its tests need Docker, links
     to the Docker page, and gives the exact GitHub tree link.
-- [ ] 3.3 Verify the page (D11):
+- [x] 3.3 Verify the page (D11):
   - compile every C# snippet in a scratch project, with warnings as errors;
   - build every Dockerfile, and run the `compose.yaml`, as shown;
   - check that every number and output on the page comes from 1.1's or 1.3's real output;
   - confirm that the "from the exercise" blocks match the real files.
 
   Record all of it in the section-done note.
-- [ ] 3.4 Add `deploy/containers` and `cheatsheets/containers` to `FULL_CONTENT_SLUGS`, and the
+- [x] 3.4 Add `deploy/containers` and `cheatsheets/containers` to `FULL_CONTENT_SLUGS`, and the
   pair to `CHEATSHEETS`. Fetch every URL on both pages. Verify that `make gates` shows
   `GATES_EXIT:0`.
 

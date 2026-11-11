@@ -78,6 +78,7 @@ export default defineConfig({
             { slug: "cheatsheets/testing" },
             { slug: "cheatsheets/security" },
             { slug: "cheatsheets/async-and-performance" },
+            { slug: "cheatsheets/containers" },
           ],
         },
       ],
