@@ -77,4 +77,11 @@
   <Folder Name="/exercises/11-async/Solution/">
     <Project Path="exercises/11-async/Solution/Async.Solution.csproj" />
   </Folder>
+  <Folder Name="/exercises/12-containers/" />
+  <Folder Name="/exercises/12-containers/Solution.Tests/">
+    <Project Path="exercises/12-containers/Solution.Tests/Containers.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/12-containers/Solution/">
+    <Project Path="exercises/12-containers/Solution/Containers.Solution.csproj" />
+  </Folder>
 </Solution>

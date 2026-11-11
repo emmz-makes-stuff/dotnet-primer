@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Shared test source: the same tests also run against the starter. -->
+    <Compile Include="../tests/**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The tests build images from the app's folder and run them; they don't reference its code. -->
+    <AssemblyMetadata Include="AppDirectory" Value="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../Solution'))" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Testcontainers" />
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+
+</Project>

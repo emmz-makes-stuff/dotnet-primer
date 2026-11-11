@@ -147,4 +147,17 @@
   <Folder Name="/exercises/11-async/Starter/">
     <Project Path="exercises/11-async/Starter/Async.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/12-containers/" />
+  <Folder Name="/exercises/12-containers/Solution.Tests/">
+    <Project Path="exercises/12-containers/Solution.Tests/Containers.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/12-containers/Solution/">
+    <Project Path="exercises/12-containers/Solution/Containers.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/12-containers/Starter.Tests/">
+    <Project Path="exercises/12-containers/Starter.Tests/Containers.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/12-containers/Starter/">
+    <Project Path="exercises/12-containers/Starter/Containers.Starter.csproj" />
+  </Folder>
 </Solution>

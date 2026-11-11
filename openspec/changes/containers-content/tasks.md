@@ -42,19 +42,19 @@
 
 ## 2. Exercise 12: containers
 
-- [ ] 2.1 Scaffold `samples/exercises/12-containers/` (design D3, D4): `Containers.Starter` and
+- [x] 2.1 Scaffold `samples/exercises/12-containers/` (design D3, D4): `Containers.Starter` and
   `Containers.Solution` web projects, each standing alone for a container build, with a
   `.dockerignore`. Add a shared `tests/`, and `Starter.Tests` and `Solution.Tests`, which pass
   their app's folder as `AssemblyMetadata` and don't reference the app. Add them to `Primer.slnx`,
   and the Solution and its tests to `Primer.Solutions.slnx`. Verify with `make samples-build`, and
   `docker build .` in each app folder.
-- [ ] 2.2 Write the Solution: the orders API, `GET /info`, the startup log line, the `.csproj`
+- [x] 2.2 Write the Solution: the orders API, `GET /info`, the startup log line, the `.csproj`
   container properties, and the multi-stage Dockerfile, with TODOs 1–4 solved. Verify by running
   both images and calling `GET /info` on 8080, with and without `Warehouse__Name`.
-- [ ] 2.3 Write the tests (design D5): the two image fixtures, with their Docker-unavailable
+- [x] 2.3 Write the tests (design D5): the two image fixtures, with their Docker-unavailable
   message, and one test per check, each naming its TODO. Verify that the Solution passes, three
   runs in a row, and record how long `make samples-test` takes, before and after.
-- [ ] 2.4 Write the Starter, with the four bugs and TODOs 1–4 (design D4). Verify that each test
+- [x] 2.4 Write the Starter, with the four bugs and TODOs 1–4 (design D4). Verify that each test
   fails against it with its guiding message, and that completing a scratch copy with the
   Solution's code passes everything. Then complete scratch copies that each leave out one TODO,
   and confirm that only that TODO's tests fail.

@@ -1,0 +1,4 @@
+# Your machine's build output stays out of the image: the container restores and builds its own.
+# Without this, COPY . . brings in obj/project.assets.json, with paths from your machine.
+bin/
+obj/

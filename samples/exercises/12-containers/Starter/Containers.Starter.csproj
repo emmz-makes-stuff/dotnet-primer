@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- Stated here as well as in samples/Directory.Build.props, because `docker build` sees only this
+       folder. No PackageReferences, for the same reason: central package management lives up the tree. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ContainerOrders</RootNamespace>
+  </PropertyGroup>
+
+  <!-- TODO 3: These are the properties `dotnet publish -t:PublishContainer` builds the image from.
+       The base is the full aspnet image (Ubuntu, with a shell, a package manager and nearly a hundred
+       packages to patch), and the app runs as root. Use the chiseled family instead, with
+       ContainerFamily, and set InvariantGlobalization to true, or the SDK picks the -extra variant.
+       Then remove ContainerUser: the SDK's default is the image's non-root `app` user. -->
+  <PropertyGroup>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:10.0</ContainerBaseImage>
+    <ContainerUser>root</ContainerUser>
+  </PropertyGroup>
+
+</Project>
