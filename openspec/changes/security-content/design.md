@@ -186,6 +186,16 @@ records exactly what `dotnet user-jwts create` writes and prints.
 - **policies:** each scenario in "Security exercise practises policy-based authorization", plus
   `/health` public and `/catalogue` private.
 
+**Revised in §6** (code review, agreed with Emmz):
+- **`GET /me`**, pre-written in both projects, returns `{ name: User.Identity.Name }`. The test
+  `NameIsTheTokensSub` checks it, so a missing `NameClaimType = "sub"` fails with a TODO 1 hint.
+- **`PlaceOrders` also requires `sub`**, so a token without one gets 403
+  (`PlacingAnOrderNeedsASub`). The Solution no longer falls back to `"anonymous"`; the Starter still
+  does, because it has no authentication yet.
+- **`MissingTokenIsRefused` calls `POST /orders`**, so it tests the bearer challenge on an endpoint
+  with its own policy, and no longer duplicates `NewEndpointIsPrivateByDefault` on `/catalogue`.
+- **A double refund stays 204.** Emmz chose to leave it: it's order logic, not security.
+
 ### D5. Status codes the page shows
 
 The page and the exercise agree:

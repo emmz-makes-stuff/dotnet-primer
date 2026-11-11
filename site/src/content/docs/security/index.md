@@ -153,6 +153,8 @@ builder.Services.AddAuthentication(options =>
     options.ClientSecret = builder.Configuration["Oidc:ClientSecret"];
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.MapInboundClaims = false;
+    options.TokenValidationParameters.NameClaimType = "name";
+    options.TokenValidationParameters.RoleClaimType = "role";
     options.SaveTokens = true;
     options.Scope.Add("email");
 });
@@ -169,7 +171,7 @@ Location: https://login.example.com/oauth2/authorize?client_id=orders-web
   &response_mode=form_post&nonce=…&state=…
 ```
 
-The user signs in there. The provider posts a code back to `/signin-oidc`, the handler swaps it for tokens, and the cookie scheme signs the user in. From then on, the cookie authenticates each request. `openid` and `profile` are requested by default, and PKCE (`code_challenge`) is on. `SaveTokens` keeps the tokens in the cookie, so the app can call APIs as the user. The client secret comes from [user secrets](#secrets) or a secret store, never from `appsettings.json`.
+The user signs in there. The provider posts a code back to `/signin-oidc`, the handler swaps it for tokens, and the cookie scheme signs the user in. From then on, the cookie authenticates each request. `openid` and `profile` are requested by default, and PKCE (`code_challenge`) is on. As with JWT bearer, `MapInboundClaims = false` keeps the token's [claim names](#claim-names), and the name and role claim types must follow, or `User.Identity.Name` is null and `RequireRole` always fails. `SaveTokens` keeps the tokens in the cookie, so the app can call APIs as the user. The client secret comes from [user secrets](#secrets) or a secret store, never from `appsettings.json`.
 
 With Cognito, the authority is the user pool URL above, and the sign-in pages are Cognito's managed login. For an intranet app on Windows, the [Negotiate handler](https://learn.microsoft.com/aspnet/core/security/authentication/windowsauth) does Windows authentication, or the identity provider federates with Active Directory.
 
@@ -192,9 +194,13 @@ app.MapGet("/health", () => "ok").AllowAnonymous();
 A policy is a set of requirements, registered once by name. The built-in ones check roles, claims or any condition you write:
 
 ```csharp title="Program.cs (from the exercise)"
-options.AddPolicy(Policies.PlaceOrders, policy => policy.RequireAssertion(context => context.User.HasScope(Scopes.WriteOrders)));
+options.AddPolicy(Policies.PlaceOrders, policy => policy
+    .RequireClaim("sub")
+    .RequireAssertion(context => context.User.HasScope(Scopes.WriteOrders)));
 options.AddPolicy(Policies.Refunds, policy => policy.RequireRole("support"));
 ```
+
+A policy's requirements must all pass. `PlaceOrders` needs a `sub`, because it becomes the order's owner. A token without one, such as a service's, can't place an order that belongs to no one.
 
 `RequireClaim("email_verified", "true")` needs a claim with one of the given values. For scopes, it isn't enough. An OAuth provider sends every scope the token grants in one `scope` claim, separated by spaces: `"orders:read orders:write"`. `RequireClaim("scope", "orders:write")` compares the whole value, so that token is refused. Split it:
 
@@ -287,10 +293,12 @@ In production, the secrets live in a secret store, read through a configuration 
 ASP.NET Core encrypts and signs the data it hands to browsers with **data protection**: authentication cookies, antiforgery tokens, and the OpenID Connect handler's `state` and nonce. Your own code can use it too, through `IDataProtectionProvider`, for anything that leaves the server and must come back unchanged, such as a password-reset link:
 
 ```csharp
-var protector = provider.CreateProtector("Orders.ResetLinks");
-var token = protector.Protect(userId.ToString(CultureInfo.InvariantCulture));
-var back = protector.Unprotect(token);   // throws if the token was changed
+var protector = provider.CreateProtector("Orders.ResetLinks").ToTimeLimitedDataProtector();
+var token = protector.Protect(userId.ToString(CultureInfo.InvariantCulture), TimeSpan.FromHours(1));
+var back = protector.Unprotect(token);   // throws if the token was changed, or is over an hour old
 ```
+
+A plain `IDataProtector`'s output never expires: it unprotects for as long as the key ring has its key, which is years. For a reset link, that's a link that still works when it turns up in an old email. `ToTimeLimitedDataProtector` puts an expiry in the token. A reset link should be single use as well, so record that it was used, and refuse it after that.
 
 The keys are in a **key ring**, made and rotated automatically, every 90 days by default. By default, the ring is kept on the local disk, or only in memory if there's nowhere to write it. That's fine for one long-lived process. It breaks as soon as there's more than one:
 
@@ -467,7 +475,7 @@ The [OWASP Top 10:2025](https://top10.owasp.org/) lists the most common web appl
 
 1. In `Starter/Program.cs`, add JWT bearer authentication. Leave its issuer, audiences and keys to configuration, and keep the token's claim names (TODO 1).
 2. Add a fallback policy that requires a signed-in user, and mark `/health` with `AllowAnonymous()` (TODO 2).
-3. Add the `PlaceOrders` policy, for tokens that grant `orders:write`, and require it on `POST /orders` (TODO 3). The scope claim can hold several scopes: write a helper that splits it.
+3. Add the `PlaceOrders` policy, for tokens that grant `orders:write` and have a `sub`, and require it on `POST /orders` (TODO 3). The scope claim can hold several scopes: write a helper that splits it.
 4. Write the `ReadOrder` requirement and its handler: the order's customer, or the support role. In `GET /orders/{id}`, check it with `IAuthorizationService` once the order is loaded (TODO 4).
 5. Add the `Refunds` policy, for the support role, and require it on the refund endpoint (TODO 5).
 

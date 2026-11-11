@@ -98,6 +98,8 @@ builder.Services.AddAuthentication(options =>
     options.ClientSecret = builder.Configuration["Oidc:ClientSecret"];   // user secrets, or a secret store
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.MapInboundClaims = false;
+    options.TokenValidationParameters.NameClaimType = "name";            // or Identity.Name is null
+    options.TokenValidationParameters.RoleClaimType = "role";            // or RequireRole always fails
     options.SaveTokens = true;                                           // keep the tokens in the cookie
     options.Scope.Add("email");                                          // openid and profile are there already
 });
@@ -195,10 +197,11 @@ builder.Services.AddDataProtection()
 ```csharp
 public sealed class ResetLinks(IDataProtectionProvider provider)
 {
-    private readonly IDataProtector _protector = provider.CreateProtector("Orders.ResetLinks");   // the purpose
+    private readonly ITimeLimitedDataProtector _protector =
+        provider.CreateProtector("Orders.ResetLinks").ToTimeLimitedDataProtector();   // the purpose, and an expiry
 
-    public string Create(int userId) => _protector.Protect(userId.ToString(CultureInfo.InvariantCulture));
-    public int Read(string token) => int.Parse(_protector.Unprotect(token), CultureInfo.InvariantCulture);   // throws if tampered with
+    public string Create(int userId) => _protector.Protect(userId.ToString(CultureInfo.InvariantCulture), TimeSpan.FromHours(1));
+    public int Read(string token) => int.Parse(_protector.Unprotect(token), CultureInfo.InvariantCulture);   // throws if tampered with or expired
 }
 ```
 

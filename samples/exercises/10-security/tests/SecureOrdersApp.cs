@@ -39,16 +39,21 @@ public sealed class SecureOrdersApp : WebApplicationFactory<Program>
     /// <summary>
     /// A signed access token, like one an identity provider would issue.
     /// </summary>
-    /// <param name="sub">The caller's id: the <c>sub</c> claim.</param>
+    /// <param name="sub">The caller's id: the <c>sub</c> claim. <c>null</c> for a token without one.</param>
     /// <param name="scope">The granted scopes, space-separated, as identity providers send them.</param>
     /// <param name="roles">One <c>role</c> claim each.</param>
     /// <param name="expired">A token that expired 10 minutes ago: past the handler's 5-minute clock skew.</param>
     /// <param name="signingKey">Another key, for a token the app must not trust.</param>
     /// <param name="audience">Another audience, for a token meant for a different API.</param>
     public string Token(
-        string sub, string? scope = null, string[]? roles = null, bool expired = false, byte[]? signingKey = null, string audience = Audience)
+        string? sub, string? scope = null, string[]? roles = null, bool expired = false, byte[]? signingKey = null, string audience = Audience)
     {
-        var claims = new List<Claim> { new("sub", sub) };
+        var claims = new List<Claim>();
+        if (sub is not null)
+        {
+            claims.Add(new Claim("sub", sub));
+        }
+
         if (scope is not null)
         {
             claims.Add(new Claim("scope", scope));

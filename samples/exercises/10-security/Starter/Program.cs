@@ -21,8 +21,9 @@ builder.Services.AddSingleton<OrderStore>();
 
 // TODO 3: Add a "PlaceOrders" policy: the caller's token must grant the orders:write scope. Identity
 //   providers send the scopes as one space-separated string in the `scope` claim
-//   ("orders:read orders:write"), so RequireClaim("scope", "orders:write") isn't enough. Then require it
-//   on POST /orders with .RequireAuthorization("PlaceOrders").
+//   ("orders:read orders:write"), so RequireClaim("scope", "orders:write") isn't enough. The token must
+//   have a `sub` too, because it becomes the order's owner: add RequireClaim("sub"). Then require the
+//   policy on POST /orders with .RequireAuthorization("PlaceOrders").
 
 // TODO 4: Customers may read only their own orders, and the support role may read any order. That
 //   needs the order, so it can't be a policy on the endpoint alone. Write a requirement (a class that
@@ -41,6 +42,9 @@ app.MapGet("/health", () => "ok");
 
 // No authorization metadata of its own: once TODO 2 is done, the fallback policy applies.
 app.MapGet("/catalogue", () => Catalogue.PricesCents);
+
+// Who the caller is: Identity.Name comes from the claim that NameClaimType names (TODO 1).
+app.MapGet("/me", (ClaimsPrincipal user) => new { name = user.Identity?.Name });
 
 app.MapPost("/orders", (PlaceOrderRequest request, ClaimsPrincipal user, OrderStore store) =>
 {

@@ -51,6 +51,19 @@ public sealed class AuthorizationTests(SecureOrdersApp app) : IClassFixture<Secu
     }
 
     [Fact]
+    public async Task PlacingAnOrderNeedsASub()
+    {
+        // A token for a service, say, with the scope but no user: its order would belong to no one.
+        using var client = app.Client(app.Token(sub: null, scope: "orders:write"));
+
+        using var response = await client.PostAsJsonAsync("/orders", _order, TestContext.Current.CancellationToken);
+
+        Expect.Status(response, HttpStatusCode.Forbidden,
+            "a token without a sub claim placed an order, so the order has no owner. "
+            + "Add RequireClaim(\"sub\") to the PlaceOrders policy (TODO 3).");
+    }
+
+    [Fact]
     public async Task CustomerReadsTheirOwnOrderButNotAnothers()
     {
         var ct = TestContext.Current.CancellationToken;

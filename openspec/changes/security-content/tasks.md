@@ -98,6 +98,30 @@
 
   On PASS, tick and continue. On FAIL, add a review-fix section.
 
+## 6. Review fixes: code review
+
+From the `code-review` run after 5.1. Emmz agreed the scope: fix 1, 2, 3, 5 and 6, and leave 4
+(double refund) as is.
+
+- [x] 6.1 Page and cheatsheet: make the reset-link data protection example time-limited
+  (`ToTimeLimitedDataProtector()`, `Protect(value, TimeSpan.FromHours(1))`), and say why a plain
+  protector's output never expires. Compile it, and run a protect and unprotect, then an expired
+  one.
+- [x] 6.2 Page and cheatsheet: the OpenID Connect example also sets
+  `TokenValidationParameters.NameClaimType = "name"` and `RoleClaimType = "role"`. Its defaults were
+  checked: with `MapInboundClaims = false` they still name the long URIs.
+- [x] 6.3 Exercise: the `PlaceOrders` policy also requires a `sub` claim, so a token without one
+  gets 403, and the Solution's `?? "anonymous"` fallback goes. Add it to TODO 3, add a test, and
+  add a `Token` option for a token without `sub`.
+- [x] 6.4 Exercise: `MissingTokenIsRefused` calls `POST /orders`, so it no longer duplicates
+  `NewEndpointIsPrivateByDefault`.
+- [x] 6.5 Exercise: a pre-written `GET /me` in both projects returns `user.Identity?.Name`, and a
+  test expects the token's `sub`, so a missing `NameClaimType` fails with a TODO 1 hint. Note it in
+  design D4 as "Revised in §6".
+- [x] 6.6 Re-check the Starter (it fails with hints), the Solution (all pass), and scratch completions
+  missing `NameClaimType` or the `sub` requirement (only their test fails). Update the page's
+  exercise steps and "from the exercise" snippets to match, then `make gates`.
+
 ## Workflow follow-up
 
 - Self-review the whole change, write the change-done note, and offer the `code-review` skill.

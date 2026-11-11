@@ -22,8 +22,10 @@ builder.Services.AddAuthorization(options =>
     // TODO 2 (solved): every endpoint needs a signed-in caller unless it says otherwise.
     options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 
-    // TODO 3 (solved): placing an order needs the orders:write scope.
-    options.AddPolicy(Policies.PlaceOrders, policy => policy.RequireAssertion(context => context.User.HasScope(Scopes.WriteOrders)));
+    // TODO 3 (solved): placing an order needs the orders:write scope, and a sub to own the order.
+    options.AddPolicy(Policies.PlaceOrders, policy => policy
+        .RequireClaim("sub")
+        .RequireAssertion(context => context.User.HasScope(Scopes.WriteOrders)));
 
     // TODO 4 (solved): reading an order needs the order itself; OrderAccessHandler decides.
     options.AddPolicy(Policies.ReadOrder, policy => policy.AddRequirements(new OrderAccessRequirement()));
@@ -41,6 +43,9 @@ app.MapGet("/health", () => "ok").AllowAnonymous();
 // No authorization metadata of its own: the fallback policy applies.
 app.MapGet("/catalogue", () => Catalogue.PricesCents);
 
+// Who the caller is: Identity.Name comes from the claim that NameClaimType names (TODO 1).
+app.MapGet("/me", (ClaimsPrincipal user) => new { name = user.Identity?.Name });
+
 app.MapPost("/orders", (PlaceOrderRequest request, ClaimsPrincipal user, OrderStore store) =>
 {
     var problems = request.Problems();
@@ -49,7 +54,8 @@ app.MapPost("/orders", (PlaceOrderRequest request, ClaimsPrincipal user, OrderSt
         return Results.ValidationProblem(problems);
     }
 
-    var order = store.Add(user.FindFirstValue("sub") ?? "anonymous", request.Lines!);
+    // The PlaceOrders policy has made sure there's a sub.
+    var order = store.Add(user.FindFirstValue("sub")!, request.Lines!);
     return Results.Created($"/orders/{order.Id}", order);
 }).RequireAuthorization(Policies.PlaceOrders);
 
