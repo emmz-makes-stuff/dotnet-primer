@@ -19,18 +19,39 @@ public static class Expect
         }
     }
 
-    /// <summary>Starts an order, and waits until the store says it's in progress.</summary>
+    /// <summary>
+    /// Starts an order, and waits until the store says it's in progress. A POST that finishes
+    /// without starting one, or fails, is reported straight away, with its status or its error.
+    /// </summary>
     public static async Task<Task<HttpResponseMessage>> OrderInProgressAsync(HealthOrdersApp app, HttpClient client)
     {
         var order = client.PostAsJsonAsync("/orders", new PlaceOrderRequest("SKU-1"), TestContext.Current.CancellationToken);
+        var inProgress = app.Store.OrderInProgress.WaitAsync(Patience, TestContext.Current.CancellationToken);
+        await Task.WhenAny(inProgress, order);
+
+        if (inProgress.IsCompletedSuccessfully)
+        {
+            return order;
+        }
+
+        if (order.IsCompletedSuccessfully)
+        {
+            using var response = await order;
+            Assert.Fail($"POST /orders answered {(int)response.StatusCode} {response.StatusCode} without starting an order.");
+        }
+
+        if (order.IsFaulted)
+        {
+            Assert.Fail($"POST /orders failed without starting an order: {order.Exception!.GetBaseException().Message}");
+        }
+
         try
         {
-            await app.Store.OrderInProgress.WaitAsync(Patience, TestContext.Current.CancellationToken);
+            await inProgress;
         }
         catch (TimeoutException)
         {
-            var response = order.IsCompleted ? $" It answered {(int)(await order).StatusCode}." : "";
-            Assert.Fail($"POST /orders didn't start an order within {Patience.TotalSeconds} s.{response}");
+            Assert.Fail($"POST /orders didn't start an order within {Patience.TotalSeconds} s.");
         }
 
         return order;

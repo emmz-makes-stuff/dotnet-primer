@@ -116,6 +116,23 @@
   `docker stop` example builds and runs an image, and Aspire runs SQL Server in a container), next
   to Containers. Verify with `make gates`.
 
+## 7. Review fixes: code review
+
+- [x] 7.1 Take `healthCheck` out of the page's `task-definition.json`, so it's safe to copy with a
+  chiseled image. Show the `healthCheck` fragment just below it, for an image that has a shell and
+  `curl`. Re-run the task definition's parse check.
+- [x] 7.2 Add `app.MapDefaultEndpoints();` to the Shopfront snippet, and compile it again.
+- [x] 7.3 Name the IAM permissions for the configuration provider: `ssm:GetParametersByPath` for the
+  path, and `ssm:GetParameter` plus `secretsmanager:GetSecretValue` for the Secrets Manager
+  reference.
+- [x] 7.4 Reword the Logging, Tracing and Metrics pages' "covers the deployment side" sentence, so it
+  says what the Orchestration & AWS page does cover: running the app on ECS and EKS.
+- [x] 7.5 In exercise 13's `Expect.OrderInProgressAsync`, use `Task.WhenAny`, so that a POST that
+  fails or faults straight away is reported at once, with its status or its error, and never
+  escapes as a raw exception. Check the Starter and Solution test results are unchanged.
+
+  Verify with `make gates`.
+
 ## Workflow follow-up
 
 - Self-review the whole change, write the change-done note, and offer the `code-review` skill.

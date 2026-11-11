@@ -268,9 +268,14 @@ builder.AddServiceDefaults();
 
 // "api" is the API's resource name in the AppHost; service discovery resolves it.
 builder.Services.AddHttpClient("orders", client => client.BaseAddress = new Uri("http://api"));
+
+var app = builder.Build();
+
+// /health and /alive: the AppHost's WithHttpHealthCheck("/health") asks the first.
+app.MapDefaultEndpoints();
 ```
 
-`AddServiceDefaults` comes from the ServiceDefaults project that `aspire new aspire-starter` creates: copy it from there into an empty AppHost's folder. Then run it all:
+`AddServiceDefaults` and `MapDefaultEndpoints` come from the ServiceDefaults project that `aspire new aspire-starter` creates: copy it from there into an empty AppHost's folder. Then run it all:
 
 ```sh
 aspire run
@@ -333,16 +338,6 @@ ECS runs your containers as **tasks**, from a **task definition**: the image, it
           "valueFrom": "arn:aws:secretsmanager:eu-west-2:123456789012:secret:orders-api/db-AbCdEf"
         }
       ],
-      "healthCheck": {
-        "command": [
-          "CMD-SHELL",
-          "curl -f http://localhost:8080/health/live || exit 1"
-        ],
-        "interval": 30,
-        "timeout": 5,
-        "retries": 3,
-        "startPeriod": 10
-      },
       "stopTimeout": 45,
       "logConfiguration": {
         "logDriver": "awslogs",
@@ -357,9 +352,26 @@ ECS runs your containers as **tasks**, from a **task definition**: the image, it
 }
 ```
 
+That task definition has no container health check, so it's safe with the chiseled image from the [Containers page](/deploy/containers/), which has no shell and no `curl`. With an image that has both, you can add one to the container definition, next to `stopTimeout`:
+
+```json title="healthCheck (needs a shell and curl in the image)"
+{
+  "healthCheck": {
+    "command": [
+      "CMD-SHELL",
+      "curl -f http://localhost:8080/health/live || exit 1"
+    ],
+    "interval": 30,
+    "timeout": 5,
+    "retries": 3,
+    "startPeriod": 10
+  }
+}
+```
+
 - **`image` and `portMappings`:** the image you [pushed to ECR](/deploy/containers/#amazon-ecr), and the port it listens on, 8080. `runtimePlatform` says `ARM64` because an Apple silicon Mac builds `linux/arm64` images: match it to your image.
 - **`environment` and `secrets`:** `environment` sets plain variables. Each `secrets` entry becomes a variable too, read from [Secrets Manager](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-secrets-manager.html) or [Parameter Store](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-ssm-paramstore.html) when the task starts. `ConnectionStrings__Orders` reaches the app as `ConnectionStrings:Orders`, as on the [Containers page](/deploy/containers/#configuration-through-the-environment).
-- **`healthCheck`:** the container's [health check](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/healthcheck.html), pointed at liveness: a [service](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html) replaces a task that fails it. Its defaults are an interval of 30 s, a timeout of 5 s and 3 retries. **It runs inside the container**, so it needs `curl` there, and `CMD-SHELL` needs a shell. A chiseled image has neither: with one, leave `healthCheck` out, and rely on the load balancer's check below.
+- **`healthCheck`:** the container's [health check](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/healthcheck.html), pointed at liveness: a [service](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html) replaces a task that fails it. Its defaults are an interval of 30 s, a timeout of 5 s and 3 retries. **It runs inside the container**, so it needs `curl` there, and `CMD-SHELL` needs a shell. A chiseled image has neither: with one, leave `healthCheck` out, as the task definition above does, and rely on the load balancer's check below.
 - **`stopTimeout`:** how long ECS waits after `SIGTERM` before it sends `SIGKILL`. It's 30 s if you leave it out, and at most 120 s on Fargate. 45 s leaves room above a 30 s `ShutdownTimeout`.
 - **`taskRoleArn` and `executionRoleArn`:** the [task role](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html) is what your code's AWS calls run as: see [credentials](#configuration-and-credentials-from-aws). The [execution role](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html) is for ECS itself: pulling the image, writing the logs, and reading the `secrets` (it needs `secretsmanager:GetSecretValue` or `ssm:GetParameters`).
 
@@ -450,7 +462,7 @@ builder.Configuration.AddSystemsManager("/orders-api/");
 builder.Configuration.AddSystemsManager("/aws/reference/secretsmanager/orders-api/db");
 ```
 
-The provider strips the path you give it, and turns each remaining `/` into `:`. So `/orders-api/Warehouse/Name` arrives as `Warehouse:Name`, and binds to the same options as `appsettings.json` would ([the provider's README](https://github.com/aws/aws-dotnet-extensions-configuration)). Parameter Store reads a [Secrets Manager secret](https://docs.aws.amazon.com/systems-manager/latest/userguide/integration-ps-secretsmanager.html) through the reserved path `/aws/reference/secretsmanager/`. Sources added later win, so these override `appsettings.json`. The role needs `ssm:GetParametersByPath`, and read access to the secret. **This compiles, but wasn't run against AWS.**
+The provider strips the path you give it, and turns each remaining `/` into `:`. So `/orders-api/Warehouse/Name` arrives as `Warehouse:Name`, and binds to the same options as `appsettings.json` would ([the provider's README](https://github.com/aws/aws-dotnet-extensions-configuration)). Parameter Store reads a [Secrets Manager secret](https://docs.aws.amazon.com/systems-manager/latest/userguide/integration-ps-secretsmanager.html) through the reserved path `/aws/reference/secretsmanager/`. Sources added later win, so these override `appsettings.json`. The role needs `ssm:GetParametersByPath` for the path. The secret's reference path is read with one `GetParameter` call, which the provider's [source](https://github.com/aws/aws-dotnet-extensions-configuration/blob/main/src/Amazon.Extensions.Configuration.SystemsManager/Internal/SystemsManagerProcessor.cs) shows, so it needs `ssm:GetParameter`. Parameter Store only passes the call through, and the reference fails without permission to read the secret itself, so the role needs `secretsmanager:GetSecretValue` on it too. **This compiles, but wasn't run against AWS.**
 
 **The app gets its AWS credentials from its role, never from keys in its configuration.** The AWS SDK looks for them by itself, and on each platform finds a role:
 
