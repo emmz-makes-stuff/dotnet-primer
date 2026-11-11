@@ -37,6 +37,10 @@ switch (correct.Result)
         Console.WriteLine(correct.Output);
         return 1;
 
+    case RunResult.TimedOut:
+        Console.WriteLine(TimedOutMessage());
+        return 1;
+
     case RunResult.NoTests:
         Console.WriteLine("no tests yet.");
         Console.WriteLine();
@@ -83,8 +87,14 @@ foreach (var bug in SeededBug.All)
             Console.WriteLine("missed: every test still passes.");
             Console.WriteLine($"  Hint: {bug.Hint}");
             break;
+        case RunResult.TimedOut:
+            Console.WriteLine(TimedOutMessage());
+            return 1;
         default:
-            Console.WriteLine($"couldn't build or run (exit code {run.ExitCode}). This is a fault in the exercise:");
+            // Your tests already passed against the correct API, so this is rare. A test can still
+            // crash the test host against a bug, or the exercise itself can be at fault.
+            Console.WriteLine($"stopped without a result (exit code {run.ExitCode}).");
+            Console.WriteLine("  A test may have crashed the test run, or the exercise may be at fault. The run's output:");
             Console.WriteLine(run.Output);
             return 1;
     }
@@ -93,6 +103,11 @@ foreach (var bug in SeededBug.All)
 Console.WriteLine();
 Console.WriteLine($"{caught} of {SeededBug.All.Length} seeded bugs caught.");
 return caught == SeededBug.All.Length ? 0 : 1;
+
+static string TimedOutMessage() =>
+    $"didn't finish within {TestRun.Timeout.TotalMinutes:0} minutes, so the checker stopped it.\n" +
+    "  A test is probably waiting for something that never happens, such as a call that's never\n" +
+    "  made. Give that wait a time limit, so the test fails instead of hanging.";
 
 // A test's name without the tests' shared namespace, which only makes the report longer.
 static string Short(string testName) =>

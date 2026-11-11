@@ -72,7 +72,13 @@ public static class OrderValidation
 
         for (var i = 0; i < lines.Count; i++)
         {
-            var line = lines[i];
+            // JSON can send null for an element even though the type says it can't be.
+            if (lines[i] is not { } line)
+            {
+                problems.Add($"lines[{i}] is required.");
+                continue;
+            }
+
             if (string.IsNullOrWhiteSpace(line.Sku))
             {
                 problems.Add($"lines[{i}].sku is required.");

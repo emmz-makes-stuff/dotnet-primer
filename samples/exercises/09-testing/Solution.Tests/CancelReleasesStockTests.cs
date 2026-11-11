@@ -13,9 +13,10 @@ public class CancelReleasesStockTests
 
     private readonly IWarehouse _warehouse = Substitute.For<IWarehouse>();
     private readonly FakeTimeProvider _time = new();
+    private readonly OrderStore _store = new();
     private readonly OrderService _orders;
 
-    public CancelReleasesStockTests() => _orders = new OrderService(new OrderStore(), _warehouse, _time);
+    public CancelReleasesStockTests() => _orders = new OrderService(_store, _warehouse, _time);
 
     [Fact]
     public async Task CancellingReleasesTheOrdersLines()
@@ -29,6 +30,20 @@ public class CancelReleasesStockTests
         // Check the arguments, not just that a call happened.
         await _warehouse.Received(1).ReleaseAsync(
             order.Id, Arg.Is<IReadOnlyList<OrderLine>>(lines => lines.SequenceEqual(_lines)), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task FailedReleaseLeavesTheOrderPlaced()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var order = _orders.Place("ada@example.com", _lines);
+        _warehouse.ReleaseAsync(default, default!, ct)
+            .ReturnsForAnyArgs(Task.FromException(new InvalidOperationException("The warehouse is down.")));
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _orders.CancelAsync(order.Id, ct));
+
+        // Still placed, so the customer can try the cancel again.
+        Assert.Equal(OrderStatus.Placed, _store.Find(order.Id)?.Status);
     }
 
     [Fact]

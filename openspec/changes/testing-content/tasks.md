@@ -108,6 +108,22 @@
 
   On PASS, tick and continue. On FAIL, add a review-fix section.
 
+## 7. Review fixes: code review of the branch
+
+- [x] 7.1 Page and solution clarity. Use repo-root paths
+  (`samples/exercises/09-testing/Solution.Tests`) in the page's filter and coverage commands. In
+  `Solution.Tests/OrdersApiTests.cs`, add a comment that says why it makes a factory per test (a
+  fresh `FakeTimeProvider` and substitute each time), so it doesn't contradict the Pitfalls section.
+- [x] 7.2 A null order line gives a 400, not a 500: `OrderValidation.Problems` reports
+  `lines[i] is required.` Add a Solution test for it, and check that the checker still reports 4 of 4.
+- [x] 7.3 Make the checker robust. Give each `dotnet test` run a timeout, after which it kills the
+  run and reports the timeout. Reword the message for an unexpected exit code so it doesn't blame
+  the exercise, because the learner's tests can cause one.
+- [x] 7.4 In `CancelAsync`, release the stock before marking the order Cancelled, so a failed
+  release leaves the order cancellable. Keep bug 2's copy of `OrderService.cs` in step. Add a
+  Solution test that a throwing warehouse leaves the order Placed. Concurrent cancels stay out of
+  scope.
+
 ## Workflow follow-up
 
 - Self-review the whole change, write the change-done note, and offer the `code-review` skill.

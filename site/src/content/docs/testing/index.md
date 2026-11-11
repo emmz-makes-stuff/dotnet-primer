@@ -56,8 +56,8 @@ dotnet test --solution samples/Primer.Solutions.slnx
 To run a subset, filter by class, method, namespace or trait. Names are full names, and `*` is a wildcard:
 
 ```sh
-dotnet test --project Solution.Tests --filter-class TestingOrders.Tests.PricingTests
-dotnet test --project Solution.Tests --filter-method "*Cancel*"
+dotnet test --project samples/exercises/09-testing/Solution.Tests --filter-class TestingOrders.Tests.PricingTests
+dotnet test --project samples/exercises/09-testing/Solution.Tests --filter-method "*Cancel*"
 ```
 
 ```txt
@@ -370,20 +370,20 @@ These tests **need a running Docker engine**: see [Docker](/platform/docker/). P
 Code coverage measures which lines and branches your tests ran. Add the `Microsoft.Testing.Extensions.CodeCoverage` package to the test project, then:
 
 ```sh
-dotnet test --project Solution.Tests --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
+dotnet test --project samples/exercises/09-testing/Solution.Tests --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
 ```
 
 ```txt
   In process file artifacts produced:
     - …/TestResults/coverage.cobertura.xml
 Test run summary: Passed!
-  total: 13
+  total: 15
 ```
 
-The Cobertura file is XML that CI systems and editors read. Its first element has the totals. For exercise 09's Solution tests, they're 81 of 117 lines (69%) and 32 of 46 branches:
+The Cobertura file is XML that CI systems and editors read. Its first element has the totals. For exercise 09's Solution tests, they're 84 of 120 lines (70%) and 34 of 48 branches:
 
 ```xml
-<coverage line-rate="0.6923076923076923" branch-rate="0.6956521739130435" lines-covered="81" lines-valid="117" branches-covered="32" branches-valid="46" …>
+<coverage line-rate="0.7" branch-rate="0.7083333333333334" lines-covered="84" lines-valid="120" branches-covered="34" branches-valid="48" …>
 ```
 
 **Covered isn't tested.** A line counts as covered when a test runs it, whether or not any assertion checks what it did. A test that places, reads and cancels orders through the API without asserting anything still covers every line it runs, and catches none of exercise 09's seeded bugs. Use coverage to find the code no test reaches, not as proof that what's reached is right. Exercise 09 measures tests the other way: by the bugs they catch.

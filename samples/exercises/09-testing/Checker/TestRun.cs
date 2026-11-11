@@ -17,6 +17,9 @@ internal enum RunResult
 
     /// <summary>Any other exit code: the build or the run itself failed.</summary>
     Error,
+
+    /// <summary>The run didn't finish within <see cref="TestRun.Timeout"/>, so the checker stopped it.</summary>
+    TimedOut,
 }
 
 /// <summary>The outcome of one <c>dotnet test</c> run, with what it printed.</summary>
@@ -25,6 +28,12 @@ internal sealed record TestRunOutcome(RunResult Result, int ExitCode, IReadOnlyL
 /// <summary>Runs a test project with <c>dotnet test</c>, against the correct API or a seeded bug.</summary>
 internal static class TestRun
 {
+    /// <summary>
+    /// How long one run (build and tests) may take. A test that waits for something a seeded bug
+    /// never does would otherwise hang the checker for good.
+    /// </summary>
+    public static readonly TimeSpan Timeout = TimeSpan.FromMinutes(10);
+
     public static async Task<TestRunOutcome> RunAsync(string testProject, string exerciseRoot, string runDirectory, SeededBug? bug)
     {
         var resultsDirectory = Path.Combine(runDirectory, "results");
@@ -62,7 +71,21 @@ internal static class TestRun
         using var process = Process.Start(start) ?? throw new InvalidOperationException("Couldn't start dotnet.");
         var stdout = process.StandardOutput.ReadToEndAsync();
         var stderr = process.StandardError.ReadToEndAsync();
-        await process.WaitForExitAsync();
+        using (var timeout = new CancellationTokenSource(Timeout))
+        {
+            try
+            {
+                await process.WaitForExitAsync(timeout.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // Stop the test host too, not just dotnet test; then the output streams can end.
+                process.Kill(entireProcessTree: true);
+                await process.WaitForExitAsync();
+                return new TestRunOutcome(RunResult.TimedOut, process.ExitCode, [], await stdout + await stderr);
+            }
+        }
+
         var output = await stdout + await stderr;
 
         var result = process.ExitCode switch

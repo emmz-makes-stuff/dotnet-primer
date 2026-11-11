@@ -40,8 +40,9 @@ public sealed class OrderService(OrderStore store, IWarehouse warehouse, TimePro
             return CancelOutcome.WindowClosed;
         }
 
-        store.Update(order with { Status = OrderStatus.Cancelled });
+        // Release first: if the warehouse fails, the order stays placed and the cancel can be retried.
         await warehouse.ReleaseAsync(order.Id, [], cancellationToken); // SEEDED BUG 2: releases none of the order's lines.
+        store.Update(order with { Status = OrderStatus.Cancelled });
         return CancelOutcome.Cancelled;
     }
 }

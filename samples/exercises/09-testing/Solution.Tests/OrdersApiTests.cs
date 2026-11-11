@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -37,6 +38,9 @@ public sealed class OrdersApiTests : IDisposable
 {
     private static readonly PlaceOrderRequest _valid = new("ada@example.com", [new("SKU-1", 2, 1_250)]);
 
+    // A new factory for every test, which the Testing page lists as a pitfall when the app is slow to
+    // start. Here it's deliberate: each test gets its own FakeTimeProvider, which can't be wound back,
+    // and its own warehouse substitute and order store. This app starts in milliseconds.
     private readonly OrdersApiFactory _factory = new();
     private readonly HttpClient _client;
 
@@ -72,6 +76,17 @@ public sealed class OrdersApiTests : IDisposable
         var ct = TestContext.Current.CancellationToken;
 
         var response = await _client.PostAsJsonAsync("/orders", _valid with { Lines = [] }, ct);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task NullLineIsABadRequest()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        using var body = new StringContent("""{"customerEmail":"ada@example.com","lines":[null]}""", Encoding.UTF8, "application/json");
+
+        var response = await _client.PostAsync("/orders", body, ct);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
