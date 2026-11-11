@@ -42,18 +42,18 @@
 
 ## 2. Exercise 13: health checks and shutdown
 
-- [ ] 2.1 Scaffold `samples/exercises/13-health-and-shutdown/` (design D4): `HealthAndShutdown.Starter`
+- [x] 2.1 Scaffold `samples/exercises/13-health-and-shutdown/` (design D4): `HealthAndShutdown.Starter`
   and `HealthAndShutdown.Solution` web projects, a shared `tests/`, and `Starter.Tests` and
   `Solution.Tests`. Add them to `Primer.slnx`, and the Solution and its tests to
   `Primer.Solutions.slnx`. Verify with `make samples-build`.
-- [ ] 2.2 Write the Solution: the orders API, the slow `POST /orders`, a store that can be taken
+- [x] 2.2 Write the Solution: the orders API, the slow `POST /orders`, a store that can be taken
   offline and signals an order in progress, `/health/live` and `/health/ready`, the drain delay
   (D3), and the shutdown timeout, with TODOs 1–4 solved. Verify by running it, and calling both endpoints with the store
   up and down.
-- [ ] 2.3 Write the tests (design D5): real Kestrel in process, one test per check, each naming its
+- [x] 2.3 Write the tests (design D5): real Kestrel in process, one test per check, each naming its
   TODO, synced on the store's signal. Verify that the Solution passes, ten runs in a row, and
   record how long `make samples-test` takes, before and after.
-- [ ] 2.4 Write the Starter, with the four bugs and TODOs 1–4 (design D4). Verify that each test
+- [x] 2.4 Write the Starter, with the four bugs and TODOs 1–4 (design D4). Verify that each test
   fails against it with its guiding message, and that completing a scratch copy with the
   Solution's code passes everything. Then complete scratch copies that each leave out one TODO,
   and confirm that only that TODO's tests fail.

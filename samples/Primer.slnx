@@ -160,4 +160,17 @@
   <Folder Name="/exercises/12-containers/Starter/">
     <Project Path="exercises/12-containers/Starter/Containers.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/13-health-and-shutdown/" />
+  <Folder Name="/exercises/13-health-and-shutdown/Solution.Tests/">
+    <Project Path="exercises/13-health-and-shutdown/Solution.Tests/HealthAndShutdown.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/13-health-and-shutdown/Solution/">
+    <Project Path="exercises/13-health-and-shutdown/Solution/HealthAndShutdown.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/13-health-and-shutdown/Starter.Tests/">
+    <Project Path="exercises/13-health-and-shutdown/Starter.Tests/HealthAndShutdown.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/13-health-and-shutdown/Starter/">
+    <Project Path="exercises/13-health-and-shutdown/Starter/HealthAndShutdown.Starter.csproj" />
+  </Folder>
 </Solution>
