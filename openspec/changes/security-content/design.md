@@ -115,6 +115,15 @@ That's the section `dotnet user-jwts` writes, and the same shape a real deployme
 The probe (1.1) confirms that binding `SigningKeys` from configuration works with no `Authority`, and
 records exactly what `dotnet user-jwts create` writes and prints.
 
+**Revised in §1** (probe note `20261111-1120`):
+- **`ValidAudiences` come from `launchSettings.json`.** `user-jwts` writes every URL in the launch
+  profile, so both projects ship a `launchSettings.json` with fixed ports.
+- **`user-jwts` rewrites `appsettings.Development.json`** unless the file is already in its own
+  format (arrays one item per line, no final newline). The exercise ships the file in exactly that
+  format, so running `user-jwts` changes no tracked file.
+- **The engineer must rebuild after the first `user-jwts`** if the project had no `UserSecretsId`.
+  The projects ship with one, so this is a page pitfall, not an exercise step.
+
 **Rejected:**
 - **a hard-coded key in `Program.cs`**, because it teaches committing a secret;
 - **an in-test OIDC metadata endpoint with RSA keys**, because it's more machinery than the lesson
@@ -131,6 +140,15 @@ records exactly what `dotnet user-jwts create` writes and prints.
 - **The scope policy splits the `scope` claim**, with a small helper used by `RequireAssertion`. A
   plain `RequireClaim("scope", …)` only matches a token with exactly one scope, and that's a pitfall
   the page names.
+
+**Revised in §1** (probe note `20261111-1120`):
+- **`MapInboundClaims` binds from configuration, but `NameClaimType` and `RoleClaimType` don't.**
+  So TODO 1 sets all three in an `AddJwtBearer(o => …)` lambda, next to the configuration section.
+  With mapping off, but `RoleClaimType` left alone, `RequireRole` fails.
+- **`dotnet user-jwts` writes several scopes as a JSON array**, which becomes several `scope`
+  claims. OAuth providers send one space-separated string. **The helper takes every `scope` claim
+  and splits each one on spaces**, so it handles both. The tests mint the space-separated form,
+  because that's what a real provider sends.
 
 ### D4. Exercise 10 shape
 
@@ -202,6 +220,9 @@ the right tool or page:
 - the Logging page.
 
 The table is short, and has no prose under each row.
+
+**Revised in §1:** the current edition is **OWASP Top 10:2025** (`https://top10.owasp.org/`). Its
+categories are listed in the probe note.
 
 ### D8. The "Coming from .NET 3.5" table
 

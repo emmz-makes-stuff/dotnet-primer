@@ -2,7 +2,7 @@
 
 ## 1. Probe and package versions
 
-- [ ] 1.1 Probe the setup (design D2, D3, D5, D7, D11). In scratch projects on 10.0.4xx:
+- [x] 1.1 Probe the setup (design D2, D3, D5, D7, D11). In scratch projects on 10.0.4xx:
   - a `dotnet new web` API with `Microsoft.AspNetCore.Authentication.JwtBearer` 10.0.14, configured
     only from `Authentication:Schemes:Bearer` with `SigningKeys` and no `Authority`. Call it with an
     HS256 token minted by `JsonWebTokenHandler`;
@@ -20,7 +20,7 @@
   - the current OWASP Top 10 edition and its category names, from owasp.org.
 
   Write a devlog note with the exact settings, headers, statuses and outputs.
-- [ ] 1.2 Add the JwtBearer `PackageVersion` from design D9 to `samples/Directory.Packages.props`.
+- [x] 1.2 Add the JwtBearer `PackageVersion` from design D9 to `samples/Directory.Packages.props`.
   Verify that `make samples-build` and `make samples-format` pass (unsandboxed, for NuGet). **If
   restore reports a vulnerable package, or 10.0.15 fixes an advisory, stop and ask.**
 
