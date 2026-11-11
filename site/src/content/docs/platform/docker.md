@@ -8,7 +8,7 @@ learn:
 
 By the end of this page you'll have a Docker engine running on your machine, and you'll have checked that it runs containers. On Windows, you'll also have checked that Windows-side tools such as .NET can reach it.
 
-The primer runs some tools in **containers**, so you need a Docker engine: the [Observability](/observability/logging/#see-it-locally) pages run a local dashboard in one, the [EF Core](/data/ef-core/) page and exercise 07's tests run SQL Server in one, the [Testing](/testing/) pages start real databases with Testcontainers, and [Containers](/deploy/containers/) builds and runs images. Exercises 01–06 don't need it, so you can skip this until you reach Observability.
+The primer runs some tools in **containers**, so you need a Docker engine: the [Observability](/observability/logging/#see-it-locally) pages run a local dashboard in one, the [EF Core](/data/ef-core/) page and exercise 07's tests run SQL Server in one, the [Testing](/testing/) pages start real databases with Testcontainers, [Containers](/deploy/containers/) builds and runs images, and [Orchestration & AWS](/deploy/orchestration-and-aws/) stops a running container and runs SQL Server in one through Aspire. Exercises 01–06 don't need it, so you can skip this until you reach Observability.
 
 Pick your platform. Each one has a default that's free to use at work, and the alternatives say which licence they need. Licence terms are as they were at the time of writing: check each vendor's own terms.
 

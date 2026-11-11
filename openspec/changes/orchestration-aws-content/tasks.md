@@ -100,7 +100,7 @@
 
 ## 5. Human check
 
-- [ ] 5.1 Run exercise 13 from a clean clone myself (the Starter fails with guiding messages, and
+- [x] 5.1 Run exercise 13 from a clean clone myself (the Starter fails with guiding messages, and
   the Solution passes), and report the result. Then stop for Emmz to check, with a copy-paste
   recipe:
   - the Orchestration & AWS page and its cheatsheet, in light and dark schemes, including the
@@ -109,6 +109,12 @@
   - the code-block copy button on the ECS task definition.
 
   On PASS, tick and continue. On FAIL, add a review-fix section.
+
+## 6. Review fixes: the Docker page's list
+
+- [x] 6.1 Add the Orchestration & AWS page to the Docker page's list of pages that use Docker (its
+  `docker stop` example builds and runs an image, and Aspire runs SQL Server in a container), next
+  to Containers. Verify with `make gates`.
 
 ## Workflow follow-up
 
