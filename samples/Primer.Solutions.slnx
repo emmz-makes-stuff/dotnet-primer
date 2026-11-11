@@ -63,4 +63,11 @@
   <Folder Name="/exercises/09-testing/Solution.Tests/">
     <Project Path="exercises/09-testing/Solution.Tests/Testing.Solution.Tests.csproj" />
   </Folder>
+  <Folder Name="/exercises/10-security/" />
+  <Folder Name="/exercises/10-security/Solution.Tests/">
+    <Project Path="exercises/10-security/Solution.Tests/Security.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/10-security/Solution/">
+    <Project Path="exercises/10-security/Solution/Security.Solution.csproj" />
+  </Folder>
 </Solution>

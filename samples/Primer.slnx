@@ -117,4 +117,17 @@
   <Folder Name="/exercises/09-testing/Starter.Tests/">
     <Project Path="exercises/09-testing/Starter.Tests/Testing.Starter.Tests.csproj" />
   </Folder>
+  <Folder Name="/exercises/10-security/" />
+  <Folder Name="/exercises/10-security/Solution.Tests/">
+    <Project Path="exercises/10-security/Solution.Tests/Security.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/10-security/Solution/">
+    <Project Path="exercises/10-security/Solution/Security.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/10-security/Starter.Tests/">
+    <Project Path="exercises/10-security/Starter.Tests/Security.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/10-security/Starter/">
+    <Project Path="exercises/10-security/Starter/Security.Starter.csproj" />
+  </Folder>
 </Solution>

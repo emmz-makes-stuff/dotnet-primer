@@ -26,7 +26,7 @@
 
 ## 2. Exercise 10: security
 
-- [ ] 2.1 Scaffold `samples/exercises/10-security/` like 08 (design D4):
+- [x] 2.1 Scaffold `samples/exercises/10-security/` like 08 (design D4):
   - `Security.Starter` and `Security.Solution` web projects, each with a `UserSecretsId` and the
     bearer section in `appsettings.Development.json` (D2);
   - the shared `tests/`;
@@ -34,17 +34,17 @@
 
   Add them to `Primer.slnx`. Add only the Solution and its tests to `Primer.Solutions.slnx`. Verify
   with `make samples-build`.
-- [ ] 2.2 Implement the Solution: the pre-written store, validation and five endpoints (D4).
+- [x] 2.2 Implement the Solution: the pre-written store, validation and five endpoints (D4).
   - TODOs 1–5 solved: JWT bearer from configuration with claim mapping off, the fallback policy and
     an anonymous `/health`, the `PlaceOrders` scope policy, the `ReadOrder` requirement and handler,
     and the `Refunds` role policy.
   - Verify that `make samples-build` passes.
-- [ ] 2.3 Write the shared tests (D4): `SecureOrdersApp` with its token and client helpers, and the
+- [x] 2.3 Write the shared tests (D4): `SecureOrdersApp` with its token and client helpers, and the
   guiding message for an API that's still open.
   - Cover every scenario in the two exercise-10 requirements, with assertion messages that name the
     TODO.
   - Verify that `make samples-test` passes.
-- [ ] 2.4 Write the Starter: the open API that "works, but badly" (D4), and `TODO`s 1–5.
+- [x] 2.4 Write the Starter: the open API that "works, but badly" (D4), and `TODO`s 1–5.
   - Verify that the Starter tests fail with the guiding messages.
   - Complete a scratch copy, confirm that its tests go green, and discard it.
   - Then complete a second scratch copy with `RequireClaim("scope", "orders:write")` in place of the
