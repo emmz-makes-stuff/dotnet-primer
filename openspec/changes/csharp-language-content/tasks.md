@@ -25,17 +25,17 @@
 
 ## 2. Exercise 14: modern C#
 
-- [ ] 2.1 Scaffold `samples/exercises/14-modern-csharp/` (D6): `ModernCSharp.Starter` and
+- [x] 2.1 Scaffold `samples/exercises/14-modern-csharp/` (D6): `ModernCSharp.Starter` and
   `ModernCSharp.Solution` class libraries, a shared `tests/`, and `Starter.Tests` and
   `Solution.Tests`. Add them to `Primer.slnx`, and the Solution and its tests to
   `Primer.Solutions.slnx`. Verify with `make samples-build`.
-- [ ] 2.2 Write the Solution: `Customer`, `CustomerDirectory`, `OrderLine` and `Order` as D6 describes,
+- [x] 2.2 Write the Solution: `Customer`, `CustomerDirectory`, `OrderLine` and `Order` as D6 describes,
   with TODOs 1–4 solved, and fix D6's discount rule table. Verify that it builds with nullable on and
   warnings as errors.
-- [ ] 2.3 Write the tests (D7): one test per check, using only syntax that compiles against both
+- [x] 2.3 Write the tests (D7): one test per check, using only syntax that compiles against both
   projects, each failure naming what's wrong, its TODO and the page's path. Verify that the Solution
   passes ten runs in a row.
-- [ ] 2.4 Write the Starter, C# 3 style within the repo's rules (D6, D8), with `#nullable disable` and
+- [x] 2.4 Write the Starter, C# 3 style within the repo's rules (D6, D8), with `#nullable disable` and
   TODOs 1–4. Verify that:
   - it builds clean;
   - each test fails against it with its guiding message;

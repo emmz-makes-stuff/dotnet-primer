@@ -173,4 +173,17 @@
   <Folder Name="/exercises/13-health-and-shutdown/Starter/">
     <Project Path="exercises/13-health-and-shutdown/Starter/HealthAndShutdown.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/14-modern-csharp/" />
+  <Folder Name="/exercises/14-modern-csharp/Solution.Tests/">
+    <Project Path="exercises/14-modern-csharp/Solution.Tests/ModernCSharp.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/14-modern-csharp/Solution/">
+    <Project Path="exercises/14-modern-csharp/Solution/ModernCSharp.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/14-modern-csharp/Starter.Tests/">
+    <Project Path="exercises/14-modern-csharp/Starter.Tests/ModernCSharp.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/14-modern-csharp/Starter/">
+    <Project Path="exercises/14-modern-csharp/Starter/ModernCSharp.Starter.csproj" />
+  </Folder>
 </Solution>
