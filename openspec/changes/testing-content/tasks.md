@@ -95,7 +95,7 @@
 
 ## 6. Human check
 
-- [ ] 6.1 Run exercise 09 from a clean clone myself, and report the result:
+- [x] 6.1 Run exercise 09 from a clean clone myself, and report the result:
   - the checker on the Starter reports all bugs missed;
   - on the Solution, all caught;
   - the timings.
