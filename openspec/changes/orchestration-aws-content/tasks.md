@@ -2,11 +2,11 @@
 
 ## 1. Probe, versions, and the Aspire and AWS CLI rows
 
-- [ ] 1.1 Add the Aspire CLI and AWS CLI rows to `docs/dependencies.md`, and their checks to
+- [x] 1.1 Add the Aspire CLI and AWS CLI rows to `docs/dependencies.md`, and their checks to
   `make deps` (design D9): `aspire --version` and `aws --version`, with no AWS auth check. Record
   aspire.dev's install command. Verify that `make deps` shows `DEPS_EXIT:0` (unsandboxed), and say
   why in a devlog note.
-- [ ] 1.2 Probe health checks and shutdown (D2, D3, D5, D6), in scratch projects on 10.0.4xx,
+- [x] 1.2 Probe health checks and shutdown (D2, D3, D5, D6), in scratch projects on 10.0.4xx,
   unsandboxed:
   - the live and ready endpoints' real status codes and bodies, with the store up, with it down,
     and during shutdown;
@@ -19,7 +19,7 @@
     and with the short timeout: the order's response, and the app's shutdown log lines.
 
   Write a devlog note with the exact outputs, versions and platform.
-- [ ] 1.3 Probe Aspire (D7) with the Aspire CLI, unsandboxed, in a scratch folder. Run an AppHost
+- [x] 1.3 Probe Aspire (D7) with the Aspire CLI, unsandboxed, in a scratch folder. Run an AppHost
   with SQL Server, the orders API (`WithReference`, `WaitFor`) and a second project that calls the
   API by its resource name. Record:
   - each CLI command and its output;
@@ -29,7 +29,7 @@
   - what ServiceDefaults maps for health, and in which environments.
 
   Write a devlog note.
-- [ ] 1.4 Probe the AWS content (D8), with nothing run against AWS:
+- [x] 1.4 Probe the AWS content (D8), with nothing run against AWS:
   - fetch each AWS doc the page will cite, and record its URL;
   - write the ECS task definition, and check its keys against
     `aws ecs register-task-definition --generate-cli-skeleton` with `jq`;
@@ -47,8 +47,8 @@
   `Solution.Tests`. Add them to `Primer.slnx`, and the Solution and its tests to
   `Primer.Solutions.slnx`. Verify with `make samples-build`.
 - [ ] 2.2 Write the Solution: the orders API, the slow `POST /orders`, a store that can be taken
-  offline and signals an order in progress, `/health/live` and `/health/ready`, and the shutdown
-  timeout, with TODOs 1–4 solved. Verify by running it, and calling both endpoints with the store
+  offline and signals an order in progress, `/health/live` and `/health/ready`, the drain delay
+  (D3), and the shutdown timeout, with TODOs 1–4 solved. Verify by running it, and calling both endpoints with the store
   up and down.
 - [ ] 2.3 Write the tests (design D5): real Kestrel in process, one test per check, each naming its
   TODO, synced on the store's signal. Verify that the Solution passes, ten runs in a row, and

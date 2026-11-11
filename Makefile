@@ -80,6 +80,8 @@ deps:
 	dotnet-counters --version 2>/dev/null | grep -q "^10\." || { echo "MISSING dotnet-counters 10.x — dotnet tool install -g dotnet-counters"; fail=1; }; \
 	dotnet-trace --version 2>/dev/null | grep -q "^10\." || { echo "MISSING dotnet-trace 10.x — dotnet tool install -g dotnet-trace"; fail=1; }; \
 	docker info --format '{{.ServerVersion}}' >/dev/null 2>&1 || { echo "MISSING docker (daemon not running?) — see https://dotnet-primer.emmz.dev/platform/docker/ (Rancher Desktop on Windows and macOS)"; fail=1; }; \
+	aspire --version 2>/dev/null | grep -q '^13\.' || { echo "MISSING aspire CLI 13.x — curl -sSL https://aspire.dev/install.sh | bash"; fail=1; }; \
+	aws --version 2>/dev/null | grep -q '^aws-cli/2\.' || { echo "MISSING aws CLI v2 — brew install awscli (no sign-in needed)"; fail=1; }; \
 	openspec --version >/dev/null 2>&1 || { echo "MISSING openspec — npm i -g @fission-ai/openspec"; fail=1; }; \
 	gh --version >/dev/null 2>&1 || { echo "MISSING gh — brew install gh"; fail=1; }; \
 	gh auth status >/dev/null 2>&1 || { echo "NOT AUTHENTICATED gh — gh auth login"; fail=1; }; \

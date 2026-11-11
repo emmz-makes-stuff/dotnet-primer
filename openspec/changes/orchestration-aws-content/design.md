@@ -115,6 +115,18 @@ Each check is registered with tags, and each endpoint maps the checks its probe 
   alive;
 - `/health/ready` runs the checks tagged `ready`: the store's check, and a check that turns unhealthy
   once `IHostApplicationLifetime.ApplicationStopping` fires.
+- **A drain delay makes that last check observable** (probe 1.2, Emmz chose it on 2026-11-11).
+  Kestrel refuses every new connection as soon as the host stops, so without a delay nobody ever
+  sees readiness fail. An `IHostedLifecycleService` waits a few seconds in `StoppingAsync`, which
+  runs before any hosted service's `StopAsync`, and so before Kestrel's. While it waits, ready
+  answers `503`, live answers `200`, new requests are still served, and the load balancer has time
+  to notice and stop sending. Then Kestrel stops and drains. A delay in a plain hosted service's
+  `StopAsync` doesn't work: it runs after the server has stopped (measured). The delay and the
+  longest request together have to fit inside `ShutdownTimeout`, and that inside the platform's
+  stop timeout. On ECS behind an ALB, ECS deregisters the task from its target group before it
+  sends SIGTERM (probe 1.4, from the task lifecycle docs), so there the delay is a safety margin. It
+  matters most where the signal and the deregistration happen together, as on Kubernetes, and the
+  page says so.
 
 The default response writer, plain text `Healthy` or `Unhealthy` with 200 or 503, is what a load
 balancer reads, so the page shows that, not a custom JSON writer. A custom writer is named only.
@@ -138,7 +150,8 @@ The four bugs, and their TODOs:
 2. **No readiness endpoint.** The fix maps `/health/ready` with the checks tagged `ready`, the store
    among them.
 3. **Readiness stays healthy during shutdown.** The fix adds a check, tagged `ready`, that's
-   unhealthy once `ApplicationStopping` has fired.
+   unhealthy once `ApplicationStopping` has fired, and the drain delay (D3) that keeps the app
+   answering long enough for that to be seen.
 4. **Shutdown drops the in-flight order.** The Starter sets `HostOptions.ShutdownTimeout` shorter
    than an order takes, with a comment that sounds reasonable ("so deploys are quick"). The fix sets
    it above the longest request and below the stop timeout that the container's platform allows,
@@ -155,16 +168,22 @@ changing how long an order takes").
 
 `TestServer` doesn't drain requests the way Kestrel does, so a shutdown test against it would test
 the wrong thing. The tests start the app on Kestrel, on a random localhost port, in the test process.
-.NET 10's `WebApplicationFactory` can do this with `UseKestrel`, and the probe confirms it. If it
-can't, the fallback is to start the app's host directly with a fixed set of services.
+.NET 10's `WebApplicationFactory` can do this with `UseKestrel`, and the probe confirmed it (1.2),
+with two details:
+- **The port:** `UseKestrel(o => o.Listen(IPAddress.Loopback, 0))`. `UseKestrel(0)` listened on the
+  default `localhost:5000`, which macOS ControlCenter also holds.
+- **The stop:** `IHostApplicationLifetime.StopApplication()`, then wait for `ApplicationStopped`.
+  That follows SIGTERM's path. `IHost.StopAsync()` runs the drain delay before
+  `ApplicationStopping` fires, so readiness never fails.
 
 The checks, each named with its TODO in its failure message:
 - **Liveness (TODO 1):** take the store offline, then expect 200 from `/health/live`.
 - **Readiness (TODO 2):** expect 200 from `/health/ready` with the store online, and 503 with it
   offline. A 404 says that the endpoint is missing.
 - **Shutdown readiness (TODO 3):** start an order and wait until the store says it's in progress.
-  Then start stopping the host, and expect 503 from `/health/ready` while the order is still in
-  flight.
+  Then start stopping the host, and, during the drain delay, expect 503 from `/health/ready` and
+  200 from `/health/live`, while the order is still in flight. A refused connection means there's
+  no delay, and the failure message says so.
 - **Drain (TODO 4):** start an order, wait until it's in progress, stop the host, then expect the
   order's response to be 201 and the order to be in the store.
 
@@ -227,8 +246,10 @@ take no Aspire packages.
   It links to Kubernetes's own docs for probes, mapping liveness and readiness to the page's
   endpoints in words. Any `aws eks` command on the page gets `help` checked.
 - **Lambda:** `Amazon.Lambda.AspNetCoreServer.Hosting`'s `AddAWSLambdaHosting` in a scratch project,
-  compiled with warnings as errors. Deploying is from the AWS docs (`dotnet lambda deploy-function`,
-  from `Amazon.Lambda.Tools`), marked as not run. Because `Amazon.Lambda.Tools` isn't installed, that
+  compiled with warnings as errors. Deploying is from the AWS docs (`dotnet lambda deploy-serverless`,
+  from `Amazon.Lambda.Tools`, which is what the docs' ASP.NET page uses: probe 1.4), marked as not
+  run. The docs spell the enum `LambdaEventSource.HttpAPi`, which doesn't compile, so the page uses
+  `HttpApi`. Because `Amazon.Lambda.Tools` isn't installed, that
   command isn't syntax-checked, and the page says so. The page covers cold starts, the 15-minute
   limit, and Native AOT as the cold-start fix (linking back to the Containers page).
 - **Configuration:** `Amazon.Extensions.Configuration.SystemsManager`'s `AddSystemsManager`, with a
