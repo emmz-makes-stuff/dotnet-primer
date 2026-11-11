@@ -67,8 +67,10 @@ dotnet publish -t:PublishContainer -c Release -p:ContainerRepository=orders-api
 `-t:` and `/t:` are the same switch, so you'll see `/t:PublishContainer` too. "Local registry" means your own Docker. Without `ContainerRepository`, the image is named after the project, in lower case, and it's tagged `latest`. Run it:
 
 ```sh
-docker run --rm -p 8080:8080 -e Warehouse__Name=Leeds orders-api
+docker run --rm --init -p 8080:8080 -e Warehouse__Name=Leeds orders-api
 ```
+
+`--init` puts a small init process in front of the app, so a crash stops the container: see [Pitfalls](#pitfalls).
 
 ```text
 info: Containers.Solution[514053180]
@@ -212,20 +214,34 @@ Use it when start-up time or image size matters, as for a function or something 
 A chiseled image has no `sh`, so `docker exec orders sh` fails with `exec: "sh": executable file not found in $PATH`. That's the point: an attacker who gets in has no shell either. Look in from outside instead:
 
 ```sh
+docker run -d --init --name orders -p 127.0.0.1:8080:8080 orders-api
+
 docker logs orders                        # what the app wrote to the console
 docker top orders                         # its processes, and the user each runs as
 docker cp orders:/app/appsettings.json .  # copy a file out, to the current folder
 
 # Borrow a shell: a BusyBox container that shares the app's processes.
-docker run --rm --pid=container:orders busybox:1.37 cat /proc/1/status
+docker run --rm --pid=container:orders busybox:1.37 ps
 ```
+
+`docker top` shows the init process and the app, both as user 1654:
 
 ```text
 PID                 USER                TIME                COMMAND
-115452              1654                0:00                dotnet /app/Containers.Solution.dll
+226824              1654                0:00                /sbin/docker-init -- dotnet /app/Containers.Solution.dll
+226858              1654                0:00                dotnet /app/Containers.Solution.dll
 ```
 
-The BusyBox container sees the app's process as PID 1, and reads `Uid: 1654` from its status. Docker Desktop also has `docker debug`, which does this for you, but it isn't in the open-source `docker` CLI that Rancher Desktop uses.
+The BusyBox container sees the same processes, numbered from inside the container, and its own `ps` as root:
+
+```text
+PID   USER     TIME  COMMAND
+    1 1654      0:00 /sbin/docker-init -- dotnet /app/Containers.Solution.dll
+    6 1654      0:00 dotnet /app/Containers.Solution.dll
+   36 root      0:00 ps
+```
+
+From there, `cat /proc/6/status` and the rest of BusyBox's tools work on the app's process. Docker Desktop also has `docker debug`, which does this for you, but it isn't in the open-source `docker` CLI that Rancher Desktop uses.
 
 ## Configuration through the environment
 
@@ -284,6 +300,7 @@ services:
 
   api:
     build: ./Orders.Api
+    init: true
     ports:
       - "8080:8080"
     environment:
@@ -302,7 +319,7 @@ Compose reads `${DB_PASSWORD}` from a `.env` file next to it, which stays out of
 DB_PASSWORD=Choose-A-Strong-Password-1
 ```
 
-The API reaches the database by its service name, `db`. The `healthcheck` runs a query until SQL Server answers, and `depends_on` with `condition: service_healthy` holds the API back until then. Without it, the API starts first and fails to connect. The health check here is the database's: health checks for the app itself are on the [Orchestration & AWS](/deploy/orchestration-and-aws/) page.
+The API reaches the database by its service name, `db`. The `healthcheck` runs a query until SQL Server answers, and `depends_on` with `condition: service_healthy` holds the API back until then. Without it, the API starts first and fails to connect. The health check here is the database's: health checks for the app itself are on the [Orchestration & AWS](/deploy/orchestration-and-aws/) page. `init: true` runs a small init process as PID 1, with the app under it, so that if the app crashes, its container stops: see [Pitfalls](#pitfalls).
 
 ```sh
 docker compose up -d --build
@@ -431,6 +448,7 @@ In CI, make the scan a gate: `--severity HIGH,CRITICAL --exit-code 1` fails the 
 - **A pinned base image that's never rebuilt.** An image built once on `aspnet:10.0.15`, or a digest, keeps that patch's vulnerabilities for as long as it runs. Fix: rebuild on a schedule, and move pinned tags and digests forward on purpose.
 - **`latest` in production.** You can't tell which version is running, two servers can run different ones, and rolling back means rebuilding. Fix: deploy a version tag, or a digest.
 - **Plain chiseled for an app that needs ICU.** SqlClient fails at startup with "Globalization Invariant Mode is not supported". Fix: `-noble-chiseled-extra`, or `ContainerFamily` without `InvariantGlobalization`, which picks it.
+- **A crashed app whose container keeps running.** The app is the container's first process, PID 1, and Linux ignores the abort signal that ends a .NET process after an unhandled exception, if it's sent to PID 1. So the app logs `Unhandled exception.`, then spins at full CPU, and the container stays `running`, with exit code 0. Nothing restarts it, because nothing sees it fail. That was measured here on a chiseled image, as the non-root user. Fix: run the container with an init process, with `docker run --init` or `init: true` in Compose. The container then exits with code 134. On an orchestrator, a health check also catches it.
 - **`localhost:8080` reaches something else.** Another process on your machine may hold the port. Fix: map a free host port, such as `-p 5080:8080`, rather than stopping whatever has it.
 
 ## Exercise 12: ship the orders API in a container

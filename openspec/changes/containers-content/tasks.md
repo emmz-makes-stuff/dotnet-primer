@@ -135,6 +135,17 @@ were skipped.
 - [x] 7.4 Drop `DockerfileImage`'s `DisposeAsync` override. The base class removes the image, and
   Ryuk (`WithCleanUp(true)`) covers a test process that dies. Verify §7 with `make gates`.
 
+## 8. Review fixes: a crashed app as PID 1
+
+Found while checking 7.2 (devlog `1725`). Emmz agreed to add it to the page.
+
+- [x] 8.1 Measure it on a chiseled image: an app whose startup throws keeps its container
+  `running`, with `docker run` and with Compose; with `--init` and with Compose's `init: true`, it
+  exits.
+- [x] 8.2 Add a Pitfall to the Containers page. Add `init: true` to the `api` service in both pages'
+  `compose.yaml`, and `--init` to the cheatsheet's `docker run` lines, plus a line saying why. Run
+  the changed `compose.yaml` as shown, and verify with `make gates`.
+
 ## Workflow follow-up
 
 - Self-review the whole change, write the change-done note, and offer the `code-review` skill.

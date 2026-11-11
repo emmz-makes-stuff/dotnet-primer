@@ -98,8 +98,9 @@ docker build -t orders-api .
 ## Run and look inside
 
 ```bash
-docker run --rm -p 8080:8080 orders-api
-docker run -d --name orders -p 127.0.0.1:8080:8080 -e Warehouse__Name=Leeds orders-api
+# --init: without it, an app that crashes as PID 1 hangs, and its container never stops.
+docker run --rm --init -p 8080:8080 orders-api
+docker run -d --init --name orders -p 127.0.0.1:8080:8080 -e Warehouse__Name=Leeds orders-api
 
 docker logs -f orders
 docker top orders                       # the processes, and the user each runs as
@@ -108,7 +109,7 @@ docker cp orders:/app/appsettings.json .    # copy a file out, to the current fo
 
 # A chiseled container has no shell, so `docker exec orders sh` fails.
 # Borrow one: a sidecar that shares its processes.
-docker run --rm --pid=container:orders busybox:1.37 cat /proc/1/status
+docker run --rm --pid=container:orders busybox:1.37 ps
 
 docker rm -f orders
 ```
@@ -140,6 +141,7 @@ services:
 
   api:
     build: ./Orders.Api
+    init: true
     ports:
       - "8080:8080"
     environment:
