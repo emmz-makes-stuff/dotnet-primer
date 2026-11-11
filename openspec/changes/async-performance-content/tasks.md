@@ -50,17 +50,17 @@
 
 ## 2. Exercise 11: async
 
-- [ ] 2.1 Scaffold `samples/exercises/11-async/` like 10 (design D2): `Async.Starter` and
+- [x] 2.1 Scaffold `samples/exercises/11-async/` like 10 (design D2): `Async.Starter` and
   `Async.Solution` web projects, a shared `tests/`, and `Starter.Tests` and `Solution.Tests`. Add
   them to `Primer.slnx`, and the Solution and its tests to `Primer.Solutions.slnx`. Verify with
   `make samples-build`.
-- [ ] 2.2 Write the Solution: the store, the validation, `IWarehouse` and its `Task.Delay` version,
+- [x] 2.2 Write the Solution: the store, the validation, `IWarehouse` and its `Task.Delay` version,
   the `OrderNotifications` queue and its `BackgroundService`, and both endpoints with TODOs 1–4 solved.
   Verify by running it and calling both endpoints.
-- [ ] 2.3 Write the tests (design D3): the test app with a controllable fake warehouse, the IL
+- [x] 2.3 Write the tests (design D3): the test app with a controllable fake warehouse, the IL
   reader for the blocking check, and one test per bug. No test asserts on elapsed time. Each failure
   names its TODO. Verify that the Solution passes, three runs in a row.
-- [ ] 2.4 Write the Starter, with the four bugs and TODOs 1–4 (design D2). Verify that each test
+- [x] 2.4 Write the Starter, with the four bugs and TODOs 1–4 (design D2). Verify that each test
   fails against it with its guiding message, and that completing a scratch copy with the
   Solution's code passes everything. Then complete another scratch copy that leaves out each TODO
   in turn, and confirm that only that TODO's test fails.

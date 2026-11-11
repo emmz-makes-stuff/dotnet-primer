@@ -130,4 +130,17 @@
   <Folder Name="/exercises/10-security/Starter/">
     <Project Path="exercises/10-security/Starter/Security.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/11-async/" />
+  <Folder Name="/exercises/11-async/Solution.Tests/">
+    <Project Path="exercises/11-async/Solution.Tests/Async.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/11-async/Solution/">
+    <Project Path="exercises/11-async/Solution/Async.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/11-async/Starter.Tests/">
+    <Project Path="exercises/11-async/Starter.Tests/Async.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/11-async/Starter/">
+    <Project Path="exercises/11-async/Starter/Async.Starter.csproj" />
+  </Folder>
 </Solution>

@@ -112,6 +112,11 @@ projects):
 4. Start the three `/quote` calls together, `await Task.WhenAll`, then read each result with
    `await`, not `.Result`.
 
+**Revised in §2** (devlog `20261111-1400`):
+- `IWarehouse` has a fifth method, `NotifyAsync`, which bug 3 and the throwing fake need;
+- TODO 2 passes the token to `ReserveAsync` only. The notification runs after the answer, so the
+  worker gives it the app's `stoppingToken` instead.
+
 **Rejected:**
 - **`async void` as the lost-failure bug.** A thrown exception in an `async void` method crashes the
   process, so the Starter would kill the test host instead of failing one test. The page covers it
@@ -160,6 +165,12 @@ asserts on elapsed time.
   `GetResult()` in `MoveNext`, after an `IsCompleted` check. So the check flags a `GetResult()`
   only when there's no `IsCompleted` check to pair it with. `Task.Result` and `Task.Wait` are never
   compiler-emitted, so any call to them counts. All six probe handlers came out as expected.
+
+  **Revised in §2** (against the Starter, devlog `20261111-1415`): `TestServer` runs a handler on
+  the caller's thread until its first `await`, and in the Testing environment it rethrows the app's
+  unhandled exceptions to the client. So the cancellation test sends from `Task.Run`, and awaits the
+  request only after the fake has reported the cancellation. The quote test turns the fake's
+  `TimeoutException` into its TODO 4 failure.
 
   **Fallback, only with Emmz's agreement:** if the probe finds the IL check unworkable, a timing
   test (twice as many concurrent requests as the pool's minimum threads, against a 1-second fake,
