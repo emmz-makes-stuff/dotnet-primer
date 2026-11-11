@@ -14,7 +14,7 @@ These are **for practice only**. The tests are there so you can check your own p
   ```
 
   A bare `dotnetup sdk install` also works: it reads `global.json`. But it tracks the wider `10.0` channel, so a later `dotnetup update` could move you to a 10.0.5xx SDK. Naming `10.0.4xx` keeps you on the band the samples pin. New to `dotnetup`? [Getting started](https://dotnet-primer.emmz.dev/platform/dotnet-10-and-cli/) covers installing it, and what to do if you already have .NET from another installer.
-- **Docker**: Rancher Desktop on Windows and macOS, or Docker Engine on Linux. [Docker](https://dotnet-primer.emmz.dev/platform/docker/) has the steps for each. Later exercises use it, through Testcontainers and container images. **Exercise 07's tests need it**: they start SQL Server in a container with Testcontainers. The image is x64 only, so on an Apple silicon Mac see the Docker page's [macOS](https://dotnet-primer.emmz.dev/platform/docker/#macos) note. It's the only exercise that does. The others don't need Docker for their tests: 04–06 capture logs, spans and metrics in memory, and 08 and 09 keep their orders in memory. The Logging, Tracing and Metrics pages use Docker for one optional extra, the local dashboard that shows your app's telemetry.
+- **Docker**: Rancher Desktop on Windows and macOS, or Docker Engine on Linux. [Docker](https://dotnet-primer.emmz.dev/platform/docker/) has the steps for each. Later exercises use it, through Testcontainers and container images. **Exercise 07's tests need it**: they start SQL Server in a container with Testcontainers. The image is x64 only, so on an Apple silicon Mac see the Docker page's [macOS](https://dotnet-primer.emmz.dev/platform/docker/#macos) note. It's the only exercise that does. The others don't need Docker for their tests: 04–06 capture logs, spans and metrics in memory, and 08, 09 and 10 keep their orders in memory. The Logging, Tracing and Metrics pages use Docker for one optional extra, the local dashboard that shows your app's telemetry.
 
 ## Layout
 
@@ -42,6 +42,7 @@ samples/
       Starter.Tests/      # your tests go here, with a TODO for each technique
       Solution.Tests/     # one set of tests that catches every bug
       Checker/            # runs a test project against App, then against each bug
+    10-security/               # same layout; tokens from the tests, or from `dotnet user-jwts`
 ```
 
 | Exercise | Practises | Described on |
@@ -55,6 +56,7 @@ samples/
 | `07-ef-core` | a DbContext, a fluent model and its first migration, then saving, querying and change tracking | [EF Core](https://dotnet-primer.emmz.dev/data/ef-core/) |
 | `08-grpc` | a `.proto` contract and a gRPC service: status codes, a server stream, and honouring deadlines and cancellation | [gRPC](https://dotnet-primer.emmz.dev/services/grpc/) |
 | `09-testing` | writing the tests: unit tests, a test double, fake time, and `WebApplicationFactory` | [Testing](https://dotnet-primer.emmz.dev/testing/) |
+| `10-security` | JWT bearer authentication from configuration, a fallback policy, and scope, role and resource-based authorization | [Security & auth](https://dotnet-primer.emmz.dev/security/) |
 
 ## Working an exercise
 
@@ -85,6 +87,20 @@ dotnet run --project samples/exercises/09-testing/Checker
 ```
 
 It runs your tests against the correct app first: they must all pass there. Then it runs them against each seeded bug, and reports which bugs your tests caught. For a bug they missed, it gives a hint that points at a `TODO`. When it reports all four caught, compare your tests with `Solution.Tests/`.
+
+### Calling exercise 10 with a token
+
+The tests make their own tokens. To call the running app yourself, create one with `dotnet user-jwts`, which comes with the SDK. Exercise 10 is already set up for it, so it changes no tracked file:
+
+```sh
+dotnet run --project samples/exercises/10-security/Starter
+
+# in another terminal
+dotnet user-jwts create --project samples/exercises/10-security/Starter --name ada --scope orders:write --output token
+curl -H "Authorization: Bearer <token>" http://localhost:5290/catalogue
+```
+
+Add `--role support` for a support-staff token. The signing key goes to your user secrets, which the Starter and Solution share, so a token works against both.
 
 ## Gates (for maintainers)
 

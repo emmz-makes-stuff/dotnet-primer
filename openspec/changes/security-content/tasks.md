@@ -84,7 +84,7 @@
 
 ## 4. Samples README
 
-- [ ] 4.1 Update `samples/README.md`: add 10 to the layout and the exercise table. Keep the Docker
+- [x] 4.1 Update `samples/README.md`: add 10 to the layout and the exercise table. Keep the Docker
   prerequisite saying that only exercise 07 needs it. Say how to try the running app with
   `dotnet user-jwts`. Verify with `make gates`.
 
