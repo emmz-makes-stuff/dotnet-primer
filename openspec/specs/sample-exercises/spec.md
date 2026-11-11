@@ -133,6 +133,11 @@ SHALL cover the goal, the steps, and how to run the tests. It SHALL link to the 
 - **THEN** it describes exercise 10, says that it needs no Docker and no identity provider, and
   links to `https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/10-security`
 
+#### Scenario: Engineer finds the Async exercise
+- **WHEN** an engineer reads the Async & performance page
+- **THEN** it describes exercise 11, says that it needs no Docker, and links to
+  `https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/11-async`
+
 #### Scenario: Undescribed exercise is caught
 - **WHEN** a folder under `samples/exercises/` is not linked from any site page
 - **THEN** the site test gate fails and names the exercise folder
@@ -443,3 +448,51 @@ only their own orders while support staff can read any order.
 #### Scenario: New endpoint is private by default
 - **WHEN** the tests call an endpoint that has no authorization metadata of its own, with no token
 - **THEN** it gets 401
+
+### Requirement: Async exercise fixes blocking and cancellation
+Exercise 11 SHALL give the engineer an orders API, in memory with no database or Docker, that
+calls a slow dependency. The engineer SHALL make the API stop blocking threads while it waits, and
+SHALL make it stop the dependency's work when the caller cancels or the request is aborted.
+
+#### Scenario: Requests don't block threads while they wait
+- **WHEN** the tests send concurrent requests to an endpoint that waits on the slow dependency
+- **THEN** no request holds a thread while it waits, and a version that blocks a thread fails the
+  test with a message that says so
+
+#### Scenario: Cancellation reaches the dependency
+- **WHEN** the tests cancel a request while the dependency is still working
+- **THEN** the dependency observes the cancellation, and stops before it finishes
+
+#### Scenario: Starter blocks threads
+- **WHEN** the tests run against the starter
+- **THEN** the blocking and cancellation tests fail, each with a message that names what's wrong
+  and the TODO that fixes it
+
+### Requirement: Async exercise fixes lost failures and sequential awaits
+In exercise 11, the engineer SHALL make a background step's failure observable instead of lost,
+and SHALL make independent calls to the dependency run concurrently instead of one after another.
+
+#### Scenario: A failed background step is reported
+- **WHEN** a request starts work that fails after the endpoint has answered
+- **THEN** the failure is recorded where the tests can see it, and doesn't crash the process
+
+#### Scenario: Independent calls overlap
+- **WHEN** an endpoint needs several independent results from the slow dependency
+- **THEN** it takes about as long as the slowest call, not the sum of all of them
+
+### Requirement: Benchmark project builds but isn't run by the gates
+The samples SHALL include a benchmark project that measures the Async & performance page's pooling
+and fast-API examples, with time and allocations per operation. The samples build gate SHALL
+compile it with warnings treated as errors. No gate SHALL run it.
+
+#### Scenario: Benchmarks compile with the samples
+- **WHEN** the samples build gate runs
+- **THEN** the benchmark project compiles, and a compile error in it fails the gate
+
+#### Scenario: The test gate leaves the benchmarks alone
+- **WHEN** the samples test gate runs, locally or in CI
+- **THEN** it runs no benchmarks
+
+#### Scenario: Engineer runs the benchmarks
+- **WHEN** an engineer runs the benchmark project in Release, as the samples README says
+- **THEN** it reports the mean time and the bytes allocated for each benchmark
