@@ -111,6 +111,13 @@
 
   On PASS, tick and continue. On FAIL, add a review-fix section.
 
+## 6. Review fixes: the Docker claim in exercise 07's requirement
+
+- [x] 6.1 In `specs/sample-exercises/spec.md`, add a MODIFIED delta for "EF Core exercise tests use
+  a real SQL Server", whose "It is the only exercise whose tests need Docker" exercise 12 makes
+  false. Word it as Emmz agreed: "Its tests and exercise 12's are the only ones that need Docker."
+  Keep its scenarios. Verify with `make gates`.
+
 ## Workflow follow-up
 
 - Self-review the whole change, write the change-done note, and offer the `code-review` skill.

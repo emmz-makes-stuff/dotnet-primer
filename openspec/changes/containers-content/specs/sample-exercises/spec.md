@@ -61,6 +61,19 @@ SHALL cover the goal, the steps, and how to run the tests. It SHALL link to the 
 - **WHEN** a folder under `samples/exercises/` is not linked from any site page
 - **THEN** the site test gate fails and names the exercise folder
 
+### Requirement: EF Core exercise tests use a real SQL Server
+Exercise 07's tests SHALL run against a real SQL Server that Testcontainers starts. Its tests and
+exercise 12's are the only ones that need Docker. The samples test gate, locally and in CI, SHALL
+run them.
+
+#### Scenario: Gate runs the database tests
+- **WHEN** the samples test gate runs with Docker available
+- **THEN** exercise 07's solution tests start a SQL Server container, pass, and remove the container
+
+#### Scenario: Docker isn't running
+- **WHEN** the engineer runs the tests without a running Docker engine
+- **THEN** the tests fail with a message that says Docker is needed, and points to the Docker page
+
 ## ADDED Requirements
 
 ### Requirement: Containers exercise fixes the app for containers
