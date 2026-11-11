@@ -45,6 +45,7 @@ const EXPECTED_SLUGS = [
   "cheatsheets/grpc",
   "cheatsheets/testing",
   "cheatsheets/security",
+  "cheatsheets/async-and-performance",
 ];
 
 /**
@@ -76,6 +77,8 @@ const FULL_CONTENT_SLUGS: string[] = [
   "cheatsheets/testing",
   "security",
   "cheatsheets/security",
+  "performance/async-and-performance",
+  "cheatsheets/async-and-performance",
 ];
 
 /**
@@ -94,6 +97,7 @@ const CHEATSHEETS: Record<string, string> = {
   "services/grpc": "cheatsheets/grpc",
   testing: "cheatsheets/testing",
   security: "cheatsheets/security",
+  "performance/async-and-performance": "cheatsheets/async-and-performance",
 };
 
 const REPO_TREE =

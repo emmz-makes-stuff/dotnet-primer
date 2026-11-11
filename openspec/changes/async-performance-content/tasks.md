@@ -83,10 +83,10 @@
 
 ## 4. Async & performance cheatsheet and page
 
-- [ ] 4.1 Create `site/src/content/docs/cheatsheets/async-and-performance.md` (design D8), with a
+- [x] 4.1 Create `site/src/content/docs/cheatsheets/async-and-performance.md` (design D8), with a
   back link and Learn links. Add it to the sidebar's Cheatsheets group, the introduction's
   cheatsheet cards and `EXPECTED_SLUGS`. Verify that `make site-build` passes.
-- [ ] 4.2 Rewrite `site/src/content/docs/performance/async-and-performance.md` per D1, D5, D6 and
+- [x] 4.2 Rewrite `site/src/content/docs/performance/async-and-performance.md` per D1, D5, D6 and
   D7. Cover every item in the six Async page requirements. Add:
   - the cheatsheet tip;
   - the Pitfalls, including:
@@ -99,13 +99,13 @@
     - output caching that silently skips authenticated requests;
   - an "Exercise 11" section in the exercise-10 format. It says that it needs no Docker, and gives
     the exact GitHub tree link.
-- [ ] 4.3 Verify the page (D11):
+- [x] 4.3 Verify the page (D11):
   - compile every snippet in a scratch project, with warnings as errors;
   - check that every number on the page comes from 1.3's or 3.2's real output;
   - confirm that the "from the exercise" snippets match the real files.
 
   Record all of it in the section-done note.
-- [ ] 4.4 Add `performance/async-and-performance` and `cheatsheets/async-and-performance` to
+- [x] 4.4 Add `performance/async-and-performance` and `cheatsheets/async-and-performance` to
   `FULL_CONTENT_SLUGS`, and the pair to `CHEATSHEETS`. Fetch every URL on both pages. Verify that
   `make gates` shows `GATES_EXIT:0`.
 

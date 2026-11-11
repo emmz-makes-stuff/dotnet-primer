@@ -77,6 +77,7 @@ export default defineConfig({
             { slug: "cheatsheets/grpc" },
             { slug: "cheatsheets/testing" },
             { slug: "cheatsheets/security" },
+            { slug: "cheatsheets/async-and-performance" },
           ],
         },
       ],
