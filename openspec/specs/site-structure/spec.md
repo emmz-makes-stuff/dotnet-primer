@@ -56,9 +56,9 @@ mappings live, so subject-area pages can teach modern .NET on its own terms.
 ### Requirement: Cheatsheets per area
 The site SHALL have a cheatsheets section, with cheatsheets reachable from the navigation. The
 subject-area page a cheatsheet belongs to SHALL link to it, and the cheatsheet SHALL link back to that
-page. The site delivers twelve cheatsheets: common `dotnet` CLI commands, Configuration, Dependency
-Injection, Middleware, Logging, Tracing, Metrics, EF Core, gRPC, Testing, Security, and Async &
-performance.
+page. The site delivers thirteen cheatsheets: common `dotnet` CLI commands, Configuration, Dependency
+Injection, Middleware, Logging, Tracing, Metrics, EF Core, gRPC, Testing, Security, Async &
+performance, and Containers.
 
 #### Scenario: dotnet CLI cheatsheet is reachable
 - **WHEN** a reader opens the .NET 10 and `dotnet` CLI area page
@@ -66,7 +66,7 @@ performance.
 
 #### Scenario: Topic cheatsheets are reachable both ways
 - **WHEN** a reader opens the Configuration, Dependency Injection, Middleware, Logging, Tracing,
-  Metrics, EF Core, gRPC, Testing, Security & auth or Async & performance page
+  Metrics, EF Core, gRPC, Testing, Security & auth, Async & performance or Containers page
 - **THEN** it links to that topic's cheatsheet, the cheatsheet is listed in the cheatsheets navigation,
   and the cheatsheet links back to the topic page
 
