@@ -80,6 +80,7 @@ export default defineConfig({
             { slug: "cheatsheets/async-and-performance" },
             { slug: "cheatsheets/containers" },
             { slug: "cheatsheets/orchestration-and-aws" },
+            { slug: "cheatsheets/csharp" },
           ],
         },
       ],

@@ -41,27 +41,27 @@
   - each test fails against it with its guiding message;
   - a scratch copy completed with the Solution's code passes everything;
   - scratch copies that each leave out one TODO fail only that TODO's tests.
-- [ ] 2.5 Push the branch, and run the `samples` workflow on it
+- [x] 2.5 Push the branch, and run the `samples` workflow on it
   (`gh workflow run samples.yml --ref change/csharp-language-content`). Check that it passes on
   `ubuntu-latest` with exercise 14's tests, and record the run ID in the section-done note.
   - `SITE_TEST_EXIT:1` is expected here (D10). Record it as a deliberate red.
 
 ## 3. The C# index page and the cheatsheet
 
-- [ ] 3.1 Rewrite `site/src/content/docs/csharp/index.md` per D3 ("Modern C# at a glance"): the
+- [x] 3.1 Rewrite `site/src/content/docs/csharp/index.md` per D3 ("Modern C# at a glance"): the
   outcome, the cheatsheet tip, the C# 3 and C# 14 class side by side, "less ceremony" with version
   tags (D2), the pointer to Async & performance, Pitfalls, Exercise 14 (each step linked to the page
   it practises, with "needs no Docker" and the exact GitHub tree link), and Where next. Until §4
   lands, Where next and the step links name the themed pages without linking them. Set its
   pagination per D1. Verify that `make site-build` passes.
-- [ ] 3.2 Create `site/src/content/docs/cheatsheets/csharp.md` (D4), with the back link, Learn links,
+- [x] 3.2 Create `site/src/content/docs/cheatsheets/csharp.md` (D4), with the back link, Learn links,
   and the four themed tables. Add it to the sidebar's Cheatsheets group, the introduction's cheatsheet
   cards, and `EXPECTED_SLUGS`. Verify that `make site-build` passes.
-- [ ] 3.3 Add to `site/tests/dist.test.ts`: `csharp` and `cheatsheets/csharp` in `FULL_CONTENT_SLUGS`,
+- [x] 3.3 Add to `site/tests/dist.test.ts`: `csharp` and `cheatsheets/csharp` in `FULL_CONTENT_SLUGS`,
   `"csharp": "cheatsheets/csharp"` in `CHEATSHEETS`, and a test that each C# page's previous and next
   links stay inside the C# group (D1). Verify that the new test fails on a deliberately wrong
   `next`, then passes.
-- [ ] 3.4 Verify both pages (D11): compile every C# block, check every output against a real run,
+- [x] 3.4 Verify both pages (D11): compile every C# block, check every output against a real run,
   check every version tag against §1's table, confirm the "from the exercise" blocks by script, and
   fetch every URL. Verify that `make gates` shows `GATES_EXIT:0`, and record it all in the
   section-done note.

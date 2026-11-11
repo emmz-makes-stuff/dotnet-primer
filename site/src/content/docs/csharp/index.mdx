@@ -1,0 +1,380 @@
+---
+title: "Modern C# at a glance"
+description: "From C# 3 to C# 14: one class written both ways, then the syntax that takes the ceremony out of a modern file: file-scoped namespaces, global usings, top-level statements, target-typed new, collection expressions and more."
+prev: false
+next: false
+learn:
+  - title: "The history of C#"
+    url: https://learn.microsoft.com/dotnet/csharp/whats-new/csharp-version-history
+  - title: "What's new in C# 14"
+    url: https://learn.microsoft.com/dotnet/csharp/whats-new/csharp-14
+  - title: "C# documentation"
+    url: https://learn.microsoft.com/dotnet/csharp/
+---
+
+By the end of this page you'll be able to read the top of any file in a modern .NET codebase, and you'll know which page of this section explains each feature you don't recognise. Every heading says which version of C# a feature arrived in, so you can tell how new it is.
+
+:::tip[Cheatsheet]
+Keep the [C# cheatsheet](/cheatsheets/csharp/) open while you work: it has the C# 3 way and the modern way, side by side.
+:::
+
+This section has four pages: this one, then Null safety, Types and Patterns. Every example was compiled and run on one machine: an Apple silicon Mac, with SDK 10.0.404, whose compiler defaults to C# 14 for `net10.0`, on 11 November 2026. Modern examples were built with the samples' settings, with nullable on and warnings as errors. The C# 3 examples were built with `LangVersion` 3 and the same analyzers.
+
+## One class, C# 3 and C# 14
+
+Here's the same order type, written as you'd have written it in C# 3, and as you'd write it now. Both print `Order for C-42: 2 lines, total 44.98`.
+
+<div class="side-by-side">
+
+```csharp title="C# 3"
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Shop
+{
+    public class OrderLine
+    {
+        private readonly string _sku;
+        private readonly int _quantity;
+        private readonly decimal _unitPrice;
+
+        public OrderLine(string sku, int quantity, decimal unitPrice)
+        {
+            _sku = sku;
+            _quantity = quantity;
+            _unitPrice = unitPrice;
+        }
+
+        public string Sku { get { return _sku; } }
+        public int Quantity { get { return _quantity; } }
+        public decimal UnitPrice { get { return _unitPrice; } }
+    }
+
+    public class Order
+    {
+        private readonly string _customerId;
+        private readonly List<OrderLine> _lines;
+
+        public Order(string customerId, List<OrderLine> lines)
+        {
+            _customerId = customerId;
+            _lines = lines ?? new List<OrderLine>();
+        }
+
+        public string CustomerId { get { return _customerId; } }
+        public List<OrderLine> Lines { get { return _lines; } }
+
+        public decimal Total
+        {
+            get { return _lines.Sum(line => line.Quantity * line.UnitPrice); }
+        }
+
+        public string Describe()
+        {
+            return "Order for " + _customerId + ": " + _lines.Count + " lines";
+        }
+    }
+}
+```
+
+```csharp title="C# 14"
+namespace Shop;
+
+public sealed record OrderLine(string Sku, int Quantity, decimal UnitPrice);
+
+public sealed record Order(string CustomerId, IReadOnlyList<OrderLine> Lines)
+{
+    public decimal Total => Lines.Sum(line => line.Quantity * line.UnitPrice);
+
+    public string Describe() => $"Order for {CustomerId}: {Lines.Count} lines";
+}
+```
+
+</div>
+
+And creating one:
+
+<div class="side-by-side">
+
+```csharp title="C# 3"
+Order order = new Order("C-42", new List<OrderLine>
+{
+    new OrderLine("SKU-1", 2, 9.99m),
+    new OrderLine("SKU-2", 1, 25m),
+});
+Console.WriteLine(order.Describe() + ", total " + order.Total);
+```
+
+```csharp title="C# 14"
+var order = new Order("C-42", [new("SKU-1", 2, 9.99m), new("SKU-2", 1, 25m)]);
+Console.WriteLine($"{order.Describe()}, total {order.Total}");
+```
+
+</div>
+
+What changed, and where it's explained:
+
+- **No `using` lines:** [implicit usings](#implicit-and-global-usings-net-6-c-10) bring in `System.Linq` and `System.Collections.Generic` for every file.
+- **`namespace Shop;`** is a [file-scoped namespace](#file-scoped-namespaces-c-10), with one less level of indentation.
+- **`record`** gives each type value equality, a readable `ToString` and `with` copies. The parameter list after the type's name is a primary constructor, which turns each parameter into a property. Both are on the Types page.
+- **`=>`** in `Total` and `Describe` is an [expression-bodied member](#expression-bodied-members-c-6-and-7).
+- **`$"…{CustomerId}…"`** is [string interpolation](#string-interpolation-c-6), in place of `+` and `string.Format`.
+- **`IReadOnlyList<OrderLine>`** in place of `List<OrderLine>` means the order's lines can't be changed through it. That's a library type, not a language feature, and the Types page uses it for immutable records.
+- **No null check on `lines`.** With nullable reference types on, `IReadOnlyList<OrderLine>` means "never null", and the compiler warns a caller who might pass null. That's the Null safety page.
+- **`[new(…), new(…)]`** is a [collection expression](#collection-expressions-c-12) of [target-typed `new`](#target-typed-new-c-9) expressions: the compiler knows the list's type and the element type from the constructor.
+
+Lambdas, LINQ, `var`, auto-properties, object and collection initializers, extension methods and anonymous types are all C# 3, and work as you remember.
+
+## Less ceremony
+
+These are the features you meet at the top of a file or a method. None of them changes what the code does: each is a shorter way to write something you already know.
+
+### File-scoped namespaces (C# 10)
+
+`namespace Shop;` applies to the whole file, so the types in it aren't indented inside braces. A file can have only one, and every file in this primer's samples uses it: the samples' `.editorconfig` makes a block namespace a build error.
+
+```csharp title="Basket.cs"
+namespace Shop;
+
+public sealed class Basket
+{
+    private readonly Dictionary<string, int> _quantities = new();
+
+    public Basket(string customerId) => CustomerId = customerId;
+
+    public string CustomerId { get; }
+
+    public int Count => _quantities.Count;
+
+    public void Add(string sku, int quantity = 1) =>
+        _quantities[sku] = _quantities.GetValueOrDefault(sku) + quantity;
+
+    public static decimal Sum(params IEnumerable<decimal> amounts) => amounts.Sum();
+}
+```
+
+`Basket` uses several of this page's features, which the sections below come back to.
+
+### Implicit and global usings (.NET 6, C# 10)
+
+A `global using` directive applies to every file in the project. **Implicit usings** are a set of them that the SDK writes for you, when the project file has `<ImplicitUsings>enable</ImplicitUsings>`, as every new project does. For a console app or a class library, the generated file in `obj/`, named after the project, is:
+
+```csharp title="obj/Debug/net10.0/Shop.GlobalUsings.g.cs"
+// <auto-generated/>
+global using System;
+global using System.Collections.Generic;
+global using System.IO;
+global using System.Linq;
+global using System.Net.Http;
+global using System.Threading;
+global using System.Threading.Tasks;
+```
+
+A web project (`Microsoft.NET.Sdk.Web`) adds the ASP.NET Core namespaces too. To add your own, put a `<Using Include="…" />` item in the project file, which is how the samples' test projects bring in `Xunit`:
+
+```xml title="Starter.Tests.csproj"
+<ItemGroup>
+  <Using Include="Xunit" />
+</ItemGroup>
+```
+
+You can also write `global using Shop.Pricing;` in any `.cs` file. Keep them in one place, such as a `GlobalUsings.cs`, so that a reader can find them.
+
+### Top-level statements (C# 9)
+
+A console app's `Program.cs` can be just statements. The compiler wraps them in a `Main` method, and `args` is there if you need it:
+
+```csharp title="Program.cs"
+var basket = new Basket("C-42");
+basket.Add("SKU-1", 2);
+basket.Add("SKU-2");
+Console.WriteLine($"{basket.CustomerId} has {basket.Count} lines");
+```
+
+That prints `C-42 has 2 lines`. Every ASP.NET Core app in this primer starts this way, with `var builder = WebApplication.CreateBuilder(args);`. Only one file in a project can have top-level statements.
+
+### Target-typed `new()` (C# 9)
+
+When the type is already written on the left, or is known from a parameter, `new()` leaves it out:
+
+```csharp
+private readonly Dictionary<string, int> _quantities = new();
+```
+
+```csharp
+OrderLine line = new("SKU-1", 2, 9.99m);
+```
+
+It's the mirror of `var`, which leaves the type out on the left. Use whichever puts the type where a reader looks for it: `var` for locals, `new()` for fields.
+
+### Collection expressions (C# 12)
+
+Square brackets create any collection, and `..` spreads one collection into another:
+
+```csharp
+int[] quantities = [1, 2, 3];
+List<string> skus = ["SKU-1", "SKU-2"];
+string[] withGiftCard = [.. skus, "GIFT-50"];
+Console.WriteLine(string.Join(", ", withGiftCard));
+```
+
+That prints `SKU-1, SKU-2, GIFT-50`. `[]` is an empty collection of whatever type is wanted, so `IReadOnlyList<OrderLine> none = [];` replaces `new List<OrderLine>()`. The compiler needs that type, though: `var quantities = [1, 2, 3];` doesn't compile (see [Pitfalls](#pitfalls)).
+
+### `params` collections (C# 13)
+
+`params` used to take only an array. Now it takes any collection type, so `Basket.Sum` above takes `params IEnumerable<decimal>`, and both of these calls work:
+
+```csharp
+Console.WriteLine(Basket.Sum(9.99m, 25m));
+List<decimal> prices = [9.99m, 25m, 4.50m];
+Console.WriteLine(Basket.Sum(prices));
+```
+
+They print `34.99` and `39.49`. Before C# 13, the second call needed `prices.ToArray()`, or a second overload.
+
+### Raw string literals (C# 11)
+
+Three or more double quotes start a raw string. Nothing inside it is escaped, so JSON, SQL and regular expressions can be pasted in as they are. The closing quotes' indentation is removed from every line:
+
+```csharp
+var sku = "SKU-1";
+var json = $$"""
+    {
+      "sku": "{{sku}}",
+      "quantity": {{quantities[1]}}
+    }
+    """;
+Console.WriteLine(json);
+```
+
+That prints:
+
+```json
+{
+  "sku": "SKU-1",
+  "quantity": 2
+}
+```
+
+With `$$`, a hole is `{{…}}`, so the single braces of the JSON stay as they are. A raw string with one `$` uses `{…}` for holes, as an ordinary interpolated string does.
+
+### String interpolation (C# 6)
+
+`$"…"` puts expressions straight into a string, with an optional format after a colon. It replaces `string.Format` and `+`:
+
+```csharp
+Console.WriteLine($"{basket.CustomerId} has {basket.Count} lines");
+```
+
+Interpolation formats with the current culture, as `string.Format` does. Since C# 11, the expression in a hole can span several lines.
+
+### Expression-bodied members (C# 6 and 7)
+
+A member whose body is a single expression can use `=>` in place of braces and `return`. C# 6 allowed it for methods and read-only properties, and C# 7.0 added constructors and accessors. `Basket` uses all three:
+
+```csharp
+public Basket(string customerId) => CustomerId = customerId;
+
+public string CustomerId { get; }
+
+public int Count => _quantities.Count;
+
+public void Add(string sku, int quantity = 1) =>
+    _quantities[sku] = _quantities.GetValueOrDefault(sku) + quantity;
+```
+
+`public int Count => _quantities.Count;` is a property, worked out each time it's read. It isn't a field that's set once.
+
+### Using declarations (C# 8)
+
+`using var` disposes its variable at the end of the enclosing scope, so the method needn't nest inside a `using` block:
+
+```csharp title="Lines.cs"
+public static int Count(string path)
+{
+    using var reader = new StreamReader(path);
+    var count = 0;
+    while (reader.ReadLine() != null)
+    {
+        count++;
+    }
+
+    return count;
+} // reader is disposed here, at the end of the method
+```
+
+### Local functions (C# 7)
+
+A method can declare a helper inside itself, where nothing else can call it. A `static` local function can't capture the method's locals by mistake:
+
+```csharp title="Lines.cs"
+public static decimal Total(IEnumerable<OrderLine> lines)
+{
+    return lines.Sum(LineTotal);
+
+    static decimal LineTotal(OrderLine line) => line.Quantity * line.UnitPrice;
+}
+```
+
+## Not on these pages
+
+- **`async` and `await`, `IAsyncEnumerable<T>`, `Span<T>` and `ref struct`:** these are on the [Async & performance](/performance/async-and-performance/) page, with exercise 11.
+- **Source generators**, such as `[LoggerMessage]`, are on the [Logging](/observability/logging/) page.
+- **Static abstract interface members and generic math** are rarely needed in application code. See [the history of C#](https://learn.microsoft.com/dotnet/csharp/whats-new/csharp-version-history), C# 11.
+
+## Pitfalls
+
+- **Top-level statements in two files.** The build fails with `error CS8802: Only one compilation unit can have top-level statements.` Fix: keep them in `Program.cs`, and put everything else in types.
+- **A collection expression with nothing to tell it the type.** `var quantities = [1, 2, 3];` fails with `error CS9176: There is no target type for the collection expression.` Fix: write the type, as in `int[] quantities = [1, 2, 3];`.
+- **A name that two implicit usings both contain.** With `using System.Timers;`, `new Timer(1000)` fails with `error CS0104: 'Timer' is an ambiguous reference between 'System.Timers.Timer' and 'System.Threading.Timer'`, because implicit usings brought in `System.Threading`. Fix: name the type in full, or use an alias such as `using Timer = System.Timers.Timer;`.
+- **A raw string line that's less indented than the closing quotes.** The build fails with `error CS8999: Line does not start with the same whitespace as the closing line of the raw string literal.` Fix: indent every line at least as far as the closing `"""`.
+- **A using declaration that holds a resource too long.** `using var` keeps the file, connection or lock until the end of the scope, which may be long after you've finished with it. Fix: a `using` block, or a smaller method, when the rest of the scope is long.
+
+## Exercise 14: modern C#
+
+**Goal:** bring a small order-pricing library, written in C# 3 style, up to date. Turn on nullable reference types and make a missing customer safe, make the order lines records, make applying a discount return a new order, and rewrite the discount rules as a switch expression. Its layout is already modern (file-scoped namespaces, braces and `_` fields), because the samples' build enforces that. What's C# 3 is its types, its null handling and its branching.
+
+**Where:** [`samples/exercises/14-modern-csharp`](https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/14-modern-csharp) in the GitHub repo. Clone the repo, then work in the `Starter` project. **It needs no Docker**: it's a class library, with no web host and no database.
+
+**Steps:**
+
+1. **Null safety** (the Null safety page). In `Starter/Customers.cs`, delete `#nullable disable`. The build then fails with nullable warnings, which the samples treat as errors:
+
+   ```text
+   Customers.cs(22,19): error CS8618: Non-nullable property 'Id' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.
+   Customers.cs(24,19): error CS8618: Non-nullable property 'Name' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.
+   Customers.cs(26,19): error CS8618: Non-nullable property 'Email' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.
+   Customers.cs(43,44): error CS8600: Converting null literal or possible null value to non-nullable type.
+   Customers.cs(48,16): error CS8603: Possible null reference return.
+   ```
+
+   Mark `Id` and `Name` `required`, make `Email` a `string?`, and make `Find` return `Customer?`. Then the compiler points at `Pricing.cs` instead (`CS8600` and `CS8602`), where the pricing dereferences a customer that may not exist. Make an unknown customer's order get no tier discount, and no exception (TODO 1).
+
+2. **Records** (the Types page). In `Starter/Orders.cs`, make `OrderLine` a record, with `Sku`, `Quantity` and `UnitPrice` `required` and `init` (TODO 2).
+3. **Immutability** (the Types page). In the same file, make `Order` a record with `required` and `init` members and an `IReadOnlyList<OrderLine>`, and have `ApplyDiscount` return a copy made with `with`. Then delete the file's `#nullable disable`: it builds clean (TODO 3).
+4. **Patterns** (the Patterns page). In `Starter/Pricing.cs`, rewrite the if/else chain as one switch expression over the order and its customer. The first rule that matches wins (TODO 4):
+
+   | Order                                                 | Discount |
+   | ----------------------------------------------------- | -------- |
+   | Its only line is a gift card (its SKU starts `GIFT-`) | none     |
+   | A Gold customer                                       | 10%      |
+   | A subtotal of 100 or more                             | 5%       |
+   | Anything else, including an unknown customer          | none     |
+
+   The chain checks the total before the tier, so a Gold customer's large order gets 5%, and it has no gift-card rule.
+
+**Check your work:** the tests start red and turn green as you go.
+
+```sh
+dotnet test --project samples/exercises/14-modern-csharp/Starter.Tests
+```
+
+There are 18 tests, and 14 of them fail against the Starter. Each failure names what's wrong, the TODO to look at, and the page that explains it. The tests read the library's nullability annotations and its `required` and `init` members by reflection, and compare lines with `Equals` and `==`. TODO 4's tests check each rule's result, so they can't tell whether a switch expression produced it: reordering the if/else would pass them too.
+
+Stuck? Compare with the `Solution` project next to it. The exercises are for practice only, and nothing is recorded or submitted.
+
+## Where next
+
+- **Null safety:** nullable reference types, the null operators, the nullable attributes, and turning nullable on in old code, a file at a time.
+- **Types:** records, `init` and `required`, `with`, primary constructors, tuples, the `field` keyword and extension members.
+- **Patterns:** `is` patterns, switch expressions, and property, relational, logical and list patterns.

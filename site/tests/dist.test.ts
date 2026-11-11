@@ -48,6 +48,7 @@ const EXPECTED_SLUGS = [
   "cheatsheets/async-and-performance",
   "cheatsheets/containers",
   "cheatsheets/orchestration-and-aws",
+  "cheatsheets/csharp",
 ];
 
 /**
@@ -85,6 +86,8 @@ const FULL_CONTENT_SLUGS: string[] = [
   "cheatsheets/containers",
   "deploy/orchestration-and-aws",
   "cheatsheets/orchestration-and-aws",
+  "csharp",
+  "cheatsheets/csharp",
 ];
 
 /**
@@ -106,7 +109,14 @@ const CHEATSHEETS: Record<string, string> = {
   "performance/async-and-performance": "cheatsheets/async-and-performance",
   "deploy/containers": "cheatsheets/containers",
   "deploy/orchestration-and-aws": "cheatsheets/orchestration-and-aws",
+  csharp: "cheatsheets/csharp",
 };
+
+/**
+ * The C# language group's pages, in sidebar order (spec: site-structure, C# language section
+ * pages). Add each themed page here as it lands.
+ */
+const CSHARP_SLUGS = ["csharp"];
 
 const REPO_TREE =
   "https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/";
@@ -324,6 +334,46 @@ describe("full-content pages", () => {
         failures.push(`/${topic}/ does not link to /${sheet}/`);
       if (!contentLinks(s).has(`/${topic}/`))
         failures.push(`/${sheet}/ does not link back to /${topic}/`);
+    }
+    expect(failures, failures.join("\n")).toEqual([]);
+  });
+});
+
+describe("C# language section (spec: site-structure)", () => {
+  it("the sidebar's C# language group lists its pages in order", () => {
+    const index = pageAt("csharp")!;
+    const group = index.root
+      .querySelectorAll("ul.top-level > li")
+      .find(
+        (li) =>
+          li.querySelector(".group-label")?.textContent.trim() ===
+          "C# language",
+      );
+    expect(group, "no C# language group in the sidebar").toBeDefined();
+    const hrefs = group!
+      .querySelectorAll("a[href]")
+      .map((a) => a.getAttribute("href"));
+    expect(hrefs).toEqual(CSHARP_SLUGS.map((s) => `/${s}/`));
+  });
+
+  it("each C# page's previous and next links stay inside the group", () => {
+    const inGroup = new Set(CSHARP_SLUGS.map((s) => `/${s}/`));
+    const failures: string[] = [];
+    for (const slug of CSHARP_SLUGS) {
+      const p = pageAt(slug);
+      if (!p) {
+        failures.push(`/${slug}/: not built`);
+        continue;
+      }
+      for (const rel of ["prev", "next"]) {
+        const href = p.root
+          .querySelector(`a[rel="${rel}"]`)
+          ?.getAttribute("href");
+        if (href && !inGroup.has(href))
+          failures.push(
+            `/${slug}/: ${rel} link leaves the C# group, to ${href}`,
+          );
+      }
     }
     expect(failures, failures.join("\n")).toEqual([]);
   });

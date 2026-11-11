@@ -238,6 +238,14 @@ The Starter turns nullable off in its source file, not in its project file, so t
 warnings as errors. Without it, it fails with nullable warnings, which is what the engineer then
 fixes. The probe (D5) records those warnings, so the exercise's description can say what to expect.
 
+**The Starter has three files** (agreed with Emmz on 2026-11-11, after §2):
+- `Customers.cs` opens with `#nullable disable`, and TODO 1 starts by deleting it;
+- `Orders.cs` opens with it too, and is turned on once TODOs 2 and 3 are done;
+- `Pricing.cs` has nullable on. Once `Find` says `Customer?`, the compiler points at its dereference.
+
+With one file, deleting the line would also raise CS8618 on `OrderLine` and `Order`, and mix TODO 1
+into TODOs 2 and 3.
+
 ### D9. Links from the topic pages
 
 Each in-passing explanation found in §5's search gets a link to the C# section that covers the
