@@ -49,7 +49,7 @@
   - Complete a scratch copy, confirm that its tests go green, and discard it.
   - Then complete a second scratch copy with `RequireClaim("scope", "orders:write")` in place of the
     splitting helper. Confirm that only the multi-scope test fails.
-- [ ] 2.5 With the Solution running, create a token with `dotnet user-jwts` and call the API with
+- [x] 2.5 With the Solution running, create a token with `dotnet user-jwts` and call the API with
   it, to show that the exercise works outside the tests. Check that no tracked file changed
   (`git status`). Push the branch, and check that the `samples` workflow passes on `ubuntu-latest`
   with exercise 10's tests run. Record the run ID in the section-done note.
@@ -57,10 +57,10 @@
 
 ## 3. Security cheatsheet and page
 
-- [ ] 3.1 Create `site/src/content/docs/cheatsheets/security.md` (design D6), with a back link and
+- [x] 3.1 Create `site/src/content/docs/cheatsheets/security.md` (design D6), with a back link and
   Learn links. Add it to the sidebar's Cheatsheets group, the introduction's cheatsheet cards and
   `EXPECTED_SLUGS`. Verify that `make site-build` passes.
-- [ ] 3.2 Rewrite `site/src/content/docs/security/index.md` per D1, D3, D5, D7 and D8. Cover every
+- [x] 3.2 Rewrite `site/src/content/docs/security/index.md` per D1, D3, D5, D7 and D8. Cover every
   item in the six Security page requirements. Add:
   - the cheatsheet tip;
   - the Pitfalls, including:
@@ -72,14 +72,14 @@
     - forgetting `AllowAnonymous` once a fallback policy is on;
   - an "Exercise 10" section in the exercise-01 format. It says that it needs no Docker and no
     identity provider, and gives the exact GitHub tree link.
-- [ ] 3.3 Verify the page (D11):
+- [x] 3.3 Verify the page (D11):
   - compile every snippet in a scratch project, with warnings as errors;
   - run the 401/403, `user-jwts`, OpenID Connect challenge, rate limiter, antiforgery, HSTS and
     headers examples, and paste their real output;
   - confirm that the "from the exercise" snippets match the real files.
 
   Record all of it in the section-done note.
-- [ ] 3.4 Add `security` and `cheatsheets/security` to `FULL_CONTENT_SLUGS`, and the pair to
+- [x] 3.4 Add `security` and `cheatsheets/security` to `FULL_CONTENT_SLUGS`, and the pair to
   `CHEATSHEETS`. Fetch every URL on both pages. Verify that `make gates` shows `GATES_EXIT:0`.
 
 ## 4. Samples README

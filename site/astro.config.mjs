@@ -76,6 +76,7 @@ export default defineConfig({
             { slug: "cheatsheets/ef-core" },
             { slug: "cheatsheets/grpc" },
             { slug: "cheatsheets/testing" },
+            { slug: "cheatsheets/security" },
           ],
         },
       ],
