@@ -89,7 +89,7 @@ None.
   The first run pulls the .NET base images. Docker is already required (exercise 07), so nothing
   new is installed.
 - **Tooling:** Trivy runs as a container image (`aquasec/trivy`), so there's nothing to install.
-  It gets a row in `docs/dependencies.md` saying so. The local registry (`registry:2`) is only used
+  It gets a row in `docs/dependencies.md` saying so. The local registry (`registry:3`) is only used
   in the probe, so it gets no row. No AWS CLI or login is added.
 - **Out of scope:**
   - orchestration and AWS hosting: .NET Aspire, health checks and graceful shutdown, Kubernetes,

@@ -2,7 +2,7 @@
 
 ## 1. Probe, package version and Trivy
 
-- [ ] 1.1 Probe the image facts (design D1, D2), in scratch projects on 10.0.4xx, unsandboxed:
+- [x] 1.1 Probe the image facts (design D1, D2), in scratch projects on 10.0.4xx, unsandboxed:
   - the real .NET 10 tags for `sdk`, `aspnet`, `runtime` and `runtime-deps`, including the
     `-noble-chiseled` and `-extra` variants, the AOT SDK tag, and the default `10.0` tag's OS;
   - the `ContainerFamily` value for chiseled, and `dotnet publish -t:PublishContainer`'s real
@@ -13,7 +13,7 @@
     Desktop, and the fallback that does.
 
   Write a devlog note with the exact outputs, versions and platform.
-- [ ] 1.2 Probe exercise 12's test approach (design D5), in a scratch copy of the shape D3 and D4
+- [x] 1.2 Probe exercise 12's test approach (design D5), in a scratch copy of the shape D3 and D4
   describe:
   - building the SDK image from a test, as a child process, and the Dockerfile image with
     `ImageFromDockerfileBuilder`, with the project folder as the context (D3);
@@ -25,17 +25,17 @@
   Each check must fail against a deliberately wrong image and pass against a right one. **If the
   file API can't read a chiseled container, stop and ask** whether to fall back to `docker inspect`
   (D5). Write a devlog note with the results and how long each build took.
-- [ ] 1.3 Probe the page's extras (D6, D7, D8), unsandboxed:
+- [x] 1.3 Probe the page's extras (D6, D7, D8), unsandboxed:
   - the page's Compose example: a scratch orders API with EF Core on SQL Server, the `sqlcmd`
     health check, the app starting only once the database is healthy, and `docker compose down -v`;
-  - `registry:2` on `localhost:5001`: push, remove, pull by tag, then the SDK's push with
+  - `registry:3` on `localhost:5001`: push, remove, pull by tag, then the SDK's push with
     `ContainerRegistry`;
   - Trivy: the current `aquasec/trivy` version, the socket mount under Rancher Desktop, and the
     summaries for the default and chiseled images, with the date;
   - the ECR commands, syntax-checked against the AWS docs and not run.
 
   Write a devlog note with the exact outputs and versions.
-- [ ] 1.4 Add the `Testcontainers` `PackageVersion`, at `Testcontainers.MsSql`'s version, to
+- [x] 1.4 Add the `Testcontainers` `PackageVersion`, at `Testcontainers.MsSql`'s version, to
   `samples/Directory.Packages.props`. Add Trivy's row to `docs/dependencies.md` (D8), with no
   `make deps` check, and say why in a devlog note. Verify that `make samples-build` and `make deps`
   pass (unsandboxed). **If restore reports a vulnerable package, stop and ask.**

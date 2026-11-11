@@ -65,9 +65,10 @@ The topic skeleton, in this order:
    and what a rebuild after a code change reuses (measured, D2).
 5. **Non-root, port 8080, and smaller images:** the `app` user and `APP_UID`, why not root, the size
    table (D2), and what chiseled leaves out: no shell, no package manager, and no ICU or time zone
-   data unless it's `-extra`. Native AOT's trade-offs. Inspecting a container with no shell
-   (`docker debug`, if the probe finds Rancher Desktop supports it, or else `docker cp` and a
-   sidecar container that shares its process namespace).
+   data unless it's `-extra` (an app that uses SqlClient needs `-extra`: probe 1.3). Native AOT's
+   trade-offs. Inspecting a container with no shell: `docker cp`, `docker top`, and a sidecar
+   container that shares its process namespace (`--pid=container:`), all measured in probe 1.1.
+   `docker debug` is named as Docker Desktop's only. The open-source CLI hasn't got it.
 6. **Configuration through the environment:** `__`, `ASPNETCORE_HTTP_PORTS`,
    `ASPNETCORE_ENVIRONMENT`, the order of configuration sources, and that secrets don't go in the
    image (a link to Security & auth).
@@ -83,8 +84,9 @@ more than `dotnet publish`, or a team that standardises on Dockerfiles.
 
 ### D2. Measured, not remembered
 
-The probe (§1) measures everything the page states, on this Mac (`linux/arm64`, under Rancher
-Desktop). It records the platform with each number:
+The probe (§1) measures everything the page states, on this Mac (`linux/arm64`, under OrbStack,
+not Rancher Desktop: see probe 1.1. Image facts don't depend on the engine). It records the platform
+with each number:
 - **image sizes** for one app on four bases: `aspnet:10.0`, `aspnet:10.0-noble-chiseled`,
   `aspnet:10.0-noble-chiseled-extra`, and Native AOT on `runtime-deps:10.0-noble-chiseled`. It also
   records what the default `10.0` tag's OS is, because the page shouldn't name one from memory;
@@ -131,8 +133,10 @@ The four bugs, and their TODOs:
    `new ConfigurationBuilder().AddJsonFile("appsettings.json")`, not the host's configuration. The
    fix binds it from `builder.Configuration` with options, so `Warehouse__Name` overrides it.
 3. **The `.csproj`'s container properties:** `ContainerBaseImage` is the full `aspnet:10.0`, and
-   `ContainerUser` is `root`. The fix uses the chiseled family (`ContainerFamily`), and drops the
-   user so the image's non-root default applies.
+   `ContainerUser` is `root`. The fix uses the chiseled family (`ContainerFamily=noble-chiseled`)
+   with `InvariantGlobalization=true`, and drops the user so the SDK's non-root default applies.
+   Without `InvariantGlobalization`, the SDK picks `-noble-chiseled-extra` (probe 1.1). That's still
+   chiseled, but the page explains the difference.
 4. **The Dockerfile:** a single stage on `sdk:10.0` that publishes and runs, as root. The fix is a
    build stage on `sdk:10.0` and a runtime stage on `aspnet:10.0-noble-chiseled`, running as
    `$APP_UID`, with the restore layer first.
@@ -158,14 +162,16 @@ The checks, each named with its TODO in its failure message:
   log means a wrong port fails at once, with the port named, rather than after a timeout.
 - **Setting (TODO 2):** run with `Warehouse__Name` set, and read the startup log line. It doesn't
   depend on the port, so TODO 1 and TODO 2 fail apart.
-- **Non-root (TODOs 3 and 4):** read `/proc/1/status` from the running container, through the
-  Docker API's file copy, not a shell, because a chiseled image has none. `Uid` mustn't be 0.
+- **Non-root (TODOs 3 and 4):** list the running container's processes through the Docker API
+  (`docker top`), not a shell, because a chiseled image has none. The app's user mustn't be root.
+  (Probe 1.2: reading `/proc/1/status` through the file copy returns an empty file, because `/proc`
+  files report size 0, so the process list replaced it.)
 - **Chiseled (TODO 3) and no SDK (TODO 4):** check that `/bin/sh` is absent, and for the Dockerfile
-  image, that `/usr/share/dotnet/sdk` is too, through the same file API.
+  image, that `/usr/share/dotnet/sdk` is too, with the Docker API's path stat. A missing path is a
+  not-found error.
 
-The probe (§1) confirms that the file API reads from a chiseled container, and fails cleanly when a
-path is absent. **If it doesn't, stop and ask:** the fallback is reading the image's `Config.User`
-and layer history through `docker inspect`, which checks the image's metadata rather than what runs.
+Probe 1.2 confirmed all of these against right and wrong images. Reading the image's `Config.User`
+through `docker inspect` would check metadata rather than what runs, so it isn't used.
 
 Each fixture wraps `DockerUnavailableException` as 07 does, and the image build's output goes into
 the failure message, so a broken Dockerfile shows its error.
@@ -184,7 +190,7 @@ to the Docker page's note.
 
 ### D7. Registries and ECR
 
-The probe runs `registry:2` on `localhost:5001`, then:
+The probe runs `registry:3` (the current major; probe 1.3) on `localhost:5001`, then:
 - `docker tag` and `docker push`, then `docker pull` by tag after removing the local copy;
 - `dotnet publish -t:PublishContainer -p:ContainerRegistry=localhost:5001`, which pushes without
   the local daemon.
@@ -195,15 +201,16 @@ The ECR steps are `aws ecr get-login-password | docker login --username AWS --pa
 
 ### D8. Scanning with Trivy
 
-`docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:<version> image
-<image>`, pinned to the version the probe finds current. The probe scans the default and chiseled
-images of the same app, and the page shows each summary, by severity, with its date. Rancher Desktop
-on macOS puts the socket at `~/.rd/docker.sock`, unless Administrative Access creates
-`/var/run/docker.sock` (the Docker page). The page gives the mount for both.
+`docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v trivy-cache:/root/.cache
+aquasec/trivy:0.76.2 image --scanners vuln <image>`, pinned to the version probe 1.3 found current.
+The probe scans the default and chiseled images of the same app, and the page shows each summary,
+by severity, with its date. The command mounts `/var/run/docker.sock`. On Rancher Desktop for
+macOS, that socket exists only with Administrative Access on, so the page refers to the Docker
+page's socket note. The `~/.rd/docker.sock` mount wasn't measured: the probe machine runs OrbStack.
 
 `docs/dependencies.md` gets a Trivy row: pulled as an image on first use, nothing to install, and
 it needs network access to download its vulnerability database. `make deps` gets no check, because
-there's nothing to check until the first pull. `registry:2` is only used in the probe and on the
+there's nothing to check until the first pull. `registry:3` is only used in the probe and on the
 page, so it gets no row.
 
 ### D9. Section order
