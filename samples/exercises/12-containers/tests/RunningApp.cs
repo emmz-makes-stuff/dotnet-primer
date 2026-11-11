@@ -28,16 +28,48 @@ public sealed partial class RunningApp : IAsyncDisposable
     {
         var builder = new ContainerBuilder(image.Name)
             .WithPortBinding(ImagePort, assignRandomHostPort: true)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilMessageIsLogged(
-                "Now listening on", wait => wait.WithTimeout(TimeSpan.FromSeconds(60))));
+            // Running mode fails at once if the app exits. An unhandled exception needs its own check:
+            // as PID 1 the crashed process doesn't exit, so without it the test would wait out the timeout.
+            .WithWaitStrategy(Wait.ForUnixContainer().AddCustomWaitStrategy(
+                new UntilListening(),
+                wait => wait.WithTimeout(TimeSpan.FromSeconds(60)).WithMode(WaitStrategyMode.Running)));
         foreach (var (name, value) in environment)
         {
             builder = builder.WithEnvironment(name, value);
         }
 
         var app = new RunningApp(builder.Build());
-        await app._container.StartAsync(TestContext.Current.CancellationToken);
+        try
+        {
+            await app._container.StartAsync(TestContext.Current.CancellationToken);
+        }
+        catch (Exception e) when (e is not OperationCanceledException)
+        {
+            var log = await app.LogTextAsync();
+            await app.DisposeAsync();
+            throw new InvalidOperationException(
+                $"A container of the {image.Kind} image started, but the app in it didn't: it never logged \"Now listening on\". " +
+                "If you changed how the app starts, run it with `dotnet run` to see why. What the app wrote:" +
+                $"{Environment.NewLine}{log}",
+                e);
+        }
+
         return app;
+    }
+
+    /// <summary>The app's stdout and stderr, or a note saying why there are none, for a failure message.</summary>
+    private async Task<string> LogTextAsync()
+    {
+        try
+        {
+            var (stdout, stderr) = await _container.GetLogsAsync(timestampsEnabled: false);
+            var log = (stdout + stderr).Trim();
+            return log.Length > 0 ? log : "(nothing)";
+        }
+        catch (Exception e) when (e is DockerApiException or InvalidOperationException)
+        {
+            return $"(Docker couldn't return the log: {e.Message})";
+        }
     }
 
     /// <summary>What the app has written to stdout so far, without Docker's timestamps.</summary>
@@ -76,9 +108,22 @@ public sealed partial class RunningApp : IAsyncDisposable
     /// The user the app's process runs as, from Docker's process list, because a chiseled image has no
     /// shell to ask. Reading /proc/1/status by copying it out doesn't work: /proc files have no size.
     /// </summary>
+    /// <remarks>
+    /// The process list shows users as the host sees them. On rootless Docker, or with userns-remap,
+    /// the container's root is an ordinary user on the host, so there the container's configured user
+    /// is read instead: the image's USER, or ContainerUser. Empty means root.
+    /// </remarks>
     public async Task<string> ProcessUserAsync()
     {
         using var docker = DockerApi.Client();
+
+        var engine = await docker.System.GetSystemInfoAsync(TestContext.Current.CancellationToken);
+        if (MapsUsers(engine.SecurityOptions ?? []))
+        {
+            var container = await docker.Containers.InspectContainerAsync(_container.Id, TestContext.Current.CancellationToken);
+            return ConfiguredUser(container.Config?.User);
+        }
+
         var processes = await docker.Containers.ListProcessesAsync(
             _container.Id, new ContainerListProcessesParameters(), TestContext.Current.CancellationToken);
 
@@ -90,6 +135,18 @@ public sealed partial class RunningApp : IAsyncDisposable
         }
 
         return processes.Processes[0][column];
+    }
+
+    /// <summary>Whether the engine maps container users to other host users: <c>name=rootless</c> or <c>name=userns</c>.</summary>
+    private static bool MapsUsers(IEnumerable<string> securityOptions) =>
+        securityOptions.Any(option => option.StartsWith("name=rootless", StringComparison.Ordinal)
+            || option.StartsWith("name=userns", StringComparison.Ordinal));
+
+    /// <summary>A container's configured user, such as <c>1654</c>, <c>app</c> or <c>0:0</c>, as one user name or id; empty is root.</summary>
+    private static string ConfiguredUser(string? user)
+    {
+        var name = (user ?? "").Split(':')[0];
+        return name.Length == 0 ? "root" : name;
     }
 
     /// <summary>Whether a file or folder exists in the container, asked of Docker rather than of a shell.</summary>
@@ -109,6 +166,23 @@ public sealed partial class RunningApp : IAsyncDisposable
     }
 
     public ValueTask DisposeAsync() => _container.DisposeAsync();
+
+    /// <summary>Ready once ASP.NET Core logs "Now listening on"; failed once .NET logs an unhandled exception.</summary>
+    private sealed class UntilListening : IWaitUntil
+    {
+        public async Task<bool> UntilAsync(IContainer container)
+        {
+            var (stdout, stderr) = await container.GetLogsAsync(timestampsEnabled: false);
+            if (stdout.Contains("Now listening on", StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            return (stdout + stderr).Contains("Unhandled exception.", StringComparison.Ordinal)
+                ? throw new InvalidOperationException("The app stopped with an unhandled exception before it was listening.")
+                : false;
+        }
+    }
 
     private sealed record Info(string? Warehouse);
 

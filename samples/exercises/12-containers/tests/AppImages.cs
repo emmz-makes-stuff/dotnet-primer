@@ -78,11 +78,17 @@ public abstract class AppImage : IAsyncLifetime
         ChildProcess.Result docker;
         try
         {
-            docker = await ChildProcess.RunAsync("docker", Environment.CurrentDirectory, "info", "--format", "{{.ServerVersion}}");
+            docker = await ChildProcess.RunAsync(
+                "docker", Environment.CurrentDirectory, TimeSpan.FromSeconds(30), "info", "--format", "{{.ServerVersion}}");
         }
         catch (System.ComponentModel.Win32Exception e)
         {
             throw new InvalidOperationException($"There's no `docker` command on the PATH. {_dockerNeeded}", e);
+        }
+        catch (TimeoutException e)
+        {
+            throw new InvalidOperationException(
+                $"Docker didn't answer: {e.Message} It may still be starting. {_dockerNeeded}", e);
         }
 
         if (docker.ExitCode != 0)
@@ -107,7 +113,12 @@ internal static class ChildProcess
 {
     public sealed record Result(int ExitCode, string Output);
 
-    public static async Task<Result> RunAsync(string fileName, string workingDirectory, params string[] arguments)
+    /// <summary>
+    /// Runs the command, and kills it if it takes longer than <paramref name="timeout"/>, so a hung
+    /// command fails the run with its name rather than hanging it.
+    /// </summary>
+    /// <exception cref="TimeoutException">The command didn't finish in time.</exception>
+    public static async Task<Result> RunAsync(string fileName, string workingDirectory, TimeSpan timeout, params string[] arguments)
     {
         var start = new ProcessStartInfo(fileName)
         {
@@ -129,7 +140,19 @@ internal static class ChildProcess
         using var process = Process.Start(start) ?? throw new InvalidOperationException($"Couldn't start `{fileName}`.");
         var output = process.StandardOutput.ReadToEndAsync();
         var errors = process.StandardError.ReadToEndAsync();
-        await process.WaitForExitAsync();
+
+        using var timer = new CancellationTokenSource(timeout);
+        try
+        {
+            await process.WaitForExitAsync(timer.Token);
+        }
+        catch (OperationCanceledException) when (timer.IsCancellationRequested)
+        {
+            process.Kill(entireProcessTree: true);
+            throw new TimeoutException(
+                $"`{fileName} {string.Join(' ', arguments)}` didn't finish within {timeout.TotalSeconds:0} s, so it was stopped.");
+        }
+
         return new Result(process.ExitCode, await output + await errors);
     }
 }
@@ -146,7 +169,8 @@ public sealed class SdkImage : AppImage
         var name = NewName("sdk");
         var (repository, tag) = (name[..name.IndexOf(':', StringComparison.Ordinal)], name[(name.IndexOf(':', StringComparison.Ordinal) + 1)..]);
 
-        var publish = await ChildProcess.RunAsync("dotnet", AppDirectory,
+        // Ten minutes allows for a first run that downloads the base image on a slow connection.
+        var publish = await ChildProcess.RunAsync("dotnet", AppDirectory, TimeSpan.FromMinutes(10),
             "publish", "-t:PublishContainer", "-c", "Release",
             $"-p:ContainerRepository={repository}", $"-p:ContainerImageTag={tag}");
 
@@ -165,15 +189,15 @@ public sealed class SdkImage : AppImage
 /// <summary>The image that the app's own <c>Dockerfile</c> builds, with the app's folder as the build context.</summary>
 public sealed class DockerfileImage : AppImage
 {
-    private IFutureDockerImage? _image;
-
     public override string Kind => "Dockerfile";
 
     public override string PackagingTodo => "TODO 4";
 
     protected override async Task<string> BuildAsync()
     {
-        _image = new ImageFromDockerfileBuilder()
+        // The base class removes the image after the run. WithCleanUp has Testcontainers remove it too,
+        // if the test process dies first.
+        var image = new ImageFromDockerfileBuilder()
             .WithDockerfileDirectory(AppDirectory)
             .WithDockerfile("Dockerfile")
             .WithName(NewName("dockerfile"))
@@ -182,7 +206,7 @@ public sealed class DockerfileImage : AppImage
 
         try
         {
-            await _image.CreateAsync();
+            await image.CreateAsync();
         }
         catch (Exception e) when (e is not OperationCanceledException)
         {
@@ -192,16 +216,6 @@ public sealed class DockerfileImage : AppImage
                 e);
         }
 
-        return _image.FullName;
-    }
-
-    public override async ValueTask DisposeAsync()
-    {
-        if (_image is not null)
-        {
-            await _image.DisposeAsync();
-        }
-
-        await base.DisposeAsync();
+        return image.FullName;
     }
 }

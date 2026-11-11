@@ -118,6 +118,23 @@
   false. Word it as Emmz agreed: "Its tests and exercise 12's are the only ones that need Docker."
   Keep its scenarios. Verify with `make gates`.
 
+## 7. Review fixes: exercise 12's test harness
+
+From the `code-review` run. Emmz agreed findings 1, 3, 4 and 6. Finding 2 isn't real, and 5 and 7
+were skipped.
+
+- [x] 7.1 `ChildProcess.RunAsync` takes a timeout: 30 s for `docker info`, 10 minutes for
+  `dotnet publish`. On a timeout it kills the process tree, and fails with a message that names the
+  command (and, for `docker info`, says to start Docker).
+- [x] 7.2 `RunningApp.StartAsync`: if the container doesn't start, dispose it, and fail with a
+  message that says the app didn't start, with the container's log. Check it against a Starter whose
+  startup throws.
+- [x] 7.3 `ProcessUserAsync`: on an engine with rootless mode or `userns-remap` (from `docker info`'s
+  security options), `docker top` shows host UIDs, so read the container's configured user instead
+  (empty means root). Elsewhere, keep `docker top`.
+- [x] 7.4 Drop `DockerfileImage`'s `DisposeAsync` override. The base class removes the image, and
+  Ryuk (`WithCleanUp(true)`) covers a test process that dies. Verify §7 with `make gates`.
+
 ## Workflow follow-up
 
 - Self-review the whole change, write the change-done note, and offer the `code-review` skill.
