@@ -95,7 +95,7 @@
 
 ## 4. Samples README
 
-- [ ] 4.1 Update `samples/README.md`: add 13 to the layout and the exercise table, and to the list
+- [x] 4.1 Update `samples/README.md`: add 13 to the layout and the exercise table, and to the list
   of exercises whose tests need no Docker. Verify with `make gates`.
 
 ## 5. Human check
