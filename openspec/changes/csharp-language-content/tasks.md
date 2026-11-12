@@ -49,7 +49,7 @@
 ## 3. The C# index page and the cheatsheet
 
 - [x] 3.1 Rewrite `site/src/content/docs/csharp/index.md` per D3 ("Modern C# at a glance"): the
-  outcome, the cheatsheet tip, the C# 3 and C# 14 class side by side, "less ceremony" with version
+  outcome, the cheatsheet tip, the C# 3 and C# 14 class one after the other, "less ceremony" with version
   tags (D2), the pointer to Async & performance, Pitfalls, Exercise 14 (each step linked to the page
   it practises, with "needs no Docker" and the exact GitHub tree link), and Where next. Until §4
   lands, Where next and the step links name the themed pages without linking them. Set its
@@ -96,7 +96,7 @@
 
 ## 6. Human check
 
-- [ ] 6.1 Run exercise 14 from a clean clone myself (the Starter fails with guiding messages, and the
+- [x] 6.1 Run exercise 14 from a clean clone myself (the Starter fails with guiding messages, and the
   Solution passes), and report the result. Then stop for Emmz to check, with a copy-paste recipe:
   - the four C# pages and the C# cheatsheet, in light and dark schemes, including the side-by-side
     class and the cheatsheet's tables;
@@ -105,6 +105,16 @@
   - the code-block copy button on one C# example.
 
   On PASS, tick and continue. On FAIL, add a review-fix section.
+
+## 7. Review fixes: stack the C# 3 and C# 14 examples
+
+- [x] 7.1 On `/csharp/`, stack both C# 3 / C# 14 pairs (the class, and creating one): remove the two
+  `side-by-side` wrappers and their CSS in `theme.css`. Change "side by side" to "one after the
+  other" for the class in `proposal.md`, `design.md` and 3.1 (the cheatsheet's tables stay side by
+  side). Verify that `make gates` shows `GATES_EXIT:0`.
+- [x] 7.2 Stop for Emmz's recheck, with a copy-paste recipe: the stacked examples in light and dark,
+  then the rest of 6.1's list (the C# group's previous and next links, search finds "record", the
+  copy button). On PASS, tick 7.2 and 6.1.
 
 ## Workflow follow-up
 

@@ -26,8 +26,6 @@ This section has four pages: this one, then Null safety, Types and Patterns. Eve
 
 Here's the same order type, written as you'd have written it in C# 3, and as you'd write it now. Both print `Order for C-42: 2 lines, total 44.98`.
 
-<div class="side-by-side">
-
 ```csharp title="C# 3"
 using System.Collections.Generic;
 using System.Linq;
@@ -92,11 +90,7 @@ public sealed record Order(string CustomerId, IReadOnlyList<OrderLine> Lines)
 }
 ```
 
-</div>
-
 And creating one:
-
-<div class="side-by-side">
 
 ```csharp title="C# 3"
 Order order = new Order("C-42", new List<OrderLine>
@@ -111,8 +105,6 @@ Console.WriteLine(order.Describe() + ", total " + order.Total);
 var order = new Order("C-42", [new("SKU-1", 2, 9.99m), new("SKU-2", 1, 25m)]);
 Console.WriteLine($"{order.Describe()}, total {order.Total}");
 ```
-
-</div>
 
 What changed, and where it's explained:
 

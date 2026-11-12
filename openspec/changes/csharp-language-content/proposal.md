@@ -18,7 +18,7 @@ The scope, agreed with Emmz in an explore session on 2026-11-11:
 - **The C# language section becomes four pages, split by theme** (Emmz: shape B, "a small group of
   themed pages"). Each feature is tagged with the C# version it arrived in, and there's no "what's
   new in C# 13/14" page: those features sit under their themes.
-  - **`csharp/`, Modern C# at a glance:** one class written in C# 3 and in C# 14, side by side.
+  - **`csharp/`, Modern C# at a glance:** one class written in C# 3 and in C# 14, one after the other.
     Then the "less ceremony" syntax a reader meets at the top of every file: file-scoped
     namespaces, implicit and global usings, top-level statements, target-typed `new()`, collection
     expressions, `params` collections (13), raw string literals, interpolation, expression-bodied

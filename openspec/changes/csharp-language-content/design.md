@@ -94,7 +94,7 @@ URL, which the pages and the cheatsheet use.
 
 **`csharp/` (Modern C# at a glance),** in the topic order the spec gives:
 1. The outcome, and the cheatsheet tip.
-2. **One class, C# 3 and C# 14:** the same small order type, side by side. Each difference is named
+2. **One class, C# 3 and C# 14:** the same small order type, C# 3 first and C# 14 after it. Each difference is named
    and linked to the section or page that covers it.
 3. **Less ceremony:** file-scoped namespaces (10), implicit and global usings (10), top-level
    statements (9), target-typed `new()` (9), collection expressions (12), `params` collections
