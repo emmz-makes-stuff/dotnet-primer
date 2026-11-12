@@ -68,20 +68,20 @@
 
 ## 4. The null safety, types and patterns pages
 
-- [ ] 4.1 Write `site/src/content/docs/csharp/null-safety.md` per D3, including turning nullable on
+- [x] 4.1 Write `site/src/content/docs/csharp/null-safety.md` per D3, including turning nullable on
   in a C# 3-style file with the real warnings, the attributes, null-conditional assignment, "Coming
   from C# 3", Pitfalls (including `!` that hides a bug), and the pointer to Exercise 14. Add it to the
   sidebar group, `EXPECTED_SLUGS`, `FULL_CONTENT_SLUGS` and the introduction, with pagination per D1.
   Verify that `make site-build` and `make site-test` pass.
-- [ ] 4.2 Write `site/src/content/docs/csharp/types.md` per D3, including record equality and
+- [x] 4.2 Write `site/src/content/docs/csharp/types.md` per D3, including record equality and
   `ToString` from a real run, class against record primary constructors, `field` and extension
   members, "Coming from C# 3", Pitfalls, and the pointer to Exercise 14. Add it as in 4.1. Verify that
   `make site-build` and `make site-test` pass.
-- [ ] 4.3 Write `site/src/content/docs/csharp/patterns.md` per D3, including the if/else chain and
+- [x] 4.3 Write `site/src/content/docs/csharp/patterns.md` per D3, including the if/else chain and
   its switch expression with the same results, the real non-exhaustive warning and run-time
   exception, "Coming from C# 3", Pitfalls, and the pointer to Exercise 14. Add it as in 4.1. Verify
   that `make site-build` and `make site-test` pass.
-- [ ] 4.4 Link the index page's Where next and Exercise 14's steps to the three pages. Verify all
+- [x] 4.4 Link the index page's Where next and Exercise 14's steps to the three pages. Verify all
   three pages, and the index's new links, as 3.4 does (D11). Verify that `make gates` shows
   `GATES_EXIT:0`, and record it all in the section-done note.
 

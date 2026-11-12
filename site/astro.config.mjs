@@ -61,7 +61,15 @@ export default defineConfig({
             { slug: "deploy/orchestration-and-aws" },
           ],
         },
-        { label: "C# language", items: [{ slug: "csharp" }] },
+        {
+          label: "C# language",
+          items: [
+            { slug: "csharp" },
+            { slug: "csharp/null-safety" },
+            { slug: "csharp/types" },
+            { slug: "csharp/patterns" },
+          ],
+        },
         { label: "Coming from .NET 3.5", items: [{ slug: "coming-from-3-5" }] },
         {
           label: "Cheatsheets",

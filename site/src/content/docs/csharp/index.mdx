@@ -2,7 +2,9 @@
 title: "Modern C# at a glance"
 description: "From C# 3 to C# 14: one class written both ways, then the syntax that takes the ceremony out of a modern file: file-scoped namespaces, global usings, top-level statements, target-typed new, collection expressions and more."
 prev: false
-next: false
+next:
+  link: /csharp/null-safety/
+  label: Null safety
 learn:
   - title: "The history of C#"
     url: https://learn.microsoft.com/dotnet/csharp/whats-new/csharp-version-history
@@ -116,11 +118,11 @@ What changed, and where it's explained:
 
 - **No `using` lines:** [implicit usings](#implicit-and-global-usings-net-6-c-10) bring in `System.Linq` and `System.Collections.Generic` for every file.
 - **`namespace Shop;`** is a [file-scoped namespace](#file-scoped-namespaces-c-10), with one less level of indentation.
-- **`record`** gives each type value equality, a readable `ToString` and `with` copies. The parameter list after the type's name is a primary constructor, which turns each parameter into a property. Both are on the Types page.
+- **`record`** gives each type value equality, a readable `ToString` and `with` copies. The parameter list after the type's name is a primary constructor, which turns each parameter into a property. Both are on the Types page: [records](/csharp/types/#records-c-9) and [primary constructors](/csharp/types/#primary-constructors-c-12).
 - **`=>`** in `Total` and `Describe` is an [expression-bodied member](#expression-bodied-members-c-6-and-7).
 - **`$"…{CustomerId}…"`** is [string interpolation](#string-interpolation-c-6), in place of `+` and `string.Format`.
-- **`IReadOnlyList<OrderLine>`** in place of `List<OrderLine>` means the order's lines can't be changed through it. That's a library type, not a language feature, and the Types page uses it for immutable records.
-- **No null check on `lines`.** With nullable reference types on, `IReadOnlyList<OrderLine>` means "never null", and the compiler warns a caller who might pass null. That's the Null safety page.
+- **`IReadOnlyList<OrderLine>`** in place of `List<OrderLine>` means the order's lines can't be changed through it. That's a library type, not a language feature, and the [Types](/csharp/types/) page uses it for immutable records.
+- **No null check on `lines`.** With nullable reference types on, `IReadOnlyList<OrderLine>` means "never null", and the compiler warns a caller who might pass null. **That check happens only at compile time, though.** Code with nullable off, or JSON that's missing a field, can still pass null, and then the two versions differ. The C# 3 `Order` falls back to an empty list. The C# 14 one builds, and only fails at run time, when `Describe()` throws `NullReferenceException`. So a public API that other code calls still checks its arguments, for example with `ArgumentNullException.ThrowIfNull`. The [Null safety page](/csharp/null-safety/#checking-arguments-in-a-public-api) covers both.
 - **`[new(…), new(…)]`** is a [collection expression](#collection-expressions-c-12) of [target-typed `new`](#target-typed-new-c-9) expressions: the compiler knows the list's type and the element type from the constructor.
 
 Lambdas, LINQ, `var`, auto-properties, object and collection initializers, extension methods and anonymous types are all C# 3, and work as you remember.
@@ -338,7 +340,7 @@ public static decimal Total(IEnumerable<OrderLine> lines)
 
 **Steps:**
 
-1. **Null safety** (the Null safety page). In `Starter/Customers.cs`, delete `#nullable disable`. The build then fails with nullable warnings, which the samples treat as errors:
+1. **Null safety** (the [Null safety](/csharp/null-safety/) page). In `Starter/Customers.cs`, delete `#nullable disable`. The build then fails with nullable warnings, which the samples treat as errors:
 
    ```text
    Customers.cs(22,19): error CS8618: Non-nullable property 'Id' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.
@@ -350,9 +352,9 @@ public static decimal Total(IEnumerable<OrderLine> lines)
 
    Mark `Id` and `Name` `required`, make `Email` a `string?`, and make `Find` return `Customer?`. Then the compiler points at `Pricing.cs` instead (`CS8600` and `CS8602`), where the pricing dereferences a customer that may not exist. Make an unknown customer's order get no tier discount, and no exception (TODO 1).
 
-2. **Records** (the Types page). In `Starter/Orders.cs`, make `OrderLine` a record, with `Sku`, `Quantity` and `UnitPrice` `required` and `init` (TODO 2).
-3. **Immutability** (the Types page). In the same file, make `Order` a record with `required` and `init` members and an `IReadOnlyList<OrderLine>`, and have `ApplyDiscount` return a copy made with `with`. Then delete the file's `#nullable disable`: it builds clean (TODO 3).
-4. **Patterns** (the Patterns page). In `Starter/Pricing.cs`, rewrite the if/else chain as one switch expression over the order and its customer. The first rule that matches wins (TODO 4):
+2. **Records** (the [Types](/csharp/types/#records-c-9) page). In `Starter/Orders.cs`, make `OrderLine` a record, with `Sku`, `Quantity` and `UnitPrice` `required` and `init` (TODO 2).
+3. **Immutability** (the [Types](/csharp/types/#with-c-9) page). In the same file, make `Order` a record with `required` and `init` members and an `IReadOnlyList<OrderLine>`, and have `ApplyDiscount` return a copy made with `with`. Then delete the file's `#nullable disable`: it builds clean (TODO 3).
+4. **Patterns** (the [Patterns](/csharp/patterns/#switch-expressions-c-8) page). In `Starter/Pricing.cs`, rewrite the if/else chain as one switch expression over the order and its customer. The first rule that matches wins (TODO 4):
 
    | Order                                                 | Discount |
    | ----------------------------------------------------- | -------- |
@@ -375,6 +377,6 @@ Stuck? Compare with the `Solution` project next to it. The exercises are for pra
 
 ## Where next
 
-- **Null safety:** nullable reference types, the null operators, the nullable attributes, and turning nullable on in old code, a file at a time.
-- **Types:** records, `init` and `required`, `with`, primary constructors, tuples, the `field` keyword and extension members.
-- **Patterns:** `is` patterns, switch expressions, and property, relational, logical and list patterns.
+- **[Null safety](/csharp/null-safety/):** nullable reference types, the null operators, the nullable attributes, and turning nullable on in old code, a file at a time.
+- **[Types](/csharp/types/):** records, `init` and `required`, `with`, primary constructors, tuples, the `field` keyword and extension members.
+- **[Patterns](/csharp/patterns/):** `is` patterns, switch expressions, and property, relational, logical and list patterns.

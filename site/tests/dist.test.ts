@@ -33,6 +33,9 @@ const EXPECTED_SLUGS = [
   "deploy/containers",
   "deploy/orchestration-and-aws",
   "csharp",
+  "csharp/null-safety",
+  "csharp/types",
+  "csharp/patterns",
   "coming-from-3-5",
   "cheatsheets/dotnet-cli",
   "cheatsheets/configuration",
@@ -87,6 +90,9 @@ const FULL_CONTENT_SLUGS: string[] = [
   "deploy/orchestration-and-aws",
   "cheatsheets/orchestration-and-aws",
   "csharp",
+  "csharp/null-safety",
+  "csharp/types",
+  "csharp/patterns",
   "cheatsheets/csharp",
 ];
 
@@ -116,7 +122,12 @@ const CHEATSHEETS: Record<string, string> = {
  * The C# language group's pages, in sidebar order (spec: site-structure, C# language section
  * pages). Add each themed page here as it lands.
  */
-const CSHARP_SLUGS = ["csharp"];
+const CSHARP_SLUGS = [
+  "csharp",
+  "csharp/null-safety",
+  "csharp/types",
+  "csharp/patterns",
+];
 
 const REPO_TREE =
   "https://github.com/emmz-makes-stuff/dotnet-primer/tree/main/samples/exercises/";
