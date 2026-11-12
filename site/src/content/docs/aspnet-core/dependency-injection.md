@@ -101,7 +101,7 @@ The container disposes what it creates. A scoped `IDisposable` is disposed when 
 
 ## Constructor and primary-constructor injection
 
-A class gets its dependencies through its constructor. With C# 12 and later, a **primary constructor** says the same thing without the field boilerplate. These two classes are equivalent:
+A class gets its dependencies through its constructor. With C# 12 and later, a [**primary constructor**](/csharp/types/#primary-constructors-c-12) says the same thing without the field boilerplate. These two classes are equivalent:
 
 ```csharp title="InvoiceService.cs"
 public sealed class InvoiceService

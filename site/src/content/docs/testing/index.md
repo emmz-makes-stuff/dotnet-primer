@@ -288,7 +288,7 @@ You'll also meet **Moq** in existing code: it does the same job, but many teams 
 
 Unit tests can't see routing, model binding, status codes or how the app's services are registered. **`WebApplicationFactory<Program>`**, from `Microsoft.AspNetCore.Mvc.Testing`, starts the whole app in memory, with no port and no web server. `CreateClient()` gives an `HttpClient` that sends requests straight into it.
 
-The factory needs to reach the app's `Program` class. With top-level statements, it's generated and internal, so the app's `Program.cs` ends with:
+The factory needs to reach the app's `Program` class. With [top-level statements](/csharp/#top-level-statements-c-9), it's generated and internal, so the app's `Program.cs` ends with:
 
 ```csharp
 public partial class Program;

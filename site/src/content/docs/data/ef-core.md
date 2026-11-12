@@ -104,7 +104,7 @@ await using var db = await dbFactory.CreateDbContextAsync(ct);
 
 ## Modelling
 
-Entities are plain classes. EF Core reads them by **convention**: a property called `Id` (or `OrderId` on `Order`) is the key, an `int` key is an identity column, a collection of another entity is a one-to-many relationship, and `OrderId` on `OrderLine` is its foreign key. With nullable reference types on, as they are in every new project, a `string` is a required, `NOT NULL` column, and a `string?` is optional.
+Entities are plain classes. EF Core reads them by **convention**: a property called `Id` (or `OrderId` on `Order`) is the key, an `int` key is an identity column, a collection of another entity is a one-to-many relationship, and `OrderId` on `OrderLine` is its foreign key. With [nullable reference types](/csharp/null-safety/) on, as they are in every new project, a `string` is a required, `NOT NULL` column, and a `string?` is optional.
 
 ```csharp title="Orders.cs"
 public sealed class Order

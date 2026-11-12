@@ -390,6 +390,46 @@ describe("C# language section (spec: site-structure)", () => {
   });
 });
 
+describe("C# features on topic pages (spec: topic-page-content)", () => {
+  // Each in-passing explanation of a C# feature links to the section that covers it (D9).
+  const FEATURE_LINKS: [page: string, target: string][] = [
+    [
+      "aspnet-core/dependency-injection",
+      "/csharp/types/#primary-constructors-c-12",
+    ],
+    ["platform/dotnet-10-and-cli", "/csharp/null-safety/"],
+    [
+      "platform/dotnet-10-and-cli",
+      "/csharp/#implicit-and-global-usings-net-6-c-10",
+    ],
+    ["data/ef-core", "/csharp/null-safety/"],
+    ["aspnet-core", "/csharp/#top-level-statements-c-9"],
+    ["testing", "/csharp/#top-level-statements-c-9"],
+    [
+      "observability/tracing",
+      "/csharp/null-safety/#the-null-operators--c-6-and--c-8",
+    ],
+  ];
+
+  it("each topic page links its C# feature to the C# section", () => {
+    const failures: string[] = [];
+    for (const [page, target] of FEATURE_LINKS) {
+      const p = pageAt(page);
+      if (!p) {
+        failures.push(`/${page}/: not built`);
+        continue;
+      }
+      const links = (content(p)?.querySelectorAll("a[href]") ?? []).map((a) => {
+        const u = new URL(a.getAttribute("href")!, p.url);
+        return u.pathname + u.hash;
+      });
+      if (!links.includes(target))
+        failures.push(`/${page}/ does not link to ${target}`);
+    }
+    expect(failures, failures.join("\n")).toEqual([]);
+  });
+});
+
 describe("Docker page (spec: getting-started-docker)", () => {
   it("is listed straight after the .NET 10 page in the Getting started group", () => {
     const docker = pageAt("platform/docker")!;

@@ -30,7 +30,7 @@ app.MapGet("/", () => "Hello, .NET 10!");
 app.Run();
 ```
 
-`dotnet new web` creates exactly that. There is no `Main` method because C# lets the file's top-level statements be the entry point.
+`dotnet new web` creates exactly that. There is no `Main` method because C# lets the file's [top-level statements](/csharp/#top-level-statements-c-9) be the entry point.
 
 ## Builder, build, run
 

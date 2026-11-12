@@ -87,11 +87,11 @@
 
 ## 5. Links from the topic pages, and the samples README
 
-- [ ] 5.1 Search the topic pages and cheatsheets for in-passing explanations of the features the C#
+- [x] 5.1 Search the topic pages and cheatsheets for in-passing explanations of the features the C#
   pages cover. Add a link from each to the C# section that covers it (D9), at least on the CLI, DI
   and EF Core pages. Verify that `make site-test` passes, and list every link added in the
   section-done note.
-- [ ] 5.2 Update `samples/README.md`: add 14 to the layout, the exercise table, and the list of
+- [x] 5.2 Update `samples/README.md`: add 14 to the layout, the exercise table, and the list of
   exercises whose tests need no Docker. Verify with `make gates`.
 
 ## 6. Human check

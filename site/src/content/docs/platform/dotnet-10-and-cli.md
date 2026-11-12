@@ -211,8 +211,8 @@ Everything else comes from **`Directory.Build.props`**. MSBuild imports the near
 ```
 
 - **`TargetFramework`**: the moniker the project builds for. Use `TargetFrameworks` (plural, `;`-separated) to build for several.
-- **`Nullable`**: turns on nullable reference types. `string` means "never null" and `string?` means "might be null", and the compiler warns when you mix them up.
-- **`ImplicitUsings`**: adds the common `using` directives for the project's SDK (`System`, `System.Linq`, `Microsoft.AspNetCore.Builder`, and so on) as global usings, so files don't repeat them.
+- **`Nullable`**: turns on [nullable reference types](/csharp/null-safety/). `string` means "never null" and `string?` means "might be null", and the compiler warns when you mix them up.
+- **`ImplicitUsings`**: adds the common `using` directives for the project's SDK (`System`, `System.Linq`, `Microsoft.AspNetCore.Builder`, and so on) as [global usings](/csharp/#implicit-and-global-usings-net-6-c-10), so files don't repeat them.
 - **`TreatWarningsAsErrors`**, **`AnalysisLevel`** and **`EnforceCodeStyleInBuild`**: run the built-in code analyzers and style rules in every build, and fail it on any warning. The primer uses this as its lint check.
 
 The test project shows the rest of the everyday elements:

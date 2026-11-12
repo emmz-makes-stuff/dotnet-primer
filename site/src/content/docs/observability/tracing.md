@@ -213,7 +213,7 @@ using (var chargePayment = OrderTracing.Source.StartActivity("ChargePayment"))
 }
 ```
 
-- **`StartActivity` returns `null`** when nothing is listening to the source, or when the sampler drops the trace. That's what makes tracing nearly free when it's off. So every call on the activity uses `?.`.
+- **`StartActivity` returns `null`** when nothing is listening to the source, or when the sampler drops the trace. That's what makes tracing nearly free when it's off. So every call on the activity uses [`?.`](/csharp/null-safety/#the-null-operators--c-6-and--c-8).
 - **The parent is `Activity.Current`**, here the request's span, so you don't pass it in.
 - **`ActivityKind`** defaults to `Internal`. Pass `ActivityKind.Client` for a span around an outgoing call that isn't instrumented already, so backends draw it as a call to another service.
 - To add attributes to a span you didn't start, such as the request's, use `Activity.Current?.SetTag(…)`.
