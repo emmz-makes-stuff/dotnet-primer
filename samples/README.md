@@ -14,7 +14,7 @@ These are **for practice only**. The tests are there so you can check your own p
   ```
 
   A bare `dotnetup sdk install` also works: it reads `global.json`. But it tracks the wider `10.0` channel, so a later `dotnetup update` could move you to a 10.0.5xx SDK. Naming `10.0.4xx` keeps you on the band the samples pin. New to `dotnetup`? [Getting started](https://dotnet-primer.emmz.dev/platform/dotnet-10-and-cli/) covers installing it, and what to do if you already have .NET from another installer.
-- **Docker**: Rancher Desktop on Windows and macOS, or Docker Engine on Linux. [Docker](https://dotnet-primer.emmz.dev/platform/docker/) has the steps for each. Later exercises use it, through Testcontainers and container images. **Two exercises' tests need it.** Exercise 07's start SQL Server in a container with Testcontainers. The image is x64 only, so on an Apple silicon Mac see the Docker page's [macOS](https://dotnet-primer.emmz.dev/platform/docker/#macos) note. Exercise 12's tests build the app into two container images, one with `dotnet publish` and one from its Dockerfile, then run them and check what's inside. Their first run downloads the .NET base images. The others don't need Docker for their tests: 04–06 capture logs, spans and metrics in memory, 08 to 11 and 13 keep their orders in memory, and 14 is a class library with no app to run. The Logging, Tracing and Metrics pages use Docker for one optional extra, the local dashboard that shows your app's telemetry.
+- **Docker**: Rancher Desktop on Windows and macOS, or Docker Engine on Linux. [Docker](https://dotnet-primer.emmz.dev/platform/docker/) has the steps for each. Later exercises use it, through Testcontainers and container images. **Two exercises' tests need it.** Exercise 07's start SQL Server in a container with Testcontainers. The image is x64 only, so on an Apple silicon Mac see the Docker page's [macOS](https://dotnet-primer.emmz.dev/platform/docker/#macos) note. Exercise 12's tests build the app into two container images, one with `dotnet publish` and one from its Dockerfile, then run them and check what's inside. Their first run downloads the .NET base images. The others don't need Docker for their tests: 04–06 capture logs, spans and metrics in memory, 08 to 11 and 13 keep their orders in memory, 14 is a class library with no app to run, and 15 runs two copies of its app in the test process, sharing an in-memory cache in place of Redis. The Logging, Tracing and Metrics pages use Docker for one optional extra, the local dashboard that shows your app's telemetry.
 
 ## Layout
 
@@ -49,6 +49,7 @@ samples/
     12-containers/             # same layout, plus a Dockerfile in each app; its tests need Docker
     13-health-and-shutdown/    # same layout; the tests run the app on Kestrel and stop it mid-order
     14-modern-csharp/          # same layout, but a class library, not an app; the tests use reflection
+    15-session-state/          # same layout; the tests run two copies of the app, as two servers
 ```
 
 | Exercise | Practises | Described on |
@@ -67,6 +68,7 @@ samples/
 | `12-containers` | an app that takes its port and settings from the environment, a non-root chiseled image from `dotnet publish`, and a multi-stage Dockerfile | [Containers](https://dotnet-primer.emmz.dev/deploy/containers/) |
 | `13-health-and-shutdown` | separate liveness and readiness endpoints, readiness that fails once shutdown starts, a drain delay, and a shutdown timeout that lets an in-flight order finish | [Orchestration & AWS](https://dotnet-primer.emmz.dev/deploy/orchestration-and-aws/) |
 | `14-modern-csharp` | nullable reference types in old code, records with `required` and `init`, `with` copies, and an if/else chain rewritten as a switch expression | [Modern C# at a glance](https://dotnet-primer.emmz.dev/csharp/) |
+| `15-session-state` | a basket moved from server memory into session as JSON, session shared by two servers through one cache and Data Protection key ring, and the placed order moved out of session | [Session and state](https://dotnet-primer.emmz.dev/aspnet-core/session-and-state/) |
 
 ## Working an exercise
 

@@ -54,6 +54,7 @@ const EXPECTED_SLUGS = [
   "cheatsheets/orchestration-and-aws",
   "cheatsheets/session-and-state",
   "cheatsheets/csharp",
+  "cheatsheets/coming-from-3-5",
 ];
 
 /**
@@ -98,6 +99,8 @@ const FULL_CONTENT_SLUGS: string[] = [
   "csharp/types",
   "csharp/patterns",
   "cheatsheets/csharp",
+  "coming-from-3-5",
+  "cheatsheets/coming-from-3-5",
 ];
 
 /**
@@ -110,6 +113,7 @@ const CHEATSHEETS: Record<string, string> = {
   "aspnet-core/dependency-injection": "cheatsheets/dependency-injection",
   "aspnet-core/middleware": "cheatsheets/middleware",
   "aspnet-core/session-and-state": "cheatsheets/session-and-state",
+  "coming-from-3-5": "cheatsheets/coming-from-3-5",
   "observability/logging": "cheatsheets/logging",
   "observability/tracing": "cheatsheets/tracing",
   "observability/metrics": "cheatsheets/metrics",
@@ -554,5 +558,62 @@ describe("deployment", () => {
     expect(readFileSync(join(DIST, "CNAME"), "utf8").trim()).toBe(
       "dotnet-primer.emmz.dev",
     );
+  });
+});
+
+describe("Coming from .NET 3.5 hub (spec: topic-page-content)", () => {
+  const HUB = "coming-from-3-5";
+  const HUB_PAGES = [HUB, "cheatsheets/coming-from-3-5"];
+
+  /** Content links, as pathname + hash, resolved against the page they're on. */
+  const linksOn = (p: Page) =>
+    (content(p)?.querySelectorAll("a[href]") ?? []).map((a) => {
+      const u = new URL(a.getAttribute("href")!, p.url);
+      return { href: a.getAttribute("href")!, target: u.pathname + u.hash, u };
+    });
+
+  it("links the Coming from section of every learning-path page", () => {
+    const hub = pageAt(HUB);
+    expect(hub, `/${HUB}/ not built`).toBeDefined();
+    const path = hub!.root
+      .querySelectorAll("ul.top-level > li")
+      .find(
+        (li) =>
+          li.querySelector(".group-label")?.textContent.trim() ===
+          "Learning path",
+      );
+    expect(path, "no Learning path group in the sidebar").toBeDefined();
+    const targets = new Set(linksOn(hub!).map((l) => l.target));
+    const missing: string[] = [];
+    for (const a of path!.querySelectorAll("a[href]")) {
+      const href = a.getAttribute("href")!;
+      const page = pages.find((p) => p.path === href);
+      const heading = page?.root
+        .querySelectorAll("h2[id]")
+        .find((h) => h.getAttribute("id")!.startsWith("coming-from-"));
+      if (!heading) continue;
+      const target = `${href}#${heading.getAttribute("id")}`;
+      if (!targets.has(target)) missing.push(target);
+    }
+    expect(missing, `the hub doesn't link: ${missing.join(", ")}`).toEqual([]);
+  });
+
+  it("every fragment link on the hub and its cheatsheet resolves", () => {
+    const failures: string[] = [];
+    for (const slug of HUB_PAGES) {
+      const p = pageAt(slug);
+      if (!p) {
+        failures.push(`/${slug}/: not built`);
+        continue;
+      }
+      for (const { href, u } of linksOn(p)) {
+        if (u.origin !== SITE || !u.hash) continue;
+        const target = pages.find((t) => t.path === u.pathname);
+        const id = decodeURIComponent(u.hash.slice(1));
+        if (!target?.root.querySelector(`[id="${id}"]`))
+          failures.push(`/${slug}/ links to ${href}, which has no heading`);
+      }
+    }
+    expect(failures, failures.join("\n")).toEqual([]);
   });
 });

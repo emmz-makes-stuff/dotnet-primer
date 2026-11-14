@@ -91,6 +91,7 @@ export default defineConfig({
             { slug: "cheatsheets/containers" },
             { slug: "cheatsheets/orchestration-and-aws" },
             { slug: "cheatsheets/csharp" },
+            { slug: "cheatsheets/coming-from-3-5" },
           ],
         },
       ],

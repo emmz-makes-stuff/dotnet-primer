@@ -71,16 +71,16 @@
 
 ## 5. The hub and its cheatsheet
 
-- [ ] 5.1 Add the D5 tests to `site/tests/dist.test.ts`: the hub links every learning-path page's
+- [x] 5.1 Add the D5 tests to `site/tests/dist.test.ts`: the hub links every learning-path page's
   "Coming from" section, and every fragment link on the hub and its cheatsheet resolves. Verify
   that both fail against the placeholder, naming what's missing.
-- [ ] 5.2 Rewrite `site/src/content/docs/coming-from-3-5/index.md` per D2: the outcome, the cheatsheet
+- [x] 5.2 Rewrite `site/src/content/docs/coming-from-3-5/index.md` per D2: the outcome, the cheatsheet
   link, the grouped tables with a sentence per group, and the Learn links. Keep `prev: false` and
   `next: false`, and add it to `FULL_CONTENT_SLUGS`. Verify that the 5.1 tests pass.
-- [ ] 5.3 Create `site/src/content/docs/cheatsheets/coming-from-3-5.md` per D3. Add it to the
+- [x] 5.3 Create `site/src/content/docs/cheatsheets/coming-from-3-5.md` per D3. Add it to the
   sidebar, the introduction, `EXPECTED_SLUGS`, `FULL_CONTENT_SLUGS` and `CHEATSHEETS`. Verify that
   `make site-test` passes.
-- [ ] 5.4 Update `samples/README.md`: exercise 15 in the layout, the exercise table and the list of
+- [x] 5.4 Update `samples/README.md`: exercise 15 in the layout, the exercise table and the list of
   exercises that need no Docker. Verify that `make gates` shows `GATES_EXIT:0`.
 
 ## 6. Human check
