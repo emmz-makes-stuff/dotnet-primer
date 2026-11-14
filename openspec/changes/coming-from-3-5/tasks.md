@@ -22,15 +22,15 @@
 
 ## 2. Exercise 15: session and state
 
-- [ ] 2.1 Scaffold `samples/exercises/15-session-state/` (D6): `SessionState.Starter` and
+- [x] 2.1 Scaffold `samples/exercises/15-session-state/` (D6): `SessionState.Starter` and
   `SessionState.Solution` web apps, a shared `tests/`, and `Starter.Tests` and `Solution.Tests`. Add
   them to `Primer.slnx`, and the Solution and its tests to `Primer.Solutions.slnx`. Verify with
   `make samples-build`.
-- [ ] 2.2 Write the Solution: the endpoints, price list and `OrderStore` from D6, with TODOs 1–4
+- [x] 2.2 Write the Solution: the endpoints, price list and `OrderStore` from D6, with TODOs 1–4
   solved. Verify that it builds with warnings as errors.
-- [ ] 2.3 Write the tests (D7): one behaviour per test, each failure naming what's wrong, its TODO
+- [x] 2.3 Write the tests (D7): one behaviour per test, each failure naming what's wrong, its TODO
   and the page's path. Verify that the Solution passes ten runs in a row.
-- [ ] 2.4 Write the Starter with `ServerBaskets` and TODOs 1–4. Verify that:
+- [x] 2.4 Write the Starter with `ServerBaskets` and TODOs 1–4. Verify that:
   - it builds clean;
   - each test fails against it with its guiding message;
   - a scratch copy completed with the Solution's code passes everything;

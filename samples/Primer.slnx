@@ -186,4 +186,17 @@
   <Folder Name="/exercises/14-modern-csharp/Starter/">
     <Project Path="exercises/14-modern-csharp/Starter/ModernCSharp.Starter.csproj" />
   </Folder>
+  <Folder Name="/exercises/15-session-state/" />
+  <Folder Name="/exercises/15-session-state/Solution.Tests/">
+    <Project Path="exercises/15-session-state/Solution.Tests/SessionState.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/15-session-state/Solution/">
+    <Project Path="exercises/15-session-state/Solution/SessionState.Solution.csproj" />
+  </Folder>
+  <Folder Name="/exercises/15-session-state/Starter.Tests/">
+    <Project Path="exercises/15-session-state/Starter.Tests/SessionState.Starter.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/15-session-state/Starter/">
+    <Project Path="exercises/15-session-state/Starter/SessionState.Starter.csproj" />
+  </Folder>
 </Solution>

@@ -98,4 +98,11 @@
   <Folder Name="/exercises/14-modern-csharp/Solution/">
     <Project Path="exercises/14-modern-csharp/Solution/ModernCSharp.Solution.csproj" />
   </Folder>
+  <Folder Name="/exercises/15-session-state/" />
+  <Folder Name="/exercises/15-session-state/Solution.Tests/">
+    <Project Path="exercises/15-session-state/Solution.Tests/SessionState.Solution.Tests.csproj" />
+  </Folder>
+  <Folder Name="/exercises/15-session-state/Solution/">
+    <Project Path="exercises/15-session-state/Solution/SessionState.Solution.csproj" />
+  </Folder>
 </Solution>
