@@ -131,7 +131,10 @@ wouldn't. TODOs:
   keys directory and one application name through configuration. Each host gets a different content
   root, as two servers have, so that without TODO 3 their default Data Protection isolation makes
   the other instance's cookie unreadable. §1's probe confirms that this fails without TODO 3 and
-  passes with it.
+  passes with it. The distinct roots only stand in for two servers. Replicas of one container image
+  all share one path (`/app`), and they lose session because each one makes its own key ring. The
+  Session and state page explains that real reason, and the exercise's description says that the
+  tests fake it with two content roots.
 - **Cookies are handled by the tests**, not the client (`HandleCookies = false`), so a test can carry
   one instance's session cookie to the other.
 - **JSON in session:** the shared cache is wrapped in a recorder, and the test checks that a value

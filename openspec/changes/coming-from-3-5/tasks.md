@@ -2,7 +2,7 @@
 
 ## 1. Probe: session across two in-process hosts
 
-- [ ] 1.1 In a scratch tree with the repo's `global.json`, `.editorconfig` and
+- [x] 1.1 In a scratch tree with the repo's `global.json`, `.editorconfig` and
   `samples/Directory.Build.props`, build a minimal session app and two `WebApplicationFactory`
   hosts sharing one `MemoryDistributedCache` (D7). Record, with exact output:
   - whether host B reads host A's session cookie with default Data Protection and distinct content
@@ -12,7 +12,7 @@
 
   **If host B reads the cookie without shared keys, stop and ask** before the test design changes.
   Write a devlog note.
-- [ ] 1.2 In the same tree, record for the page (D8):
+- [x] 1.2 In the same tree, record for the page (D8):
   - two concurrent requests to one session that each add an item, losing one write, with the delay
     that makes it repeatable;
   - that the Redis example compiles against `Microsoft.Extensions.Caching.StackExchangeRedis`.
