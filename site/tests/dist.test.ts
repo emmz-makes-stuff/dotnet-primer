@@ -22,6 +22,7 @@ const EXPECTED_SLUGS = [
   "aspnet-core/configuration",
   "aspnet-core/dependency-injection",
   "aspnet-core/middleware",
+  "aspnet-core/session-and-state",
   "observability/logging",
   "observability/tracing",
   "observability/metrics",
@@ -51,6 +52,7 @@ const EXPECTED_SLUGS = [
   "cheatsheets/async-and-performance",
   "cheatsheets/containers",
   "cheatsheets/orchestration-and-aws",
+  "cheatsheets/session-and-state",
   "cheatsheets/csharp",
 ];
 
@@ -66,6 +68,8 @@ const FULL_CONTENT_SLUGS: string[] = [
   "cheatsheets/dependency-injection",
   "aspnet-core/middleware",
   "cheatsheets/middleware",
+  "aspnet-core/session-and-state",
+  "cheatsheets/session-and-state",
   "cheatsheets/dotnet-cli",
   "platform/dotnet-10-and-cli",
   "platform/docker",
@@ -105,6 +109,7 @@ const CHEATSHEETS: Record<string, string> = {
   "aspnet-core/configuration": "cheatsheets/configuration",
   "aspnet-core/dependency-injection": "cheatsheets/dependency-injection",
   "aspnet-core/middleware": "cheatsheets/middleware",
+  "aspnet-core/session-and-state": "cheatsheets/session-and-state",
   "observability/logging": "cheatsheets/logging",
   "observability/tracing": "cheatsheets/tracing",
   "observability/metrics": "cheatsheets/metrics",
@@ -387,6 +392,17 @@ describe("C# language section (spec: site-structure)", () => {
       }
     }
     expect(failures, failures.join("\n")).toEqual([]);
+  });
+});
+
+describe("Session and state on the learning path (spec: site-structure)", () => {
+  it("sits between Middleware and Logging", () => {
+    const p = pageAt("aspnet-core/session-and-state");
+    expect(p, "/aspnet-core/session-and-state/ not built").toBeDefined();
+    const link = (rel: string) =>
+      p!.root.querySelector(`a[rel="${rel}"]`)?.getAttribute("href");
+    expect(link("prev")).toBe("/aspnet-core/middleware/");
+    expect(link("next")).toBe("/observability/logging/");
   });
 });
 

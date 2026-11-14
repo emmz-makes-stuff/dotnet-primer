@@ -35,7 +35,7 @@
   - each test fails against it with its guiding message;
   - a scratch copy completed with the Solution's code passes everything;
   - scratch copies that each leave out one TODO fail only that TODO's tests.
-- [ ] 2.5 Push the branch and run the `samples` workflow on it
+- [x] 2.5 Push the branch and run the `samples` workflow on it
   (`gh workflow run samples.yml --ref change/coming-from-3-5`). Check that it passes on
   `ubuntu-latest` with exercise 15's tests, and record the run ID in the section-done note.
   - `SITE_TEST_EXIT:1` is expected here (D9), because no page links exercise 15 yet. Record it as a
@@ -43,7 +43,7 @@
 
 ## 3. The Session and state page and its cheatsheet
 
-- [ ] 3.1 Write `site/src/content/docs/aspnet-core/session-and-state.md`: the outcome, the cheatsheet
+- [x] 3.1 Write `site/src/content/docs/aspnet-core/session-and-state.md`: the outcome, the cheatsheet
   link, turning on session, typed JSON access, the missing lock with §1's real run, session across
   replicas (distributed cache, Redis, Data Protection, linking to the Security page's section),
   moving state out of session, "Coming from .NET 3.5", Pitfalls, and Exercise 15 (needs no Docker
@@ -51,10 +51,10 @@
   `EXPECTED_SLUGS` and `FULL_CONTENT_SLUGS`, and to the introduction. Verify that `make site-build`
   and `make site-test` pass, and that Middleware's next and Logging's previous are Session and
   state.
-- [ ] 3.2 Create `site/src/content/docs/cheatsheets/session-and-state.md`, with the back link and
+- [x] 3.2 Create `site/src/content/docs/cheatsheets/session-and-state.md`, with the back link and
   Learn links. Add it to the sidebar's Cheatsheets group, the introduction, `EXPECTED_SLUGS`,
   `FULL_CONTENT_SLUGS` and `CHEATSHEETS`. Verify that `make site-test` passes.
-- [ ] 3.3 Verify the page and cheatsheet (D8): compile every C# block, check every output against a
+- [x] 3.3 Verify the page and cheatsheet (D8): compile every C# block, check every output against a
   real run, and fetch every URL. Verify that `make gates` shows `GATES_EXIT:0`, and record it in the
   section-done note.
 
