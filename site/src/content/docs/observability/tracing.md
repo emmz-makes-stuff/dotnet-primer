@@ -248,6 +248,16 @@ On your machine, the app sends OTLP straight to the dashboard. In production, it
 
 **On AWS**, CloudWatch accepts OTLP directly, at its own [OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html) for traces (X-Ray), logs and metrics. At the time of writing, AWS recommends putting a collector in front of them: on ECS, the [AWS Distro for OpenTelemetry (ADOT) collector](https://aws-otel.github.io/docs/setup/ecs) as a sidecar in your task; on EKS, the CloudWatch agent, through the CloudWatch Observability add-on. Either way, the app keeps exporting plain OTLP to the collector, so none of its instrumentation code changes. The [Orchestration & AWS](/deploy/orchestration-and-aws/) page covers running the app itself on ECS and EKS. For the collector, follow the links above.
 
+## Coming from .NET 3.5
+
+| In .NET 3.5                                                                   | In .NET 10                                                                                            |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| A correlation id passed by hand from call to call, and added to each log line | The [trace context](#traces-spans-and-context), which .NET carries across HTTP and gRPC calls for you |
+| WCF message logging and `System.Diagnostics` trace sources                    | [Spans](#custom-spans) from an `ActivitySource`, exported with OpenTelemetry                          |
+| A `Stopwatch` and a log line to time some work                                | A [span](#custom-spans), which records its own duration                                               |
+| Nothing at all for calls between services                                     | [Automatic instrumentation](#automatic-instrumentation) of ASP.NET Core and `HttpClient`              |
+| An exception's details in the log only                                        | [The failure recorded on the span](#recording-a-failure)                                              |
+
 ## Pitfalls
 
 - **`StartActivity` returns `null`, and your spans never appear.** Nothing is listening to the source: it isn't registered with `AddSource`, or the name doesn't match exactly. Fix: register it, ideally from the same constant (`AddSource(OrderTracing.SourceName)`), and keep the `?.` calls, since `null` is also normal when a trace isn't sampled.

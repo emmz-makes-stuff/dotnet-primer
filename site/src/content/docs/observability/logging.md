@@ -336,6 +336,17 @@ On your machine, the app sends OTLP straight to the dashboard. In production, it
 
 **On AWS**, CloudWatch accepts OTLP directly, at its own [OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html) for traces (X-Ray), logs and metrics. At the time of writing, AWS recommends putting a collector in front of them: on ECS, the [AWS Distro for OpenTelemetry (ADOT) collector](https://aws-otel.github.io/docs/setup/ecs) as a sidecar in your task; on EKS, the CloudWatch agent, through the CloudWatch Observability add-on. Either way, the app keeps exporting plain OTLP to the collector, so none of its instrumentation code changes. The [Orchestration & AWS](/deploy/orchestration-and-aws/) page covers running the app itself on ECS and EKS. For the collector, follow the links above.
 
+## Coming from .NET 3.5
+
+| In .NET 3.5                                      | In .NET 10                                                                                                        |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| log4net or Enterprise Library, configured in XML | [`ILogger<T>`](#iloggert), with its providers set up [in `Program.cs`](#one-setup-for-all-three)                  |
+| `Trace.WriteLine` and trace listeners            | `ILogger`, written to the [console or as JSON](#console-and-json-output)                                          |
+| `log.Info("Order " + id + " placed")`            | [A message template](#message-templates-not-interpolation): `logger.LogInformation("Order {OrderId} placed", id)` |
+| Levels per logger in `log4net.config`            | [Filtering by category](#filtering-by-level) in `appsettings.json`                                                |
+| log4net's `ThreadContext` properties             | [Scopes](#scopes)                                                                                                 |
+| A log file on each server, searched by hand      | Structured logs, [sent to a backend](#in-production) and searched by field                                        |
+
 ## Pitfalls
 
 - **String interpolation in log calls.** The values become text and the properties are lost, so you can't search or group by them. Fix: a message template with named placeholders, or a `[LoggerMessage]` method.

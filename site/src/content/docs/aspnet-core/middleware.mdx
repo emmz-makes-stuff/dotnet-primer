@@ -315,6 +315,18 @@ How to choose:
 | it works with the raw `HttpContext`: headers, paths, the response stream | it needs the handler's typed, bound arguments or its result |
 | it should run even when no endpoint matches (static files, 404s)         | it should only run when this endpoint is selected           |
 
+## Coming from .NET 3.5
+
+| In System.Web, MVC and Web API                            | In ASP.NET Core                                                                                     |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| An `IHttpModule` handling `BeginRequest` and `EndRequest` | [Middleware](#writing-middleware-as-a-class): code before and after `await next(context)`           |
+| `Application_BeginRequest` in `Global.asax`               | [An inline `app.Use`](#use-run-and-map)                                                             |
+| Module order in `<modules>` in `web.config`               | [The order of the `app.Use…` calls](#the-recommended-order) in `Program.cs`                         |
+| Web API's `DelegatingHandler` message handlers            | [Middleware](#writing-middleware-as-a-class) as well: one pipeline in front of every endpoint       |
+| An `IHttpHandler` for one path, such as an `.ashx`        | [`app.Map`](#use-run-and-map), or simply an endpoint                                                |
+| MVC's filters and Web API's filters: two separate sets    | One set of filters for every controller, and [endpoint filters](#endpoint-filters) for minimal APIs |
+| `Application_Error` and `<customErrors>`                  | [`UseExceptionHandler` and Problem Details](#exception-handling-with-problem-details)               |
+
 ## Pitfalls
 
 - **Wrong order.** Authorization before routing fails with "contains authorization metadata, but a middleware was not found that supports authorization". CORS placed after authorization can turn away the credential-less preflight requests browsers send, and middleware after a short-circuiting one never sees those requests. Fix: follow the recommended order, and remember that registration order is execution order.

@@ -399,16 +399,17 @@ A `Check` call answers `SERVING` while every check passes, and `NOT_SERVING` as 
 
 ## Coming from WCF
 
-| In WCF                                         | In gRPC                                                                                     |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `[ServiceContract]` and `[OperationContract]`  | A `service` and its `rpc`s in the `.proto`                                                  |
-| `[DataContract]` and `[DataMember]`            | `message`s, where the field numbers go on the wire, not the member names                    |
-| Bindings and `<system.serviceModel>` XML       | HTTP/2 on Kestrel, configured in code and `appsettings.json`                                |
-| `svcutil` or "Add Service Reference"           | `Grpc.Tools` generates the client on every build, from the `.proto`                         |
-| `ChannelFactory<T>` or a `ClientBase<T>` proxy | `GrpcChannel` and the generated client, or `AddGrpcClient`                                  |
-| `FaultException<T>`                            | An `RpcException` with a [status code and rich details](#errors-and-status)                 |
-| Duplex callback contracts                      | Bidirectional streaming                                                                     |
-| `[OperationContract(IsOneWay = true)]`         | No direct equivalent: a unary call that returns `google.protobuf.Empty`, or a client stream |
+| In WCF                                         | In gRPC                                                                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `[ServiceContract]` and `[OperationContract]`  | A `service` and its `rpc`s in the `.proto`                                                                   |
+| `[DataContract]` and `[DataMember]`            | `message`s, where the field numbers go on the wire, not the member names                                     |
+| Bindings and `<system.serviceModel>` XML       | HTTP/2 on Kestrel, configured in code and `appsettings.json`                                                 |
+| `netTcpBinding`, binary over TCP               | gRPC over HTTP/2: binary Protobuf messages, across platforms, and through load balancers that support HTTP/2 |
+| `svcutil` or "Add Service Reference"           | `Grpc.Tools` generates the client on every build, from the `.proto`                                          |
+| `ChannelFactory<T>` or a `ClientBase<T>` proxy | `GrpcChannel` and the generated client, or `AddGrpcClient`                                                   |
+| `FaultException<T>`                            | An `RpcException` with a [status code and rich details](#errors-and-status)                                  |
+| Duplex callback contracts                      | Bidirectional streaming                                                                                      |
+| `[OperationContract(IsOneWay = true)]`         | No direct equivalent: a unary call that returns `google.protobuf.Empty`, or a client stream                  |
 
 To move existing WCF services to .NET 10 as they are, [CoreWCF](https://github.com/CoreWCF/CoreWCF) is a community port of WCF's server side. It's a lift-and-shift path; for new services, and services you're rewriting anyway, use gRPC. Learn's [WCF to gRPC guide](https://learn.microsoft.com/aspnet/core/grpc/why-migrate-wcf-to-dotnet-grpc) goes further.
 

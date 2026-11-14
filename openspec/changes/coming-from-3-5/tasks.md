@@ -60,13 +60,13 @@
 
 ## 4. Back-filled "Coming from .NET 3.5" sections
 
-- [ ] 4.1 Add a "Coming from .NET 3.5" section, per D4, to the ASP.NET Core, Configuration,
+- [x] 4.1 Add a "Coming from .NET 3.5" section, per D4, to the ASP.NET Core, Configuration,
   Dependency Injection and Middleware pages, each Modern cell linking to its own page's heading.
   Verify that `make site-build` passes and every new link resolves.
-- [ ] 4.2 Add the same to the Logging, Tracing and Metrics pages, and the `netTcpBinding` row to the
+- [x] 4.2 Add the same to the Logging, Tracing and Metrics pages, and the `netTcpBinding` row to the
   gRPC page's "Coming from WCF" table. Verify that `make site-build` passes and every new link
   resolves.
-- [ ] 4.3 Fetch every Learn URL the new rows cite. Verify that `make gates` shows `GATES_EXIT:0`, and
+- [x] 4.3 Fetch every Learn URL the new rows cite. Verify that `make gates` shows `GATES_EXIT:0`, and
   list each section added in the section-done note.
 
 ## 5. The hub and its cheatsheet

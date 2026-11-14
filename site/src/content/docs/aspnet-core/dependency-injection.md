@@ -269,6 +269,16 @@ public sealed class NightlyArchive(IServiceScopeFactory scopeFactory) : Backgrou
 
 `IServiceScopeFactory` is a singleton, so it's safe to inject into a `BackgroundService` (itself a singleton). Everything resolved from `scope.ServiceProvider` lives until the scope is disposed at the end of the iteration. That's the same lifecycle a request gives a scoped service.
 
+## Coming from .NET 3.5
+
+| In ASP.NET MVC and Web API                                                                                       | In ASP.NET Core                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Static singletons, and `new` in the code that uses them                                                          | [Constructor injection](#constructor-and-primary-constructor-injection) of services the container builds                     |
+| `DependencyResolver.SetResolver` for MVC, and `GlobalConfiguration.Configuration.DependencyResolver` for Web API | [One container](#the-container-builds-your-objects), built into the host, for controllers, minimal APIs and middleware alike |
+| Unity, Autofac or Ninject registrations                                                                          | [`AddSingleton`, `AddScoped` and `AddTransient`](#registration-patterns)                                                     |
+| Per-request objects in `HttpContext.Current.Items`, or a per-request lifetime manager                            | A [scoped](#lifetimes) service: one instance per request                                                                     |
+| Resolving from the container on a background thread                                                              | [A scope of your own](#scopes-outside-a-request)                                                                             |
+
 ## Pitfalls
 
 - **Captive dependencies.** A singleton depends on a scoped service, so it shares one request's state with everyone. Fix: follow the lifetime rule above, and develop in `Development` so validation catches it.

@@ -168,6 +168,16 @@ Microsoft recommends minimal APIs for new projects. Reach for controllers when y
 
 Controllers also suit a team that already knows MVC conventions well, or a large controller-based API you're bringing across. Both styles can live in the same app. For server-rendered HTML, look at Razor Pages or Blazor instead. They're out of scope here.
 
+## Coming from .NET 3.5
+
+| In ASP.NET MVC and Web API                                                                                                          | In ASP.NET Core                                                                                                                               |
+| ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Global.asax` and `Application_Start`                                                                                               | [`Program.cs`](#builder-build-run): the builder, `Build`, then `Run`                                                                          |
+| An app that IIS loads into its own pipeline                                                                                         | [A console program that runs its own web server](#an-app-is-a-console-program), Kestrel. IIS or a load balancer can still sit in front.       |
+| `System.Web.Mvc.Controller` for pages and Web API's `ApiController` for APIs: two stacks, each with its own routing, filters and DI | [One controller stack](#controllers-are-still-there), `ControllerBase` for APIs, or [minimal APIs](#minimal-api-endpoints)                    |
+| `RouteConfig.RegisterRoutes` and `WebApiConfig.Register`                                                                            | [`app.MapGet` and the other `Map…` methods](#minimal-api-endpoints), [route groups](#route-groups), or `MapControllers` with attribute routes |
+| `IHttpActionResult`, or `Request.CreateResponse(HttpStatusCode.NotFound)`                                                           | [Typed results](#typed-results), such as `TypedResults.NotFound()`                                                                            |
+
 ## Pitfalls
 
 - **Registering services after `Build()`.** `builder.Services.Add…` after `builder.Build()` throws `InvalidOperationException: The service collection cannot be modified because it is read-only`. Fix: do all registration before `Build()`.

@@ -256,6 +256,17 @@ On your machine, the app sends OTLP straight to the dashboard. In production, it
 
 **On AWS**, CloudWatch accepts OTLP directly, at its own [OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html) for traces (X-Ray), logs and metrics. At the time of writing, AWS recommends putting a collector in front of them: on ECS, the [AWS Distro for OpenTelemetry (ADOT) collector](https://aws-otel.github.io/docs/setup/ecs) as a sidecar in your task; on EKS, the CloudWatch agent, through the CloudWatch Observability add-on. Either way, the app keeps exporting plain OTLP to the collector, so none of its instrumentation code changes. The [Orchestration & AWS](/deploy/orchestration-and-aws/) page covers running the app itself on ECS and EKS. For the collector, follow the links above.
 
+## Coming from .NET 3.5
+
+| In .NET 3.5                                           | In .NET 10                                                                             |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Windows performance counters, created by an installer | A [`Meter`](#creating-meters) in code: nothing to install, and it works on Linux       |
+| `PerformanceCounter.Increment()`                      | [`Counter<T>.Add`](#choosing-an-instrument)                                            |
+| An average-time counter, such as `AverageTimer32`     | A [histogram](#choosing-an-instrument), which gives percentiles as well as the average |
+| A counter instance for each order type or customer    | [Tags](#recording-with-tags), kept [low-cardinality](#keeping-cardinality-low)         |
+| `perfmon`                                             | [`dotnet-counters`](#watching-metrics-live), or the dashboard                          |
+| ASP.NET's own counters, such as Requests/Sec          | [The built-in metrics](#the-built-in-metrics)                                          |
+
 ## Pitfalls
 
 - **An id as a tag.** Every order, user or request makes a new time series, so the backend slows, drops data or costs a fortune, and the metric can't be graphed anyway. Fix: bounded tags only, and identifiers in logs and traces. Map client-supplied values to a fixed set before tagging.

@@ -219,6 +219,19 @@ OptionsValidationException: DataAnnotation validation failed for 'SmtpOptions' m
 
 A deploy with broken configuration then fails its health check and never takes traffic.
 
+## Coming from .NET 3.5
+
+| In `web.config`                                                      | In ASP.NET Core                                                                                                                            |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `<appSettings>`, read with `ConfigurationManager.AppSettings["key"]` | [`IConfiguration`](#reading-values-with-iconfiguration), from `appsettings.json` and other sources, read as `configuration["Section:Key"]` |
+| `<connectionStrings>` and `ConfigurationManager.ConnectionStrings`   | A `ConnectionStrings` section, read with [`GetConnectionString`](#reading-values-with-iconfiguration)                                      |
+| `Web.Release.config` transforms, applied when you publish            | [`appsettings.Production.json`](#environments), layered over the base file when the app starts                                             |
+| A different `web.config` on each server                              | [Environment variables](#environment-variables-and-the-command-line), set by the host or the container                                     |
+| Secrets in `web.config`, encrypted with `aspnet_regiis`              | [User secrets](#user-secrets-for-local-development) on your machine, and environment variables or a secret store in production             |
+| A custom `ConfigurationSection` class                                | [The options pattern](#the-options-pattern): a plain class bound to a section                                                              |
+| A bad setting found when the code first reads it                     | [Validation at startup](#validate-options-at-startup)                                                                                      |
+| Editing `web.config` restarts the app                                | Files reload on change, and [`IOptionsMonitor`](#ioptions-ioptionssnapshot-or-ioptionsmonitor) sees the new values                         |
+
 ## Pitfalls
 
 - **Colons in environment variable names.** `Greeting:Message=…` doesn't work in Bash, or in most container tooling. Fix: use `Greeting__Message`.
